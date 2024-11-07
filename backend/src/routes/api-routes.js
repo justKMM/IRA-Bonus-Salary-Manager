@@ -17,4 +17,12 @@ router.get('/user', checkAuthorization(), userApi.getSelf);
 const peopleDemoApi = require('../apis/people-demo-api');
 router.get('/people', checkAuthorization(), peopleDemoApi.getPeople);
 
+// API calls for salesmen & such
+const salesmenApi = require('../apis/salesmen-api');
+router.get('/salesmen', salesmenApi.getAllSalesMen);
+
+router.get('/test', (req, res) => {
+    res.status(200).json({ message: 'Test route is working' });
+});
+
 module.exports = router;
