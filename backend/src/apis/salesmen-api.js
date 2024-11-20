@@ -1,10 +1,9 @@
 const SalesMenService = require('../services/salesmen-service');
-const salesMenService = new SalesMenService();
 
 // C - Create
 exports.createSalesMan = async function (req, res) {
     try {
-        const result = await salesMenService.createSalesMan(req.body);
+        const result = await SalesMenService.createSalesMan(req.app.get('db'), req.body);
         res.status(201).json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -13,7 +12,7 @@ exports.createSalesMan = async function (req, res) {
 
 exports.createPerformance = async function (req, res) {
     try {
-        const result = await salesMenService.createSocialPerformanceRecord(req.body, req.params.sid);
+        const result = await SalesMenService.createSocialPerformanceRecord(req.app.get('db'), req.body, req.params.sid);
         res.status(201).json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -23,7 +22,7 @@ exports.createPerformance = async function (req, res) {
 // R - Read
 exports.getSalesMan = async function (req, res) {
     try {
-        const salesMan = await salesMenService.readSalesMan(req.params.sid);
+        const salesMan = await SalesMenService.readSalesMan(req.app.get('db'), req.params.sid);
         if (salesMan) {
             res.status(200).json(salesMan);
         } else {
@@ -36,7 +35,7 @@ exports.getSalesMan = async function (req, res) {
 
 exports.getAllSalesMen = async function (req, res){
     try {
-        const result = await salesMenService.readAllSalesMen();
+        const result = await SalesMenService.readAllSalesMen(req.app.get('db'));
         res.status(200).json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -45,7 +44,7 @@ exports.getAllSalesMen = async function (req, res){
 
 exports.getPerformancesFromSalesMan = async function (req, res){
     try {
-        const result = await salesMenService.readSocialPerformanceRecord(req.params.sid);
+        const result = await SalesMenService.readSocialPerformanceRecord(req.app.get('db'), req.params.sid);
         res.status(200).json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -54,7 +53,7 @@ exports.getPerformancesFromSalesMan = async function (req, res){
 
 exports.getPerformanceFromSalesManByYear = async function (req, res){
     try {
-        const result = await salesMenService.readSocialPerformanceRecordByYear(req.params.sid, req.params.year);
+        const result = await SalesMenService.readSocialPerformanceRecordByYear(req.app.get('db'), req.params.sid, req.params.year);
         res.status(200).json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -65,7 +64,7 @@ exports.getPerformanceFromSalesManByYear = async function (req, res){
 exports.updateSalesMan = async function (req, res){
     try {
         const sid = req.params.sid;
-        const result = await salesMenService.updateSalesMan(sid, req.body);
+        const result = await SalesMenService.updateSalesMan(req.app.get('db'), sid, req.body);
         res.status(201).json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -75,7 +74,7 @@ exports.updateSalesMan = async function (req, res){
 // D - Delete
 exports.deleteSalesMan = async function (req, res){
     try {
-        const result = await salesMenService.deleteSalesMan(req.params.sid);
+        const result = await SalesMenService.deleteSalesMan(req.app.get('db'), req.params.sid);
         res.status(204).end();
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -84,7 +83,7 @@ exports.deleteSalesMan = async function (req, res){
 
 exports.deletePerformanceRecordFromSalesManByYear = async function (req, res){
     try {
-        await salesMenService.deleteSocialPerformanceRecord(req.params.sid, req.params.year);
+        await SalesMenService.deleteSocialPerformanceRecord(req.app.get('db'), req.params.sid, req.params.year);
         res.status(204).end();
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -93,7 +92,7 @@ exports.deletePerformanceRecordFromSalesManByYear = async function (req, res){
 
 exports.deletePerformanceRecordsFromSalesMan = async function (req, res){
     try {
-        await salesMenService.deleteAllSocialPerformanceRecords(req.params.sid);
+        await SalesMenService.deleteAllSocialPerformanceRecords(req.app.get('db'), req.params.sid);
         res.status(204).end();
     } catch (error) {
         res.status(500).json({ error: error.message });

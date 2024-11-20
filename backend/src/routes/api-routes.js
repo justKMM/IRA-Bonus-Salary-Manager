@@ -20,6 +20,8 @@ router.get('/people', checkAuthorization(), peopleDemoApi.getPeople);
 // API calls for salesmen & such
 const salesmenApi = require('../apis/salesmen-api');
 router.get('/salesmen', salesmenApi.getAllSalesMen);
+router.post('/salesmen/create', salesmenApi.createSalesMan);
+router.put('/salesmen/update/:sid', salesmenApi.updateSalesMan)
 
 router.get('/test', (req, res) => {
     res.status(200).json({ message: 'Test route is working' });
