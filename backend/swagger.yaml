@@ -1,0 +1,123 @@
+---
+# API Documentation
+openapi: 3.0.0
+info:
+  title: REST API Interface
+  version: 1.0.0
+paths:
+  /api/login:
+    post:
+      summary: Login user
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Login successful
+    delete:
+      summary: Logout user
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Logout successful
+    get:
+      summary: Check login status
+      tags:
+        - Auth
+      responses:
+        "200":
+          description: Login status
+  /api/user:
+    get:
+      summary: Get current user
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User details
+  /api/people:
+    get:
+      summary: Get all people
+      tags:
+        - People
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of people
+  /api/salesmen:
+    get:
+      summary: Get all salesmen
+      tags:
+        - Salesmen
+      responses:
+        "200":
+          description: List of salesmen
+  /api/salesmen/create:
+    post:
+      summary: Create salesman
+      tags:
+        - Salesmen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        "201":
+          description: Salesman created
+  /api/salesmen/update/{sid}:
+    put:
+      summary: Update salesman
+      tags:
+        - Salesmen
+      parameters:
+        - in: path
+          name: sid
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        "200":
+          description: Salesman updated
+  /api/test:
+    get:
+      summary: Test endpoint
+      tags:
+        - Test
+      responses:
+        "200":
+          description: Test successful
+components: {}
+tags: []
+servers:
+  - url: http://localhost:8080
+    description: development server

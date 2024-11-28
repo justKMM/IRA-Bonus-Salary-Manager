@@ -12,6 +12,8 @@ const upload = multer();
 const app = express();
 const crypto = require('crypto');
 const cors = require('cors');
+const YAML = require('yaml');
+const fs = require('fs');
 
 const mongodb = require('mongodb');
 const MongoClient = mongodb.MongoClient;
@@ -29,6 +31,7 @@ app.use(express.json()); //adds support for json encoded bodies
 app.use(express.urlencoded({extended: true})); //adds support url encoded bodies
 app.use(upload.array()); //adds support multipart/form-data bodies
 
+// Config for API Doc generator
 const swaggerJsDocOptions = {
     explorer: true,
     definition: {
@@ -48,8 +51,21 @@ const swaggerJsDocOptions = {
     },
     apis: [__dirname + '/routes/api-routes.js'],
 };
-const swaggerSpec = swaggerJsDoc(swaggerJsDocOptions);
+const swaggerSpec = {
+    ...swaggerJsDoc(swaggerJsDocOptions),
+    servers: [{
+        url: 'http://localhost:' + environment.port,
+        description: process.env.NODE_ENV + ' server',
+    }],
+};
+// Serving the API Docs
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Automated generating .yaml file
+const yamlContent = `---
+# API Documentation
+${YAML.stringify(swaggerSpec)}`;
+fs.writeFileSync(__dirname + '/../swagger.yaml', yamlContent);
 
 app.use(cookieSession({
     secret: crypto.randomBytes(32).toString('hex'),
