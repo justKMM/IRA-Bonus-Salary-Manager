@@ -4,6 +4,8 @@
 
 const express = require('express');
 const cookieSession = require('cookie-session');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
 
 const multer = require('multer');
 const upload = multer();
@@ -26,6 +28,28 @@ app.set('environment', environment);
 app.use(express.json()); //adds support for json encoded bodies
 app.use(express.urlencoded({extended: true})); //adds support url encoded bodies
 app.use(upload.array()); //adds support multipart/form-data bodies
+
+const swaggerJsDocOptions = {
+    explorer: true,
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'REST API Interface',
+            version: '1.0.0',
+        },
+        /*components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer'
+                }
+            }
+        },*/
+    },
+    apis: [__dirname + '/routes/api-routes.js'],
+};
+const swaggerSpec = swaggerJsDoc(swaggerJsDocOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(cookieSession({
     secret: crypto.randomBytes(32).toString('hex'),
