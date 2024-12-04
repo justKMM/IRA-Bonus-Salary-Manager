@@ -133,8 +133,15 @@ router.put('/salesmen/update/:sid', salesmenApi.updateSalesMan)
  *       200:
  *         description: Test successful
  */
+const hrm = require('../services/adapters/hrm')
 router.get('/test', (req, res) => {
-    res.status(200).json({ message: 'Test route is working' });
+    hrm.queryAllEmployees().then(response => {
+        if (response && response.data) {
+            res.status(200).json(response.data);
+        } else {
+            res.status(500).json({error: 'No data received from HRM service'});
+        }
+    });
 });
 
 module.exports = router;

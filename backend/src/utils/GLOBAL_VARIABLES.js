@@ -1,0 +1,1 @@
+exports.default = globalVariables = require("../../environments/global-variables.js").default;
