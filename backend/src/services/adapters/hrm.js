@@ -11,7 +11,7 @@ const authRequestBody = {
     password: global_variables.password,
 }
 const accessToken = async () => {
-    const response = await axios.post(baseUrl + 'oauth/issueToken',
+    const response = await axios.post(baseUrl + '/oauth/issueToken',
         authRequestBody,
         {
             headers: {
@@ -35,7 +35,7 @@ const getHrmConfig = async () => {
 exports.queryAllEmployees = async () => {
     try {
         const hrmConfig = await getHrmConfig();
-        return await axios.get(baseUrl + 'api/v1/employee/search', hrmConfig);
+        return (await axios.get(baseUrl + '/api/v1/employee/search', hrmConfig)).data;
     } catch (error) {
         console.error(`Error queryAllEmployees: ${error.message}`);
     }
@@ -44,7 +44,7 @@ exports.queryAllEmployees = async () => {
 exports.queryEmployeeById = async (id) => {
     try {
         const hrmConfig = await getHrmConfig();
-        return await axios.get(baseUrl + `api/v1/employee/${id}`, hrmConfig);
+        return (await axios.get(baseUrl + `/api/v1/employee/${id}`, hrmConfig)).data;
     } catch (error) {
         console.error(`Error queryEmployeeById: ${error.message}`);
     }
@@ -53,7 +53,7 @@ exports.queryEmployeeById = async (id) => {
 exports.queryBonusSalariesById = async (id) => {
     try {
         const hrmConfig = await getHrmConfig();
-        return await axios.get(baseUrl + `api/v1/employee/${id}/bonussalary`, hrmConfig);
+        return (await axios.get(baseUrl + `/api/v1/employee/${id}/bonussalary`, hrmConfig)).data;
     } catch (error) {
         console.error(`Error getBonusSalariesById: ${error.message}`);
     }
@@ -62,11 +62,11 @@ exports.queryBonusSalariesById = async (id) => {
 exports.addBonusSalary = async (id, year, value) => {
     try {
         const hrmConfig = await getHrmConfig();
-        return await axios.post(baseUrl + `api/v1/employee/${id}/bonussalary`,
+        return (await axios.post(baseUrl + `/api/v1/employee/${id}/bonussalary`,
             {
                 year: year,
                 value: value
-            }, hrmConfig);
+            }, hrmConfig)).data;
     } catch (error) {
         console.error(`Error addBonusSalary: ${error.message}`);
     }
