@@ -1,5 +1,5 @@
 const globalVariables = {
-    hrm: {
+    orangehrm: {
         baseUrl: 'https://sepp-hrm.inf.h-brs.de/symfony/web/index.php',
         clientId: 'test',
         clientSecret: 'test',
@@ -7,11 +7,16 @@ const globalVariables = {
         username: 'mai123',
         password: '*Safb02da42Demo$'
     },
-    crm: {
+    opencrx: {
         baseUrl: 'https://sepp-crm.inf.h-brs.de/opencrx-rest-CRX/org.opencrx.kernel.contract1/provider/CRX/segment/Standard',
         username: 'guest',
         password: 'guest'
     },
+    odoo: {
+        email: 'admin@smarthoover.com',
+        password: 'myHoovercraftIsFullOfEels',
+        apiKey: '63fa0092da20bf88a128b1b9a1f8400b00087553'
+    }
 }
 
 exports.default = globalVariables;
