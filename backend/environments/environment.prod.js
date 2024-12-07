@@ -2,7 +2,8 @@ const environment = {
     production: true,
     port: 8080,
     defaultAdminPassword: 'c3uz#3zd',
-    db:{
+    url: 'http://iar-backend.inf.h-brs.de', // URL of production backend
+    db: {
         host: 'iar-mongo.inf.h-brs.de',
         port: 27017,
         username: 'tldr',

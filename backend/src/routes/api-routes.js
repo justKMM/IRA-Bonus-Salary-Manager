@@ -133,8 +133,52 @@ router.put('/salesmen/update/:sid', salesmenApi.updateSalesMan)
  *       200:
  *         description: Test successful
  */
-router.get('/test', (req, res) => {
-    res.status(200).json({ message: 'Test route is working' });
+router.get('/test', (req,res)=>{
+    res.status(200).json({status: 'Backend Running'});
+});
+
+// These are only for internal testing - do not push into docs
+const hrm = require('../services/adapters/hrm');
+const crm = require('../services/adapters/crm');
+router.get('/test-hrm', (req, res) => {
+    hrm.queryAllEmployees().then(response => {
+        if (response && response.data) {
+            res.status(200).json(response.data);
+        } else {
+            res.status(500).json({error: 'No data received from HRM service'});
+        }
+    });
+});
+router.get('/test-crm', (req, res) => {
+    crm.queryAllSalesOrders().then(response => {
+        if (response && response.objects) {
+            res.status(200).json(response.objects);
+        } else {
+            res.status(500).json({error: 'No data received from CRM service'});
+        }
+    });
+});
+
+const salesOrderService = require('../services/salesorder-service');
+router.get('/test-sales-order', (req, res) => {
+    salesOrderService.getProductsFromSalesOrder('9DTSXR06DLHPM0EBHQA5MAZ7J').then(response => {
+        if (response) {
+            res.status(200).json(response);
+        } else {
+            res.status(500).json({error: 'No data received from Sales Order service'});
+        }
+    });
+});
+const odoo = require('../services/adapters/odoo');
+const {response} = require("express");
+router.get('/test-odoo', (req, res) => {
+    odoo.getAllEmployees().then(response => {
+        if (response) {
+            res.status(200).json(response);
+        } else {
+            res.status(500).json({error: 'No data received from Sales Order service'});
+        }
+    })
 });
 
 module.exports = router;

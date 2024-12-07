@@ -21,10 +21,9 @@ const MongoClient = mongodb.MongoClient;
 let environment;
 if(process.env.NODE_ENV === 'development'){
     environment = require('../environments/environment.js').default;
-}else{
+} else{
     environment = require('../environments/environment.prod.js').default;
 }
-
 app.set('environment', environment);
 
 app.use(express.json()); //adds support for json encoded bodies
