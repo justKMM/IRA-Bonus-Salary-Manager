@@ -169,5 +169,16 @@ router.get('/test-sales-order', (req, res) => {
         }
     });
 });
+const odoo = require('../services/adapters/odoo');
+const {response} = require("express");
+router.get('/test-odoo', (req, res) => {
+    odoo.getAllEmployees().then(response => {
+        if (response) {
+            res.status(200).json(response);
+        } else {
+            res.status(500).json({error: 'No data received from Sales Order service'});
+        }
+    })
+});
 
 module.exports = router;

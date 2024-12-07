@@ -13,7 +13,9 @@ const globalVariables = {
         password: 'guest'
     },
     odoo: {
-        email: 'admin@smarthoover.com',
+        baseUrl: 'https://sepp-odoo.inf.h-brs.de',
+        db: 'sepp-odoo',
+        username: 'admin@smarthoover.com',
         password: 'myHoovercraftIsFullOfEels',
         apiKey: '63fa0092da20bf88a128b1b9a1f8400b00087553'
     }
