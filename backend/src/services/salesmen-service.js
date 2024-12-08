@@ -1,5 +1,31 @@
-// salesman-service.js
+const hrm = require('./adapters/hrm.js');
+const odoo = require('./adapters/odoo.js');
+// Query from other sources
+// OrangeHRM + Odoo
+exports.queryAllSeniorSalesMen = async (db)=> {
+    try {
+        const seniorSalesMenOrangeHrm = (await hrm.queryAllEmployees()).data.filter(employee => employee.jobTitle === 'Senior Salesman');
+        // const seniorSalesMenOdoo = (await odoo.getAllEmployees()).data.filter(employee => employee.job_title === 'Senior Salesperson');
+        let addedCount = 0;
+        // From OrangeHRM
+        for (const seniorSalesMan of seniorSalesMenOrangeHrm) {
+            try {
+                const exists = await db.collection('salesmen').findOne({ employeeId: seniorSalesMan.employeeId });
+                if (!exists) {
+                    await db.collection('salesmen').insertOne(seniorSalesMan);
+                    addedCount++;
+                }
+            } catch (error) {
+                console.error(`Error processing senior salesman ${seniorSalesMan.fullName}:`, error);
+            }
+        }
+        console.log(`${addedCount} new senior salesmen added from OrangeHRM.`);
+    } catch (error) {
+        throw new Error(`Error querying salesmen from OrangeHRM: ${error.message}`);
+    }
+};
 
+// Query from MongoDB
 // C - Create
 exports.createSalesMan = async (db, salesMan) => {
     try {

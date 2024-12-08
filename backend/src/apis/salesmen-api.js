@@ -1,5 +1,7 @@
 const SalesMenService = require('../services/salesmen-service');
-
+exports.updateSalesMenList = async function (db) {
+    await SalesMenService.queryAllSeniorSalesMen(db);
+};
 // C - Create
 exports.createSalesMan = async function (req, res) {
     try {
@@ -35,6 +37,7 @@ exports.getSalesMan = async function (req, res) {
 
 exports.getAllSalesMen = async function (req, res){
     try {
+        await exports.updateSalesMenList(req.app.get('db'));
         const result = await SalesMenService.readAllSalesMen(req.app.get('db'));
         res.status(200).json(result);
     } catch (error) {

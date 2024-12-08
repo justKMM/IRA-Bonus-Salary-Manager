@@ -158,7 +158,6 @@ router.get('/test-crm', (req, res) => {
         }
     });
 });
-
 const salesOrderService = require('../services/salesorder-service');
 router.get('/test-sales-order', (req, res) => {
     salesOrderService.getProductsFromSalesOrder('9DTSXR06DLHPM0EBHQA5MAZ7J').then(response => {
