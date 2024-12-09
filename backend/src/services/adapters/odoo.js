@@ -1,6 +1,6 @@
 const xmlrpc = require('xmlrpc');
 const {response} = require("express");
-const global_variables = require('../../utils/GLOBAL_VARIABLES.js').erp;
+const global_variables = require('../../utils/GLOBALS.js').erp;
 const baseUrl = global_variables.baseUrl;
 let currentUid = false;
 

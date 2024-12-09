@@ -1,5 +1,5 @@
 const axios = require('axios');
-const global_variables = require('../../utils/GLOBAL_VARIABLES.js').hrm;
+const global_variables = require('../../utils/GLOBALS.js').hrm;
 const baseUrl = global_variables.baseUrl;
 
 // Bearer authentication

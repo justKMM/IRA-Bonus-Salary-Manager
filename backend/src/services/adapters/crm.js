@@ -1,5 +1,5 @@
 const axios = require('axios');
-const global_variables = require('../../utils/GLOBAL_VARIABLES.js').crm;
+const global_variables = require('../../utils/GLOBALS.js').crm;
 const baseUrl = global_variables.baseUrl;
 
 // CRM Config
