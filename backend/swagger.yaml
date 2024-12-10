@@ -120,4 +120,4 @@ components: {}
 tags: []
 servers:
   - url: http://localhost:8080
-    description: production server
+    description: development server

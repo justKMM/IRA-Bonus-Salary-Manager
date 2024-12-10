@@ -8,7 +8,6 @@ import {ExampleDatapoint} from '../../interfaces/example-datapoint';
     styleUrls: ['./example-page.component.css']
 })
 export class ExamplePageComponent implements OnInit {
-
     displayedColumns = ['id', 'name', 'color', 'age'];
     people: ExampleDatapoint[] = [];
 
@@ -18,7 +17,7 @@ export class ExamplePageComponent implements OnInit {
         this.fetchPeople();
     }
 
-    fetchPeople(): void{
+    fetchPeople(): void {
         this.peopleDemoService.getPeople().subscribe((response): void => {
             if (response.status === 200){
                 this.people = response.body;
