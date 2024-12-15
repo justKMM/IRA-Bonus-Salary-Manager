@@ -9,7 +9,7 @@ import {Router} from '@angular/router';
     templateUrl: './dashboard-page.component.html',
     styleUrls: ['./dashboard-page.component.css']
 })
-export class DashboardPageComponent {
+export class DashboardPageComponent implements OnInit {
     salesMenDisplayedColumns = ['id', 'code', 'fullName', 'jobTitle', 'actions'];
     salesmen: SalesManInterface[] = [];
     isLoading = true;

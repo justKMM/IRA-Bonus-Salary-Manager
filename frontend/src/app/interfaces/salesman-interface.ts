@@ -1,4 +1,4 @@
-import {BonusSalaryRecord} from './bonus-salary-record-interface';
+// import {BonusSalaryRecord} from './bonus-salary-record-interface';
 
 export interface SalesManInterface {
     sid: string;
