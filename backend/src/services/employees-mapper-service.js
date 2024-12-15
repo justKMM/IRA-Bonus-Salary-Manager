@@ -1,19 +1,23 @@
 const crm_adapter = require('./adapters/crm.js');
 
-const standardFields = {
-    sid: null,
-    code: null,
-    firstName: null,
-    lastName: null,
-    fullName: null,
-    jobTitle: null,
-    unit: null,
-    sourceSystem: null,
-    openCrxId: '',
-};
+class EmployeeMapper{
+    constructor() {
+        this.standardFields = {
+            sid: null,
+            code: null,
+            firstName: null,
+            lastName: null,
+            fullName: null,
+            jobTitle: null,
+            unit: null,
+            sourceSystem: null,
+            openCrxId: '',
+        };
+    }
+}
 
 const mapOdooEmployee = (odooEmployeeRecord) => {
-    const mappedRecord = { ...standardFields };
+    const mappedRecord = { ...this.standardFields };
     const jobTitle = (odooEmployeeRecord.job_title === 'Senior Salesperson') ? 'Senior Salesman' : odooEmployeeRecord.jobTitle;
     // Extract name from display_name
     const fullName = odooEmployeeRecord.name || '';
@@ -33,7 +37,7 @@ const mapOdooEmployee = (odooEmployeeRecord) => {
 };
 
 const mapOrangeHrmEmployee = async (orangeEmployeeRecord) => {
-    const mappedRecord = { ...standardFields };
+    const mappedRecord = { ...this.standardFields };
 
     mappedRecord.sid = 'ORA-0' + orangeEmployeeRecord.employeeId;
     mappedRecord.code = orangeEmployeeRecord.code;
@@ -43,17 +47,18 @@ const mapOrangeHrmEmployee = async (orangeEmployeeRecord) => {
     mappedRecord.unit = orangeEmployeeRecord.unit;
     mappedRecord.jobTitle =  orangeEmployeeRecord.jobTitle;
     mappedRecord.sourceSystem = 'orangehrm';
+    mappedRecord.openCrxId = null;
 
     if (mappedRecord.code) {
         mappedRecord.openCrxId = await crm_adapter.queryAccountIdByGovernmentId(90123);
     }
-
+    console.log(mappedRecord.firstName + ' '+ mappedRecord.lastName);
     return mappedRecord;
 };
 
-exports.mergeEmployeeRecords = (odooEmployees, orangeEmployees) => {
+exports.mergeEmployeeRecords = async (odooEmployees, orangeEmployees) => {
     return [
-        ...odooEmployees.map(employee => mapOdooEmployee(employee)),
-        ...orangeEmployees.map(employee => mapOrangeHrmEmployee(employee))
+        ...(await Promise.all(odooEmployees.map(employee => mapOdooEmployee(employee)))),
+        ...(await Promise.all(orangeEmployees.map(employee => mapOrangeHrmEmployee(employee))))
     ];
 };

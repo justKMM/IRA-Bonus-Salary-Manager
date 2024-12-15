@@ -7,14 +7,13 @@ exports.queryAllSeniorSalesMen = async (db)=> {
     try {
         const seniorSalesMenOrangeHrm = (await hrm.queryAllEmployees()).filter(employee => employee['jobTitle'] === 'Senior Salesman');
         const seniorSalesMenOdoo = (await odoo.getAllEmployees()).filter(employee => employee['job_title'] === 'Senior Salesperson');
-        const mergedSalesMenList = employeeMapper.mergeEmployeeRecords(seniorSalesMenOdoo, seniorSalesMenOrangeHrm);
+        const mergedSalesMenList = await employeeMapper.mergeEmployeeRecords(seniorSalesMenOdoo, seniorSalesMenOrangeHrm);
         let addedCountHrm = 0;
         let addedCountOdoo = 0;
         for (let seniorSalesMan of mergedSalesMenList) {
             try {
                 const exists = await db.collection('salesmen').findOne({ sid: seniorSalesMan.sid });
                 if (!exists) {
-                    console.log('source system: ' + seniorSalesMan.sourceSystem);
                     await db.collection('salesmen').insertOne(seniorSalesMan);
                     if (seniorSalesMan.sourceSystem === 'orangehrm') addedCountHrm++;
                     if (seniorSalesMan.sourceSystem === 'odoo') addedCountOdoo++;

@@ -1,7 +1,8 @@
 import {BonusSalaryRecord} from './bonus-salary-record-interface';
 
 export interface SalesManInterface {
-    id: string;
+    sid: string;
+    code: string;
     fullName: string;
     jobTitle: string;
 }

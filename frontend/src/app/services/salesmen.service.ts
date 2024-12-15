@@ -19,7 +19,7 @@ export class SalesmenService {
                     const mappedData: SalesManInterface[] = response.body
                         .filter((res: HRMResponse): boolean => res !== null && res !== undefined)
                         .map((res: HRMResponse): SalesManInterface => ({
-                            sid: res.employeeId,
+                            sid: res.sid,
                             code: res.code,
                             fullName: res.firstName + ' ' + res.lastName,
                             jobTitle: res.jobTitle
@@ -43,17 +43,11 @@ interface HRMResponse {
     firstName: string;
     lastName: string;
     code: string;
-    employeeId: string;
+    sid: string;
     fullName: string;
     status: string | null;
     dob: string | null;
-    driversLicenseNumber: string;
-    licenseExpiryDate: string | null;
-    maritalStatus: string;
-    gender: string | null;
-    otherId: string;
     nationality: string | null;
     unit: string | null;
     jobTitle: string;
-    supervisor: string | null;
 }
