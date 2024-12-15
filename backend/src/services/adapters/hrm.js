@@ -35,7 +35,7 @@ const getHrmConfig = async () => {
 exports.queryAllEmployees = async () => {
     try {
         const hrmConfig = await getHrmConfig();
-        return (await axios.get(baseUrl + '/api/v1/employee/search', hrmConfig)).data;
+        return (await axios.get(baseUrl + '/api/v1/employee/search', hrmConfig)).data.data;
     } catch (error) {
         console.error(`Error queryAllEmployees: ${error.message}`);
     }

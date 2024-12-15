@@ -9,3 +9,11 @@ exports.getProductsFromSalesOrder = async (salesOrderId) => {
         productDescription: object.productDescription,
     }));
 }
+
+exports.getCustomerFromSalesOrder = async (salesOrderId) => {
+    const objects = (await crm.querySalesOrderPosition(salesOrderId)).objects;
+    return objects.map(object => ({
+        customerData: object.customer,
+        customerName: object.name
+    }))
+}

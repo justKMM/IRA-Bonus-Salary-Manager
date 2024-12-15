@@ -150,9 +150,9 @@ router.get('/test-hrm', (req, res) => {
     });
 });
 router.get('/test-crm', (req, res) => {
-    crm.queryAllSalesOrders().then(response => {
-        if (response && response.objects) {
-            res.status(200).json(response.objects);
+    crm.queryAccountIdByGovernmentId(90123).then(response => {
+        if (response) {
+            res.status(200).json(response);
         } else {
             res.status(500).json({error: 'No data received from CRM service'});
         }
