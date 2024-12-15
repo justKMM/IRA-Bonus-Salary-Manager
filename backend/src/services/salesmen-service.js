@@ -1,27 +1,30 @@
 const hrm = require('./adapters/hrm.js');
 const odoo = require('./adapters/odoo.js');
+const employeeMapper = require('./employees-mapper-service.js');
 // Query from other sources
 // OrangeHRM + Odoo
 exports.queryAllSeniorSalesMen = async (db)=> {
     try {
-        const seniorSalesMenOrangeHrm = (await hrm.queryAllEmployees()).data.filter(employee => employee.jobTitle === 'Senior Salesman');
-        // const seniorSalesMenOdoo = (await odoo.getAllEmployees()).data.filter(employee => employee.job_title === 'Senior Salesperson');
-        let addedCount = 0;
-        // From OrangeHRM
-        for (const seniorSalesMan of seniorSalesMenOrangeHrm) {
+        const seniorSalesMenOrangeHrm = (await hrm.queryAllEmployees()).filter(employee => employee['jobTitle'] === 'Senior Salesman');
+        const seniorSalesMenOdoo = (await odoo.getAllEmployees()).filter(employee => employee['job_title'] === 'Senior Salesperson');
+        const mergedSalesMenList = await employeeMapper.mergeEmployeeRecords(seniorSalesMenOdoo, seniorSalesMenOrangeHrm);
+        let addedCountHrm = 0;
+        let addedCountOdoo = 0;
+        for (let seniorSalesMan of mergedSalesMenList) {
             try {
-                const exists = await db.collection('salesmen').findOne({ employeeId: seniorSalesMan.employeeId });
+                const exists = await db.collection('salesmen').findOne({ sid: seniorSalesMan.sid });
                 if (!exists) {
                     await db.collection('salesmen').insertOne(seniorSalesMan);
-                    addedCount++;
+                    if (seniorSalesMan.sourceSystem === 'orangehrm') addedCountHrm++;
+                    if (seniorSalesMan.sourceSystem === 'odoo') addedCountOdoo++;
                 }
             } catch (error) {
                 console.error(`Error processing senior salesman ${seniorSalesMan.fullName}:`, error);
             }
         }
-        console.log(`${addedCount} new senior salesmen added from OrangeHRM.`);
+        console.log(`${addedCountHrm} new senior salesmen added from OrangeHRM and ${addedCountOdoo} from Odoo.`);
     } catch (error) {
-        throw new Error(`Error querying salesmen from OrangeHRM: ${error.message}`);
+        throw new Error(`Error querying salesmen from OrangeHRM and/or Odoo: ${error.message}`);
     }
 };
 

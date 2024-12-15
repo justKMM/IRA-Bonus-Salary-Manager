@@ -17,7 +17,7 @@ const crmConfig = {
 // Accounts
 exports.queryAllAccounts = async () => {
     try {
-        return (await axios.get(baseUrl + "/account", crmConfig)).data;
+        return (await axios.get(baseUrl + "/account", crmConfig)).data.objects;
     } catch (error) {
         console.error(`Error queryAllAccounts: ${error.message}`);
     }
@@ -31,10 +31,19 @@ exports.queryAccountById = async (id) => {
     }
 };
 
+exports.queryAccountIdByGovernmentId = async (government_id) => {
+    try {
+        const accounts = await exports.queryAllAccounts();
+        const href = accounts.find(account => account.governmentId === government_id)?.['@href'];
+        return extractAccountIdFromUrl(href);
+    } catch (error) {
+        console.error(`Error queryAccountByGovernmentId: ${error.message}`);
+    }
+}
 // Sales orders
 exports.queryAllSalesOrders = async () => {
     try {
-        return (await axios.get(baseUrl + "/salesOrder", crmConfig)).data;
+        return (await axios.get(baseUrl + "/salesOrder", crmConfig)).data.objects;
     } catch (error) {
         console.error(`Error queryAllSalesOrders: ${error.message}`);
     }
@@ -60,3 +69,10 @@ exports.querySalesOrderPosition = async (id) => {
 exports.addSalesOrder = async () => {
     await axios.post(baseUrl + '/salesOrder', crmConfig);
 }*/
+
+// Helper methods
+const extractAccountIdFromUrl = (url) => {
+    const match = url.match(/\/account\/([A-Z0-9]+)\/?$/);
+    if (!match) throw new Error('No valid ID found in URL');
+    return match[1];
+};
