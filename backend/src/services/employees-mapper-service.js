@@ -52,7 +52,7 @@ const mapOrangeHrmEmployee = async (orangeEmployeeRecord) => {
     if (mappedRecord.code) {
         mappedRecord.openCrxId = await crm_adapter.queryAccountIdByGovernmentId(90123);
     }
-    console.log(mappedRecord.firstName + ' '+ mappedRecord.lastName);
+
     return mappedRecord;
 };
 
