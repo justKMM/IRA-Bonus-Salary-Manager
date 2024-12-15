@@ -19,6 +19,7 @@ export class DashboardPageComponent {
         private router: Router
     ) {}
 
+    // eslint-disable-next-line @angular-eslint/use-lifecycle-interface
     ngOnInit(): void {
         if (getSeniorSalesMen().length < 1) {
             this.fetchSalesMen();
@@ -36,12 +37,13 @@ export class DashboardPageComponent {
                     this.salesmen = response.body;
                 }
             },
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             error: (error): void => console.error(`Salesmen retrieval unsuccessful. Error: ${error}`),
             complete: (): boolean => this.isLoading = false
         });
     }
 
     editSalesman(sid: number): void {
-        this.router.navigate(['/salesmen/edit', sid]);
+        void this.router.navigate(['/salesmen/edit', sid]);
     }
 }
