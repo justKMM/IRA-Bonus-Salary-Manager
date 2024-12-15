@@ -36,7 +36,7 @@ export class DashboardPageComponent implements OnInit {
                     this.salesmen = response.body;
                 }
             },
-            error: (error: unknown): void => console.error(`Salesmen retrieval unsuccessful. Error: ${error}`),
+            error: (error: Error): void => console.error(`Salesmen retrieval unsuccessful. Error: ${error.message}`),
             complete: (): boolean => this.isLoading = false
         });
     }
