@@ -36,12 +36,12 @@ export class DashboardPageComponent implements OnInit {
                     this.salesmen = response.body;
                 }
             },
-            error: (error): void => console.error(`Salesmen retrieval unsuccessful. Error: ${error}`),
+            error: (error: unknown): void => console.error(`Salesmen retrieval unsuccessful. Error: ${error}`),
             complete: (): boolean => this.isLoading = false
         });
     }
 
     editSalesman(sid: number): void {
-        this.router.navigate(['/salesmen/edit', sid]);
+        void this.router.navigate(['/salesmen/edit', sid]);
     }
 }
