@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {checkAuthorization} = require('../middlewares/auth-middleware');
+const salesmenApi = require('../apis/salesmen-api');
 
 /**
  * @openapi
@@ -70,58 +71,18 @@ router.get('/user', checkAuthorization(), userApi.getSelf);
 const peopleDemoApi = require('../apis/people-demo-api');
 router.get('/people', checkAuthorization(), peopleDemoApi.getPeople);
 
-/**
- * @openapi
- * /api/salesmen:
- *   get:
- *     summary: Get all salesmen
- *     tags: [Salesmen]
- *     responses:
- *       200:
- *         description: List of salesmen
- *
- * /api/salesmen/create:
- *   post:
- *     summary: Create salesman
- *     tags: [Salesmen]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name: { type: string }
- *     responses:
- *       201:
- *         description: Salesman created
- *
- * /api/salesmen/update/{sid}:
- *   put:
- *     summary: Update salesman
- *     tags: [Salesmen]
- *     parameters:
- *       - in: path
- *         name: sid
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name: { type: string }
- *     responses:
- *       200:
- *         description: Salesman updated
- */
-const salesmenApi = require('../apis/salesmen-api');
+
+
 router.get('/salesmen', salesmenApi.getAllSalesMen);
+router.get('/salesmen/:sid', salesmenApi.getSalesMan);
 router.post('/salesmen/create', salesmenApi.createSalesMan);
-router.put('/salesmen/update/:sid', salesmenApi.updateSalesMan)
+router.put('/salesmen/update/:sid', salesmenApi.updateSalesMan);
+router.delete('/salesmen/delete/:sid', salesmenApi.deleteSalesMan);
+
+router.get('/salesmen/performance/:sid', salesmenApi.getPerformancesFromSalesMan);
+router.post('/salesmen/performance/create', salesmenApi.createPerformance);
+router.delete('/salesmen/performance/delete/:sid', salesmenApi.deletePerformanceRecordsFromSalesMan);
+
 
 /**
  * @openapi
