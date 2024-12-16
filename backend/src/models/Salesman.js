@@ -1,6 +1,6 @@
 /**
  * Represents a salesman
- * @param {number} salesmanId - The unique identifier for the salesman.
+ * @param {number} sid - The unique identifier for the salesman.
  * @param {string} uid - The OpenCRX unique identifier for the salesman (account).
  * @param {string} firstName - The first name of the salesman.
  * @param {string} middleName - The middle name of the salesman (optional).
@@ -11,8 +11,8 @@
  * @param {string} gender - The gender of the salesman.
  */
 class Salesman {
-    constructor(salesmanId, uid, firstName, middleName, lastName) {
-        this.salesmanId = salesmanId;
+    constructor(sid, uid, firstName, middleName, lastName) {
+        this.sid = sid;
         this.uid = uid;
         this.firstName = firstName;
         this.middleName = middleName || '';
@@ -23,16 +23,16 @@ class Salesman {
         this.gender = null;
     }
 
-    // Getter and setter for salesmanId
-    get salesmanId() {
-        return this._salesmanId;
+    // Getter and setter for sid
+    get sid() {
+        return this._sid;
     }
 
-    set salesmanId(value) {
+    set sid(value) {
         if (typeof value !== 'number' || value <= 0) {
-            throw new Error('salesmanId must be a positive number.');
+            throw new Error('sid must be a positive number.');
         }
-        this._salesmanId = value;
+        this._sid = value;
     }
 
     // Getter and setter for uid

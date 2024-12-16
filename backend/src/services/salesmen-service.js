@@ -1,8 +1,13 @@
 const hrm = require('./adapters/hrm.js');
 const odoo = require('./adapters/odoo.js');
 const employeeMapper = require('./employees-mapper-service.js');
-// Query from other sources
-// OrangeHRM + Odoo
+const Salesman = require('../models/Salesman.js');
+const SocialPerformance = require('../models/SocialPerformance.js');
+
+/**
+ * Queries all senior salesmen from OrangeHRM and Odoo systems, merges the data, and stores unique entries in MongoDB.
+ * @param {Object} db - MongoDB database connection.
+ */
 exports.queryAllSeniorSalesMen = async (db)=> {
     try {
         const seniorSalesMenOrangeHrm = (await hrm.queryAllEmployees()).filter(employee => employee['jobTitle'] === 'Senior Salesman');
@@ -28,36 +33,72 @@ exports.queryAllSeniorSalesMen = async (db)=> {
     }
 };
 
-// Query from MongoDB
-// C - Create
-exports.createSalesMan = async (db, salesMan) => {
+/**
+ * Creates a new salesman record in MongoDB.
+ * @param {Object} db - MongoDB database connection.
+ * @param {Object} salesmanData - Data for the new salesman.
+ * @returns {Promise<Object>} - The result of the insert operation.
+ */
+exports.createSalesMan = async (db, salesmanData) => {
     try {
-        return await db.collection('salesmen').insertOne(salesMan);
+        const salesman = new Salesman(
+            salesmanData.sid,
+            salesmanData.uid,
+            salesmanData.firstName,
+            salesmanData.middleName,
+            salesmanData.lastName,
+            salesmanData.bonusSalary,
+            salesmanData.jobTitle,
+            salesmanData.employeeId,
+            salesmanData.gender
+        );
+        return await db.collection('salesmen').insertOne(salesman);
     } catch (error) {
         throw new Error(`Error creating salesman: ${error.message}`);
     }
 };
 
-exports.createSocialPerformanceRecord = async (db, performanceRecord, sid) => {
+/**
+ * Creates a new social performance record for a salesman in MongoDB.
+ * @param {Object} db - MongoDB database connection.
+ * @param {Object} performanceRecordData - Data for the performance record.
+ * @returns {Promise<Object>} - The result of the insert operation.
+ */
+exports.createSocialPerformanceRecord = async (db, performanceRecordData) => {
     try {
-        return await db.collection('salesmen').updateOne(
-            { sid: sid },
-            { $push: { socialPerformanceRecords: performanceRecord } }
+        const performanceRecord = new SocialPerformance(
+            performanceRecordData.sid,
+            performanceRecordData.goalId,
+            performanceRecordData.description,
+            performanceRecordData.targetValue,
+            performanceRecordData.actualValue,
+            performanceRecordData.year
         );
+        return await db.collection('performance').insertOne(performanceRecord);
     } catch (error) {
-        throw new Error(`Error creating social performance record: ${error.message}`);
+        throw new Error(`Error creating performance: ${error.message}`);
     }
 };
 
-// R - Read
+/**
+ * Reads a salesman record by their ID from MongoDB.
+ * @param {Object} db - MongoDB database connection.
+ * @param {number} sid - Salesman ID to query.
+ * @returns {Promise<Object|null>} - The salesman record or null if not found.
+ */
 exports.readSalesMan = async (db, sid) => {
     try {
-        return await db.collection('salesmen').findOne({ sid: sid });
+        return await db.collection('salesmen').findOne({ _sid: parseInt(sid) });
     } catch (error) {
         throw new Error(`Error reading salesman: ${error.message}`);
     }
 };
 
+/**
+ * Reads all salesman records from MongoDB.
+ * @param {Object} db - MongoDB database connection.
+ * @returns {Promise<Array>} - Array of all salesman records.
+ */
 exports.readAllSalesMen = async (db) => {
     try {
         return await db.collection('salesmen').find({}).toArray();
@@ -66,76 +107,92 @@ exports.readAllSalesMen = async (db) => {
     }
 };
 
-exports.readSocialPerformanceRecord = async (db, sid) => {
+
+/**
+ * Reads social performance records for a salesman by their ID and optional year.
+ * @param {Object} db - MongoDB database connection.
+ * @param {number} sid - Salesman ID to query.
+ * @param {number} [year] - Optional year to filter the records.
+ * @returns {Promise<Array>} - Array of matching social performance records.
+ */
+exports.readSocialPerformanceRecord = async (db, sid, year) => {
     try {
-        const salesMan = await db.collection('salesmen').findOne(
-            { sid: sid },
-            { projection: { socialPerformanceRecords: 1 } }
-        );
-        return salesMan ? salesMan.socialPerformanceRecords : null;
+        const query = { _sid: parseInt(sid) };
+        if (year) {
+            query._year = parseInt(year); // Add the year to the query if it's provided
+        }
+        return performanceRecords = await db.collection('performance').find(query).toArray();
     } catch (error) {
         throw new Error(`Error reading social performance records: ${error.message}`);
     }
 };
 
-exports.readSocialPerformanceRecordByYear = async (db, sid, year) => {
+/**
+ * Updates a salesman record in MongoDB.
+ * @param {Object} db - MongoDB database connection.
+ * @param {number} sid - Salesman ID to update.
+ * @param {Object} salesmanData - Data to update in the salesman record.
+ * @returns {Promise<Object>} - The result of the update operation.
+ */
+exports.updateSalesMan = async (db, sid, salesmanData) => {
     try {
-        const salesMan = await db.collection('salesmen').findOne(
-            { 
-                sid: sid,
-                "socialPerformanceRecords.year": year 
-            },
-            { projection: { "socialPerformanceRecords.$": 1 } }
-        );
-        return salesMan?.socialPerformanceRecords[0] || null;
-    } catch (error) {
-        throw new Error(`Error reading social performance record by year: ${error.message}`);
-    }
-};
+        const updateQuery = { $set: {} };
 
-// U - Update
-exports.updateSalesMan = async (db, sid, salesMan) => {
-    try {
-        return await db.collection('salesmen').updateOne(
-            { sid: sid },
-            { $set: salesMan }
+        if (salesmanData.uid) updateQuery.$set._uid = salesmanData.uid;
+        if (salesmanData.firstName) updateQuery.$set._firstName = salesmanData.firstName;
+        if (salesmanData.middleName) updateQuery.$set._middleName = salesmanData.middleName;
+        if (salesmanData.lastName) updateQuery.$set._lastName = salesmanData.lastName;
+        if (salesmanData.bonusSalary) updateQuery.$set._bonusSalary = salesmanData.bonusSalary;
+        if (salesmanData.jobTitle) updateQuery.$set._jobTitle = salesmanData.jobTitle;
+        if (salesmanData.employeeId) updateQuery.$set._employeeId = salesmanData.employeeId;
+        if (salesmanData.gender) updateQuery.$set._gender = salesmanData.gender;
+
+        updateQuery.$set._sid = parseInt(sid);
+
+        const result = await db.collection('salesmen').updateOne(
+            { _sid: parseInt(sid) },
+            updateQuery
         );
+
+        if (result.matchedCount === 0) {
+            throw new Error(`SalesMan with sid ${sid} not found.`);
+        }
+        return result;
     } catch (error) {
         throw new Error(`Error updating salesman: ${error.message}`);
     }
 };
 
-// D - Delete
+/**
+ * Deletes a salesman record from MongoDB.
+ * @param {Object} db - MongoDB database connection.
+ * @param {number} sid - Salesman ID to delete.
+ * @returns {Promise<Object>} - The result of the delete operation.
+ */
 exports.deleteSalesMan = async (db, sid) => {
     try {
-        return await db.collection('salesmen').deleteOne({ sid: sid });
+        return await db.collection('salesmen').deleteOne({ _sid: parseInt(sid) });
     } catch (error) {
         throw new Error(`Error deleting salesman: ${error.message}`);
     }
 };
 
+
+/**
+ * Deletes social performance records for a salesman by their ID and optional year from MongoDB.
+ * @param {Object} db - MongoDB database connection.
+ * @param {number} sid - Salesman ID whose records to delete.
+ * @param {number} [year] - Optional year to filter the records.
+ * @returns {Promise<Object>} - The result of the delete operation.
+ */
 exports.deleteSocialPerformanceRecord = async (db, sid, year) => {
     try {
-        return await db.collection('salesmen').updateOne(
-            { sid: sid },
-            { 
-                $pull: { 
-                    socialPerformanceRecords: { year: year } 
-                }
-            }
-        );
+        const query = { _sid: parseInt(sid) };
+        if (year) {
+            query._year = parseInt(year); // Add the year to the query if it's provided
+        }
+        return result = await db.collection('performance').deleteMany(query);
     } catch (error) {
         throw new Error(`Error deleting social performance record: ${error.message}`);
-    }
-};
-
-exports.deleteAllSocialPerformanceRecords = async (db, sid) => {
-    try {
-        return await db.collection('salesmen').updateOne(
-            { sid: sid },
-            { $set: { socialPerformanceRecords: [] } }
-        );
-    } catch (error) {
-        throw new Error(`Error deleting all social performance records: ${error.message}`);
     }
 };

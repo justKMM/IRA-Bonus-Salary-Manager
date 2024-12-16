@@ -60,54 +60,6 @@ paths:
       responses:
         "200":
           description: List of people
-  /api/salesmen:
-    get:
-      summary: Get all salesmen
-      tags:
-        - Salesmen
-      responses:
-        "200":
-          description: List of salesmen
-  /api/salesmen/create:
-    post:
-      summary: Create salesman
-      tags:
-        - Salesmen
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-      responses:
-        "201":
-          description: Salesman created
-  /api/salesmen/update/{sid}:
-    put:
-      summary: Update salesman
-      tags:
-        - Salesmen
-      parameters:
-        - in: path
-          name: sid
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-      responses:
-        "200":
-          description: Salesman updated
   /api/test:
     get:
       summary: Test endpoint
