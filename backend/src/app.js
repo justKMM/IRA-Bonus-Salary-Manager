@@ -39,14 +39,6 @@ const swaggerJsDocOptions = {
             title: 'REST API Interface',
             version: '1.0.0',
         },
-        /*components: {
-            securitySchemes: {
-                bearerAuth: {
-                    type: 'http',
-                    scheme: 'bearer'
-                }
-            }
-        },*/
     },
     apis: [__dirname + '/routes/api-routes.js'],
 };
@@ -100,6 +92,9 @@ MongoClient.connect('mongodb://' + db_credentials + environment.db.host + ':' + 
 });
 
 async function initDb(db){
+    await db.collection('salesmen').createIndex({ "sid": 1 }, { unique: true });
+    await db.collection('performance').createIndex({ "sid": 1, "year": 1 }, { unique: true });
+
     if(await db.collection('users').count() < 1){ //if no user exists create admin user
         const userService = require('./services/user-service');
         const User = require("./models/User");

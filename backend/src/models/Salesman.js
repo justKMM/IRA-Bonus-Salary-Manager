@@ -11,13 +11,13 @@
  * @param {string} gender - The gender of the salesman.
  */
 class Salesman {
-    constructor(sid, uid, firstName, middleName, lastName) {
+    constructor(sid, uid, firstName, middleName, lastName, bonusSalary, jobTitle, employeeId, gender) {
         this.sid = sid;
         this.uid = uid;
         this.firstName = firstName;
         this.middleName = middleName || '';
         this.lastName = lastName;
-        this.bonusSalary = 0;
+        this.bonusSalary = bonusSalary || 0;
         this.jobTitle = '';
         this.employeeId = null;
         this.gender = null;

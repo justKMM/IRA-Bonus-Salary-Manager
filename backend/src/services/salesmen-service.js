@@ -37,7 +37,8 @@ exports.queryAllSeniorSalesMen = async (db)=> {
  * Creates a new salesman record in MongoDB.
  * @param {Object} db - MongoDB database connection.
  * @param {Object} salesmanData - Data for the new salesman.
- * @returns {Promise<Object>} - The result of the insert operation.
+ * @returns {Promise<Object>} The created salesman
+ * @throws {Error} If there's an error during salesman creation
  */
 exports.createSalesMan = async (db, salesmanData) => {
     try {
@@ -52,7 +53,20 @@ exports.createSalesMan = async (db, salesmanData) => {
             salesmanData.employeeId,
             salesmanData.gender
         );
-        return await db.collection('salesmen').insertOne(salesman);
+        const salesmanDoc = {
+            sid: salesman.sid,
+            uid: salesman.uid,
+            firstName: salesman.firstName,
+            middleName: salesman.middleName,
+            lastName: salesman.lastName,
+            bonusSalary: salesman.bonusSalary,
+            jobTitle: salesman.jobTitle,
+            employeeId: salesman.employeeId,
+            gender: salesman.gender
+        };
+        await db.collection('salesmen').insertOne(salesmanDoc);
+
+        return salesmanDoc;
     } catch (error) {
         throw new Error(`Error creating salesman: ${error.message}`);
     }
@@ -62,7 +76,8 @@ exports.createSalesMan = async (db, salesmanData) => {
  * Creates a new social performance record for a salesman in MongoDB.
  * @param {Object} db - MongoDB database connection.
  * @param {Object} performanceRecordData - Data for the performance record.
- * @returns {Promise<Object>} - The result of the insert operation.
+ * @returns {Promise<Object>} The created performance record
+ * @throws {Error} If there's an error during performance record creation
  */
 exports.createSocialPerformanceRecord = async (db, performanceRecordData) => {
     try {
@@ -74,7 +89,17 @@ exports.createSocialPerformanceRecord = async (db, performanceRecordData) => {
             performanceRecordData.actualValue,
             performanceRecordData.year
         );
-        return await db.collection('performance').insertOne(performanceRecord);
+        const performanceRecordDoc = {
+            sid: performanceRecord.sid,
+            goalId: performanceRecord.goalId,
+            description: performanceRecord.description,
+            targetValue: performanceRecord.targetValue,
+            actualValue: performanceRecord.actualValue,
+            year: performanceRecord.year
+        };
+        await db.collection('performance').insertOne(performanceRecordDoc);
+
+        return performanceRecordDoc;
     } catch (error) {
         throw new Error(`Error creating performance: ${error.message}`);
     }
@@ -88,7 +113,7 @@ exports.createSocialPerformanceRecord = async (db, performanceRecordData) => {
  */
 exports.readSalesMan = async (db, sid) => {
     try {
-        return await db.collection('salesmen').findOne({ _sid: parseInt(sid) });
+        return await db.collection('salesmen').findOne({ sid: parseInt(sid) });
     } catch (error) {
         throw new Error(`Error reading salesman: ${error.message}`);
     }
@@ -117,9 +142,9 @@ exports.readAllSalesMen = async (db) => {
  */
 exports.readSocialPerformanceRecord = async (db, sid, year) => {
     try {
-        const query = { _sid: parseInt(sid) };
+        const query = { sid: parseInt(sid) };
         if (year) {
-            query._year = parseInt(year); // Add the year to the query if it's provided
+            query.year = parseInt(year); // Add the year to the query if it's provided
         }
         return performanceRecords = await db.collection('performance').find(query).toArray();
     } catch (error) {
@@ -136,28 +161,43 @@ exports.readSocialPerformanceRecord = async (db, sid, year) => {
  */
 exports.updateSalesMan = async (db, sid, salesmanData) => {
     try {
-        const updateQuery = { $set: {} };
-
-        if (salesmanData.uid) updateQuery.$set._uid = salesmanData.uid;
-        if (salesmanData.firstName) updateQuery.$set._firstName = salesmanData.firstName;
-        if (salesmanData.middleName) updateQuery.$set._middleName = salesmanData.middleName;
-        if (salesmanData.lastName) updateQuery.$set._lastName = salesmanData.lastName;
-        if (salesmanData.bonusSalary) updateQuery.$set._bonusSalary = salesmanData.bonusSalary;
-        if (salesmanData.jobTitle) updateQuery.$set._jobTitle = salesmanData.jobTitle;
-        if (salesmanData.employeeId) updateQuery.$set._employeeId = salesmanData.employeeId;
-        if (salesmanData.gender) updateQuery.$set._gender = salesmanData.gender;
-
-        updateQuery.$set._sid = parseInt(sid);
-
-        const result = await db.collection('salesmen').updateOne(
-            { _sid: parseInt(sid) },
-            updateQuery
-        );
-
-        if (result.matchedCount === 0) {
+        const existingSalesman = await db.collection('salesmen').findOne({ sid: parseInt(sid) });
+        
+        if (!existingSalesman) {
             throw new Error(`SalesMan with sid ${sid} not found.`);
         }
-        return result;
+
+        // Create new Salesman instance with existing data merged with updates
+        const salesman = new Salesman(
+            parseInt(sid),
+            salesmanData.hasOwnProperty('uid') ? salesmanData.uid : existingSalesman.uid,
+            salesmanData.hasOwnProperty('firstName') ? salesmanData.firstName : existingSalesman.firstName,
+            salesmanData.hasOwnProperty('middleName') ? salesmanData.middleName : existingSalesman.middleName,
+            salesmanData.hasOwnProperty('lastName') ? salesmanData.lastName : existingSalesman.lastName,
+            salesmanData.hasOwnProperty('bonusSalary') ? salesmanData.bonusSalary : existingSalesman.bonusSalary,
+            salesmanData.hasOwnProperty('jobTitle') ? salesmanData.jobTitle : existingSalesman.jobTitle,
+            salesmanData.hasOwnProperty('employeeId') ? salesmanData.employeeId : existingSalesman.employeeId,
+            salesmanData.hasOwnProperty('gender') ? salesmanData.gender : existingSalesman.gender
+        );
+
+        const updateQuery = {
+            $set: {
+                uid: salesman.uid,
+                firstName: salesman.firstName,
+                middleName: salesman.middleName,
+                lastName: salesman.lastName,
+                bonusSalary: salesman.bonusSalary,
+                jobTitle: salesman.jobTitle,
+                employeeId: salesman.employeeId,
+                gender: salesman.gender,
+                sid: salesman.sid
+            }
+        };
+
+        return await db.collection('salesmen').updateOne(
+            { sid: parseInt(sid) },
+            updateQuery
+        );
     } catch (error) {
         throw new Error(`Error updating salesman: ${error.message}`);
     }
@@ -171,7 +211,7 @@ exports.updateSalesMan = async (db, sid, salesmanData) => {
  */
 exports.deleteSalesMan = async (db, sid) => {
     try {
-        return await db.collection('salesmen').deleteOne({ _sid: parseInt(sid) });
+        return await db.collection('salesmen').deleteOne({ sid: parseInt(sid) });
     } catch (error) {
         throw new Error(`Error deleting salesman: ${error.message}`);
     }
@@ -187,9 +227,9 @@ exports.deleteSalesMan = async (db, sid) => {
  */
 exports.deleteSocialPerformanceRecord = async (db, sid, year) => {
     try {
-        const query = { _sid: parseInt(sid) };
+        const query = { sid: parseInt(sid) };
         if (year) {
-            query._year = parseInt(year); // Add the year to the query if it's provided
+            query.year = parseInt(year); // Add the year to the query if it's provided
         }
         return result = await db.collection('performance').deleteMany(query);
     } catch (error) {

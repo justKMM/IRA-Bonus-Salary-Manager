@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const {checkAuthorization} = require('../middlewares/auth-middleware');
+//const {checkAuthorization} = require('../middlewares/auth-middleware');
 const salesmenApi = require('../apis/salesmen-api');
+const authorization = require('../middlewares/authorization');
 
 /**
  * @openapi
@@ -36,10 +37,10 @@ const salesmenApi = require('../apis/salesmen-api');
  *       200:
  *         description: Login status
  */
-const authApi = require('../apis/auth-api');
-router.post('/login', authApi.login);
-router.delete('/login', checkAuthorization(), authApi.logout);
-router.get('/login', authApi.isLoggedIn);
+//const authApi = require('../apis/auth-api');
+//router.post('/login', authApi.login);
+//router.delete('/login', checkAuthorization(), authApi.logout);
+//router.get('/login', authApi.isLoggedIn);
 
 /**
  * @openapi
@@ -53,8 +54,8 @@ router.get('/login', authApi.isLoggedIn);
  *       200:
  *         description: User details
  */
-const userApi = require('../apis/user-api');
-router.get('/user', checkAuthorization(), userApi.getSelf);
+//const userApi = require('../apis/user-api');
+//router.get('/user', checkAuthorization(), userApi.getSelf);
 
 /**
  * @openapi
@@ -68,10 +69,15 @@ router.get('/user', checkAuthorization(), userApi.getSelf);
  *       200:
  *         description: List of people
  */
-const peopleDemoApi = require('../apis/people-demo-api');
-router.get('/people', checkAuthorization(), peopleDemoApi.getPeople);
 
 
+
+
+//const peopleDemoApi = require('../apis/people-demo-api');
+//router.get('/people', checkAuthorization(), peopleDemoApi.getPeople);
+
+
+router.use(authorization.basicAuth);
 
 router.get('/salesmen', salesmenApi.getAllSalesMen);
 router.get('/salesmen/:sid', salesmenApi.getSalesMan);
