@@ -8,7 +8,9 @@ const globalVariables = {
         password: '*Safb02da42Demo$'
     },
     opencrx: {
-        baseUrl: 'https://sepp-crm.inf.h-brs.de/opencrx-rest-CRX/org.opencrx.kernel.account1/provider/CRX/segment/Standard',
+        baseUrl_account: 'https://sepp-crm.inf.h-brs.de/opencrx-rest-CRX/org.opencrx.kernel.account1/provider/CRX/segment/Standard',
+        baseUrl_contract: 'https://sepp-crm.inf.h-brs.de/opencrx-rest-CRX/org.opencrx.kernel.contract1/provider/CRX/segment/Standard/',
+        baseUrl_product: 'https://sepp-crm.inf.h-brs.de/opencrx-rest-CRX/org.opencrx.kernel.product1/provider/CRX/segment/Standard/',
         username: 'guest',
         password: 'guest'
     },

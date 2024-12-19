@@ -1,38 +1,40 @@
 /**
  * Represents a salesman
- * @param {number} sid - The unique identifier for the salesman.
+ * @param {number} salesmanId - The unique identifier for the salesman.
  * @param {string} uid - The OpenCRX unique identifier for the salesman (account).
+ * @param {string} employeeId - The OrangeHRM unique identifier for the salesman (employee)
  * @param {string} firstName - The first name of the salesman.
  * @param {string} middleName - The middle name of the salesman (optional).
  * @param {string} lastName - The last name of the salesman.
  * @param {string} bonusSalary - The bonus salary of the salesman.
  * @param {string} jobTitle - The job title of the salesman.
- * @param {string} employeeId - The OrangeHRM unique identifier for the salesman (employee)
+ * @param {string} department - The department of the salesman.
  * @param {string} gender - The gender of the salesman.
  */
 class Salesman {
-    constructor(sid, uid, firstName, middleName, lastName, bonusSalary, jobTitle, employeeId, gender) {
-        this.sid = sid;
-        this.uid = uid;
+    constructor(salesmanId, uid, employeeId, firstName, middleName, lastName, bonusSalary, jobTitle, department, gender) {
+        this.salesmanId = salesmanId;
+        this.uid = uid || null;
+        this.employeeId = employeeId || null;
         this.firstName = firstName;
         this.middleName = middleName || '';
         this.lastName = lastName;
         this.bonusSalary = bonusSalary || 0;
-        this.jobTitle = '';
-        this.employeeId = null;
-        this.gender = null;
+        this.jobTitle = jobTitle || '';
+        this.department = department || '';
+        this.gender = gender || null;;
     }
 
-    // Getter and setter for sid
-    get sid() {
-        return this._sid;
+    // Getter and setter for salesmanId
+    get salesmanId() {
+        return this._salesmanId;
     }
 
-    set sid(value) {
+    set salesmanId(value) {
         if (typeof value !== 'number' || value <= 0) {
-            throw new Error('sid must be a positive number.');
+            throw new Error('salesmanId must be a positive number.');
         }
-        this._sid = value;
+        this._salesmanId = value;
     }
 
     // Getter and setter for uid
@@ -142,6 +144,25 @@ class Salesman {
      */
     getFullName() {
         return `${this._firstName} ${this._middleName} ${this._lastName}`.trim();
+    }
+
+    /**
+     * Converts the Salesman instance to a plain JavaScript object
+     * @returns {Object} A plain object containing all properties
+     */
+    toJSON() {
+        return {
+            salesmanId: this.salesmanId,
+            uid: this.uid,
+            employeeId: this.employeeId,
+            firstName: this.firstName,
+            middleName: this.middleName,
+            lastName: this.lastName,
+            bonusSalary: this.bonusSalary,
+            jobTitle: this.jobTitle,
+            department: this.department,
+            gender: this.gender
+        };
     }
 }
 

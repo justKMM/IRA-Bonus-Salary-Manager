@@ -80,14 +80,16 @@ const authorization = require('../middlewares/authorization');
 router.use(authorization.basicAuth);
 
 router.get('/salesmen', salesmenApi.getAllSalesMen);
-router.get('/salesmen/:sid', salesmenApi.getSalesMan);
+router.get('/salesmen/:salesmanId', salesmenApi.getSalesMan);
 router.post('/salesmen/create', salesmenApi.createSalesMan);
-router.put('/salesmen/update/:sid', salesmenApi.updateSalesMan);
-router.delete('/salesmen/delete/:sid', salesmenApi.deleteSalesMan);
+router.put('/salesmen/update/:salesmanId', salesmenApi.updateSalesMan);
+router.delete('/salesmen/delete/:salesmanId', salesmenApi.deleteSalesMan);
 
-router.get('/salesmen/performance/:sid', salesmenApi.getPerformancesFromSalesMan);
+router.get('/salesmen/performance/:salesmanId', salesmenApi.getPerformancesFromSalesMan);
 router.post('/salesmen/performance/create', salesmenApi.createPerformance);
-router.delete('/salesmen/performance/delete/:sid', salesmenApi.deletePerformanceRecordsFromSalesMan);
+router.put('/salesmen/performance/update/:salesmanId/social/:socialId', salesmenApi.updatePerformance);
+router.delete('/salesmen/performance/delete/:salesmanId', salesmenApi.deletePerformanceRecordsFromSalesManByYear);
+router.delete('/salesmen/performance/delete/:salesmanId/social/:socialId', salesmenApi.deletePerformanceRecordsFromSalesManBySocialId);
 
 
 /**
