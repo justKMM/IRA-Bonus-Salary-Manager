@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const {checkAuthorization} = require('../middlewares/auth-middleware');
+//const {checkAuthorization} = require('../middlewares/auth-middleware');
 const salesmenApi = require('../apis/salesmen-api');
+const evaluationApi = require('../apis/evaluation-api');
+const authorization = require('../middlewares/authorization');
 
 /**
  * @openapi
@@ -36,10 +38,10 @@ const salesmenApi = require('../apis/salesmen-api');
  *       200:
  *         description: Login status
  */
-const authApi = require('../apis/auth-api');
-router.post('/login', authApi.login);
-router.delete('/login', checkAuthorization(), authApi.logout);
-router.get('/login', authApi.isLoggedIn);
+//const authApi = require('../apis/auth-api');
+//router.post('/login', authApi.login);
+//router.delete('/login', checkAuthorization(), authApi.logout);
+//router.get('/login', authApi.isLoggedIn);
 
 /**
  * @openapi
@@ -53,8 +55,8 @@ router.get('/login', authApi.isLoggedIn);
  *       200:
  *         description: User details
  */
-const userApi = require('../apis/user-api');
-router.get('/user', checkAuthorization(), userApi.getSelf);
+//const userApi = require('../apis/user-api');
+//router.get('/user', checkAuthorization(), userApi.getSelf);
 
 /**
  * @openapi
@@ -68,20 +70,32 @@ router.get('/user', checkAuthorization(), userApi.getSelf);
  *       200:
  *         description: List of people
  */
-const peopleDemoApi = require('../apis/people-demo-api');
-router.get('/people', checkAuthorization(), peopleDemoApi.getPeople);
 
 
+
+
+//const peopleDemoApi = require('../apis/people-demo-api');
+//router.get('/people', checkAuthorization(), peopleDemoApi.getPeople);
+
+
+router.use(authorization.basicAuth);
 
 router.get('/salesmen', salesmenApi.getAllSalesMen);
-router.get('/salesmen/:sid', salesmenApi.getSalesMan);
+router.get('/salesmen/:salesmanId', salesmenApi.getSalesMan);
 router.post('/salesmen/create', salesmenApi.createSalesMan);
-router.put('/salesmen/update/:sid', salesmenApi.updateSalesMan);
-router.delete('/salesmen/delete/:sid', salesmenApi.deleteSalesMan);
+router.put('/salesmen/update/:salesmanId', salesmenApi.updateSalesMan);
+router.delete('/salesmen/delete/:salesmanId', salesmenApi.deleteSalesMan);
 
-router.get('/salesmen/performance/:sid', salesmenApi.getPerformancesFromSalesMan);
+router.get('/salesmen/performance/:salesmanId', salesmenApi.getPerformancesFromSalesMan);
 router.post('/salesmen/performance/create', salesmenApi.createPerformance);
-router.delete('/salesmen/performance/delete/:sid', salesmenApi.deletePerformanceRecordsFromSalesMan);
+router.put('/salesmen/performance/update/:salesmanId/social/:socialId', salesmenApi.updatePerformance);
+router.delete('/salesmen/performance/delete/:salesmanId', salesmenApi.deletePerformanceRecordsFromSalesManByYear);
+router.delete('/salesmen/performance/delete/:salesmanId/social/:socialId', salesmenApi.deletePerformanceRecordsFromSalesManBySocialId);
+
+router.get('/evaluation/:salesmanId/:year', evaluationApi.getEvaluation);
+router.put('/evaluation/update/:salesmanId/:year', evaluationApi.updateEvaluation);
+
+
 
 
 /**

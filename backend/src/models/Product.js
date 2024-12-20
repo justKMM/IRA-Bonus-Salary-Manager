@@ -102,6 +102,22 @@ class Product {
         }
         this._maxPositions = value;
     }
+
+    /**
+     * Converts the Product instance to a plain JavaScript object
+     * @returns {Object} Plain object representation of the Product
+     */
+    toJSON() {
+        return {
+            productId: this.productId,
+            name: this.name,
+            uid: this.uid,
+            minQuantity: this.minQuantity,
+            maxQuantity: this.maxQuantity,
+            minPositions: this.minPositions,
+            maxPositions: this.maxPositions
+        };
+    }
 }
 
 module.exports = Product;

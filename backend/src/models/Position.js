@@ -4,26 +4,23 @@
  * @param {string} uid - The OpenCRX unique identifier for the position.
  * @param {number} amount - The total amount for the position (including any applicable discounts).
  * @param {number} baseAmount - The base amount for the position, before any discount or tax.
+ * @param {number} taxAmount - The tax amount applied to the position.
  * @param {number} discountAmount - The discount amount applied to the position.
  * @param {number} quantity - The quantity of the product in this position.
- * @param {number} taxAmount - The tax amount applied to the position.
  * @param {number} pricePerUnit - The price per unit of the product.
- * @param {string} productUid - The unique identifier for the product.
- * @param {number} productId - The unique identifier for the product in the system.
+ * @param {Product} product - The product object.
  */
 class Position {
-    constructor(positionId, uid, amount, baseAmount, discountAmount, quantity, taxAmount, 
-                pricePerUnit, productUid, productId) {
+    constructor(positionId, uid, amount, baseAmount, taxAmount, discountAmount, quantity, pricePerUnit, product) {
         this.positionId = positionId;
         this.uid = uid;
         this.amount = amount;
         this.baseAmount = baseAmount;
+        this.taxAmount = taxAmount;
         this.discountAmount = discountAmount;
         this.quantity = quantity;
-        this.taxAmount = taxAmount;
         this.pricePerUnit = pricePerUnit;
-        this.productUid = productUid;
-        this.productId = productId;
+        this.product = product;
     }
 
     // Getter and setter for positionId
@@ -32,7 +29,7 @@ class Position {
     }
 
     set positionId(value) {
-        if (typeof value !== 'number' || value <= 0) {
+        if (typeof value !== 'number' || value < 0) {
             throw new Error('positionId must be a positive number.');
         }
         this._positionId = value;
@@ -56,7 +53,7 @@ class Position {
     }
 
     set amount(value) {
-        if (typeof value !== 'number' || value <= 0) {
+        if (typeof value !== 'number' || value < 0) {
             throw new Error('amount must be a non-negative number.');
         }
         this._amount = value;
@@ -68,7 +65,7 @@ class Position {
     }
 
     set baseAmount(value) {
-        if (typeof value !== 'number' || value <= 0) {
+        if (typeof value !== 'number' || value < 0) {
             throw new Error('baseAmount must be a non-negative number.');
         }
         this._baseAmount = value;
@@ -80,7 +77,7 @@ class Position {
     }
 
     set discountAmount(value) {
-        if (typeof value !== 'number' || value <= 0) {
+        if (typeof value !== 'number' || value < 0) {
             throw new Error('discountAmount must be a non-negative number.');
         }
         this._discountAmount = value;
@@ -92,7 +89,7 @@ class Position {
     }
 
     set quantity(value) {
-        if (typeof value !== 'number' || value <= 0) {
+        if (typeof value !== 'number' || value < 0) {
             throw new Error('quantity must be a positive number.');
         }
         this._quantity = value;
@@ -104,7 +101,7 @@ class Position {
     }
 
     set taxAmount(value) {
-        if (typeof value !== 'number' || value <= 0) {
+        if (typeof value !== 'number' || value < 0) {
             throw new Error('taxAmount must be a non-negative number.');
         }
         this._taxAmount = value;
@@ -116,7 +113,7 @@ class Position {
     }
 
     set pricePerUnit(value) {
-        if (typeof value !== 'number' || value <= 0) {
+        if (typeof value !== 'number' || value < 0) {
             throw new Error('pricePerUnit must be a non-negative number.');
         }
         this._pricePerUnit = value;
@@ -134,16 +131,34 @@ class Position {
         this._productUid = value;
     }
 
-    // Getter and setter for productId
-    get productId() {
-        return this._productId;
+    // Getter and setter for product
+    get product() {
+        return this._product;
     }
 
-    set productId(value) {
-        if (typeof value !== 'number' || value <= 0) {
-            throw new Error('productId must be a positive number.');
+    set product(value) {
+        if (!value || typeof value !== 'object' || value.constructor.name !== 'Product') {
+            throw new Error('product must be an instance of Product.');
         }
-        this._productId = value;
+        this._product = value;
+    }
+
+    /**
+     * Converts the Position instance to a plain JavaScript object.
+     * @returns {Object} A plain object containing all position properties.
+     */
+    toJSON() {
+        return {
+            positionId: this.positionId,
+            uid: this.uid,
+            amount: this.amount,
+            baseAmount: this.baseAmount,
+            taxAmount: this.taxAmount,
+            discountAmount: this.discountAmount,
+            quantity: this.quantity,
+            pricePerUnit: this.pricePerUnit,
+            product: this.product.toJSON()
+        };
     }
 }
 

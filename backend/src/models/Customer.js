@@ -55,7 +55,7 @@ class Customer {
     }
 
     set rating(value) {
-        const validRatings = [0, 1, 2, 4];
+        const validRatings = [0, 1, 2, 3];
         if (!validRatings.includes(value)) {
             throw new Error('rating must be one of: 0 (okay), 1 (good), 2 (very good), or 4 (excellent).');
         }
@@ -71,9 +71,22 @@ class Customer {
             0: 'okay',
             1: 'good',
             2: 'very good',
-            4: 'excellent'
+            3: 'excellent'
         };
         return ratingDescriptions[this.rating] || 'Unknown rating';
+    }
+
+    /**
+     * Converts the Customer instance to a plain JavaScript object
+     * @returns {Object} A plain object containing all properties
+     */
+    toJSON() {
+        return {
+            customerId: this.customerId,
+            uid: this.uid,
+            name: this.name,
+            rating: this.rating
+        };
     }
 }
 

@@ -1,44 +1,44 @@
 /**
  * Represents a social performance record of a salesman
- * @param {number} sid - The unique identifier for the salesman.
- * @param {number} goalId - The unique identifier for the social performance record..
+ * @param {number} salesmanId - The unique identifier for the salesman.
+ * @param {number} socialId - The unique identifier for the social performance record.
  * @param {string} description - A description of the social performance goal.
  * @param {number} targetValue - The target value for the goal.
  * @param {number} actualValue - The actual value achieved by the salesman.
  * @param {number} year - The year the performance record is for.
  */
 class SocialPerformance {
-    constructor(sid, goalId, description, targetValue, actualValue, year) {
-        this.sid = sid;
-        this.goalId = goalId;
+    constructor(salesmanId, socialId, description, targetValue, actualValue, year) {
+        this.salesmanId = salesmanId;
+        this.socialId = socialId;
         this.description = description;
         this.targetValue = targetValue;
         this.actualValue = actualValue;
         this.year = year;
     }
 
-    // Getter and setter for sid
-    get sid() {
-        return this._sid;
+    // Getter and setter for salesmanId
+    get salesmanId() {
+        return this._salesmanId;
     }
 
-    set sid(value) {
+    set salesmanId(value) {
         if (typeof value !== 'number' || value <= 0) {
-            throw new Error('sid must be a positive number.');
+            throw new Error('salesmanId must be a positive number.');
         }
-        this._sid = value;
+        this._salesmanId = value;
     }
 
-    // Getter and setter for goalId
-    get goalId() {
-        return this._goalId;
+    // Getter and setter for socialId
+    get socialId() {
+        return this._socialId;
     }
 
-    set goalId(value) {
+    set socialId(value) {
         if (typeof value !== 'number' || value <= 0) {
-            throw new Error('goalId must be a positive number.');
+            throw new Error('socialId must be a positive number.');
         }
-        this._goalId = value;
+        this._socialId = value;
     }
 
     // Getter and setter for description
@@ -87,6 +87,48 @@ class SocialPerformance {
             throw new Error('year must be a valid number between 1900 and the current year.');
         }
         this._year = value;
+    }
+
+    set bonus(value) {
+        if (typeof value !== 'number' || value < 0) {
+            throw new Error('bonus must be a non-negative number.');
+        }
+        this._targetValue = value;
+    }
+
+    /**
+     * Calculates and returns the bonus amount based on actual vs target performance.
+     * The bonus is calculated as 10€ per actual value unit.
+     * If actual value meets or exceeds target, full bonus is awarded.
+     * If actual value is below target, bonus is reduced to 80%.
+     * If target value is 0, bonus is 0.
+     * @returns {number} The calculated bonus amount in euros, rounded up to next multiple of 10
+     */
+    get bonus() {
+        if (this.targetValue === 0) return 0;
+        
+        const baseBonus = this.actualValue * 10; // 10€ per actual value unit
+        const multiplier = this.actualValue >= this.targetValue ? 1 : 0.8;
+        const calculatedBonus = baseBonus * multiplier;
+        
+        return Math.ceil(calculatedBonus / 10) * 10;
+    }
+
+
+    /**
+     * Converts the SocialPerformance instance to a plain JavaScript object
+     * @returns {Object} A plain object containing all properties
+     */
+    toJSON() {
+        return {
+            salesmanId: this.salesmanId,
+            socialId: this.socialId,
+            description: this.description,
+            targetValue: this.targetValue,
+            actualValue: this.actualValue,
+            year: this.year,
+            bonus: this.bonus
+        };
     }
 }
 

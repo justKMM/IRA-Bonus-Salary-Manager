@@ -1,6 +1,8 @@
 const axios = require('axios');
 const global_variables = require('../../utils/GLOBALS.js').crm;
-const baseUrl = global_variables.baseUrl;
+const baseUrl_account = global_variables.baseUrl_account;
+const baseUrl_contract = global_variables.baseUrl_contract;
+const baseUrl_product = global_variables.baseUrl_product;
 
 // CRM Config
 const credentials = {
@@ -14,65 +16,121 @@ const crmConfig = {
     auth: credentials,
 };
 
-// Accounts
+/**
+ * Retrieves all accounts from the CRM system.  
+ * @returns {Promise<Array<Object>|undefined>} An array of account objects if successful.
+ */                                        
 exports.queryAllAccounts = async () => {
     try {
-        return (await axios.get(baseUrl + "/account", crmConfig)).data.objects;
+        return (await axios.get(baseUrl_account + "/account", crmConfig)).data.objects;
     } catch (error) {
+        if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED') {
+            throw new Error('Connection timed out. Please check your VPN connection.');
+        }
         console.error(`Error queryAllAccounts: ${error.message}`);
+        throw error;
     }
 };
 
-exports.queryAccountById = async (id) => {
+/**
+ * Retrieves a specific account from the CRM system with the given uid.
+ * @param {string} uid - The unique identifier of the account to retrieve
+ * @returns {Promise<Object|undefined>} The account object if successful.
+ */
+exports.queryAccount = async (uid) => {
     try {
-        return (await axios.get(baseUrl + `/account/${id}`, crmConfig)).data;
+        return (await axios.get(baseUrl_account + `/account/${uid}`, crmConfig)).data;
     } catch (error) {
+        if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED') {
+            throw new Error('Connection timed out. Please check your VPN connection.');
+        }
         console.error(`Error queryAccountById: ${error.message}`);
+        throw error;
     }
 };
 
-exports.queryAccountIdByGovernmentId = async (government_id) => {
+/**
+ * Retrieves a specific salesman from the CRM system with the given sid.
+ * @param {string} salesmanId - The unique identifier of the salesman to retrieve
+ * @returns {Promise<Object|undefined>} The salesman object if successful.
+ */
+exports.querySalesman = async (salesmanId) => {
     try {
         const accounts = await exports.queryAllAccounts();
-        const href = accounts.find(account => account.governmentId === government_id)?.['@href'];
-        return extractAccountIdFromUrl(href);
+        const href = accounts.find(account => account.governmentId === salesmanId);
+        return href;
     } catch (error) {
-        console.error(`Error queryAccountByGovernmentId: ${error.message}`);
+        if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED') {
+            throw new Error('Connection timed out. Please check your VPN connection.');
+        }
+        console.error(`Error querySalesman: ${error.message}`);
+        throw error;
     }
-}
-// Sales orders
+};
+
+/**
+ * Retrieves all sales orders from the CRM system.
+ * @returns {Promise<Array<Object>|undefined>} An array of sales order objects if successful.
+ */
 exports.queryAllSalesOrders = async () => {
     try {
-        return (await axios.get(baseUrl + "/salesOrder", crmConfig)).data.objects;
+        return (await axios.get(baseUrl_contract + "/salesOrder", crmConfig)).data.objects;
     } catch (error) {
+        if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED') {
+            throw new Error('Connection timed out. Please check your VPN connection.');
+        }
         console.error(`Error queryAllSalesOrders: ${error.message}`);
+        throw error;
     }
 };
 
-exports.querySalesOrderById = async (id) => {
+/**
+ * Retrieves a specific sales order from the CRM system with the given uid.
+ * @param {string} uid - The unique identifier of the sales order to retrieve
+ * @returns {Promise<Object|undefined>} The sales order object if successful.
+ */
+exports.querySalesOrderByUid = async (uid) => {
     try {
-        return (await axios.get(baseUrl + `/salesOrder/${id}`, crmConfig)).data;
+        return (await axios.get(baseUrl_contract + `/salesOrder/${uid}`, crmConfig)).data;
     } catch (error) {
-        console.error(`Error querySalesOrderById: ${error.message}`);
+        if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED') {
+            throw new Error('Connection timed out. Please check your VPN connection.');
+        }       
+        console.error(`Error querySalesOrderByUid: ${error.message}`);
+        throw error;
     }
 };
 
-exports.querySalesOrderPosition = async (id) => {
+/**
+ * Retrieves all positions of a specific sales order from the CRM system with the given uid.
+ * @param {string} uid - The unique identifier of the sales order to retrieve
+ * @returns {Promise<Object|undefined>} The sales order object if successful.
+ */
+exports.querySalesOrderPositionByUid = async (uid) => {
     try {
-        return (await axios.get(baseUrl + `/salesOrder/${id}/position`, crmConfig)).data;
+        return (await axios.get(baseUrl_contract + `/salesOrder/${uid}/position`, crmConfig)).data;
     } catch (error) {
-        console.error(`Error querySalesOrderPosition: ${error.message}`);
+        if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED') {
+            throw new Error('Connection timed out. Please check your VPN connection.');
+        }
+        console.error(`Error querySalesOrderPositionByUid: ${error.message}`);
+        throw error;
     }
-}
+};
 
-/*
-exports.addSalesOrder = async () => {
-    await axios.post(baseUrl + '/salesOrder', crmConfig);
-}*/
-
-// Helper methods
-const extractAccountIdFromUrl = (url) => {
-    const match = url.match(/\/account\/([A-Z0-9]+)\/?$/);
-    if (!match) throw new Error('No valid ID found in URL');
-    return match[1];
+/**
+ * Retrieves a specific product from the CRM system with the given uid.
+ * @param {string} uid - The unique identifier of the product to retrieve
+ * @returns {Promise<Object|undefined>} The product object if successful.
+ */
+exports.queryProductByUid = async (uid) => {
+    try {
+        return (await axios.get(baseUrl_product + `/product/${uid}`, crmConfig)).data;
+    } catch (error) {
+        if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED') {
+            throw new Error('Connection timed out. Please check your VPN connection.');
+        }
+        console.error(`Error queryProductByUid: ${error.message}`);
+        throw error;
+    }
 };
