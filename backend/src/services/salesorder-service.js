@@ -143,7 +143,20 @@ exports.updateSalesOrdersFromOpenCRX = async (db) => {
 }
 
 exports.getSalesmanOrders = async (db, salesmanId, year) => {
-    const salesOrders = await db.collection('salesorders').find({ salesmanId: salesmanId, year: year }).toArray();
+    // Convert parameters to ensure correct types
+    const numericSalesmanId = Number(salesmanId);
+    const numericYear = Number(year);
+    
+    //console.log('Searching for:', { salesmanId: numericSalesmanId, year: numericYear });
+    
+    const salesOrders = await db.collection('salesorders')
+        .find({ 
+            salesmanId: numericSalesmanId,
+            year: numericYear
+        })
+        .toArray();
+    
+    //console.log('Found orders:', salesOrders.length);
     return salesOrders;
 }
 

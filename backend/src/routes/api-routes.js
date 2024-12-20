@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 //const {checkAuthorization} = require('../middlewares/auth-middleware');
 const salesmenApi = require('../apis/salesmen-api');
+const evaluationApi = require('../apis/evaluation-api');
 const authorization = require('../middlewares/authorization');
 
 /**
@@ -90,6 +91,11 @@ router.post('/salesmen/performance/create', salesmenApi.createPerformance);
 router.put('/salesmen/performance/update/:salesmanId/social/:socialId', salesmenApi.updatePerformance);
 router.delete('/salesmen/performance/delete/:salesmanId', salesmenApi.deletePerformanceRecordsFromSalesManByYear);
 router.delete('/salesmen/performance/delete/:salesmanId/social/:socialId', salesmenApi.deletePerformanceRecordsFromSalesManBySocialId);
+
+router.get('/evaluation/:salesmanId/:year', evaluationApi.getEvaluation);
+router.put('/evaluation/update/:salesmanId/:year', evaluationApi.updateEvaluation);
+
+
 
 
 /**

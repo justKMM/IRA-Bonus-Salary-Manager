@@ -139,7 +139,8 @@ const initDb = async (db) => {
             db.createCollection('salesperformance'),
             db.createCollection('customers'),
             db.createCollection('salesorders'),
-            db.createCollection('users')
+            db.createCollection('users'),
+            db.createCollection('evaluation')
         ]);
 
         // Create indexes after ensuring collections exist
@@ -149,7 +150,8 @@ const initDb = async (db) => {
             db.collection('salesperformance').createIndex({ "salesmanId": 1, "salesId": 1, "year": 1 }, { unique: true }),
             db.collection('customers').createIndex({ "uid": 1 }, { unique: true }),
             db.collection('salesorders').createIndex({ "uid": 1 }, { unique: true }),
-            db.collection('users').createIndex({ "username": 1 }, { unique: true })
+            db.collection('users').createIndex({ "username": 1 }, { unique: true }),
+            db.collection('evaluation').createIndex({ "salesmanId": 1, "year": 1 }, { unique: true })
         ]);
 
         const userCount = await db.collection('users').countDocuments();
@@ -194,10 +196,10 @@ const startServer = async () => {
 
         async function test() {
             try {
-                //const querry = await evaluationService.generateEvaluation(db, 90123, '2024');
+                //const querry = await evaluationService.generateEvaluation(db, 90123, '2018');
                 //console.log('Querry:', JSON.stringify(querry, null, 2));
-                const querry = await salesOrders.getSalesmanOrders(db, 90123, '2018');
-                console.log('Querry:', JSON.stringify(querry, null, 2));
+                //const querry = await salesOrders.getSalesmanOrders(db, 90123, '2018');
+                //console.log('Querry:', JSON.stringify(querry, null, 2));
             } catch (error) {
                 console.error('Test failed:', error);
             }

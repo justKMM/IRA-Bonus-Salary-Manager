@@ -102,15 +102,16 @@ class SocialPerformance {
      * If actual value meets or exceeds target, full bonus is awarded.
      * If actual value is below target, bonus is reduced to 80%.
      * If target value is 0, bonus is 0.
-     * @returns {number} The calculated bonus amount in euros, rounded to nearest integer
+     * @returns {number} The calculated bonus amount in euros, rounded up to next multiple of 10
      */
     get bonus() {
         if (this.targetValue === 0) return 0;
         
         const baseBonus = this.actualValue * 10; // 10€ per actual value unit
         const multiplier = this.actualValue >= this.targetValue ? 1 : 0.8;
+        const calculatedBonus = baseBonus * multiplier;
         
-        return Math.round(baseBonus * multiplier);
+        return Math.ceil(calculatedBonus / 10) * 10;
     }
 
 

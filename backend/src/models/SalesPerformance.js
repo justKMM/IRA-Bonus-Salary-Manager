@@ -3,16 +3,18 @@
  * @param {number} salesmanId - The unique identifier for the salesman.
  * @param {string} productName - The name of the product sold.
  * @param {string} customer - The name of the customer.
- * @param {string} customerRanking - The ranking of the customer.
+ * @param {string} customerRating - The rating of the customer.
  * @param {number} items - The number of items sold.
+ * @param {number} bonus - The bonus amount for the sale (optional).
  */
 class SalesPerformance {
-    constructor(salesmanId, productName, customer, customerRanking, items) {
+    constructor(salesmanId, productName, customer, customerRating, items, bonus) {
         this.salesmanId = salesmanId;
         this.productName = productName;
         this.customer = customer;
-        this.customerRanking = customerRanking;
+        this.customerRating = customerRating;
         this.items = items;
+        this.bonus = bonus;
     }
 
     // Getter and setter for salesmanId
@@ -51,17 +53,31 @@ class SalesPerformance {
         this._customer = value;
     }
 
-    // Getter and setter for customerRanking
-    get customerRanking() {
-        return this._customerRanking;
+    // Getter and setter for customerRating
+    get customerRating() {
+        return this._customerRating;
     }
 
-    set customerRanking(value) {
-        const validRankings = ['excellent', 'good', 'fair', 'poor'];
-        if (typeof value !== 'string' || !validRankings.includes(value.toLowerCase())) {
-            throw new Error('customerRanking must be one of: excellent, good, fair, poor');
+    set customerRating(value) {
+        const validRatings = [0, 1, 2, 3];
+        if (!validRatings.includes(value)) {
+            throw new Error('customerRating must be one of: 0 (okay), 1 (good), 2 (very good), or 3 (excellent).');
         }
-        this._customerRanking = value.toLowerCase();
+        this._customerRating = value;
+    }
+
+    /**
+     * Returns a string representation of the customer rating.
+     * @returns {string} The description of the rating.
+     */
+    get customerRatingString() {
+        const ratingDescriptions = {
+            0: 'okay',
+            1: 'good',
+            2: 'very good',
+            3: 'excellent'
+        };
+        return ratingDescriptions[this.customerRating] || 'Unknown rating';
     }
 
     // Getter and setter for items
@@ -76,6 +92,18 @@ class SalesPerformance {
         this._items = value;
     }
 
+    // Getter and setter for bonus
+    get bonus() {
+        return this._bonus;
+    }
+
+    set bonus(value) {
+        if (typeof value !== 'number' || value < 0) {
+            throw new Error('bonus must be a non-negative number.');
+        }
+        this._bonus = value;
+    }
+
     /**
      * Converts the SalesPerformance instance to a plain JavaScript object
      * @returns {Object} A plain object containing all properties
@@ -85,8 +113,11 @@ class SalesPerformance {
             salesmanId: this.salesmanId,
             productName: this.productName,
             customer: this.customer,
-            customerRanking: this.customerRanking,
-            items: this.items
+            customerRating: this.customerRating,
+            items: this.items,
+            bonus: this.bonus
         };
     }
 }
+
+module.exports = SalesPerformance;

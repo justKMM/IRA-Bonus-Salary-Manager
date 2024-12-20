@@ -80,3 +80,7 @@ exports.getCustomerIdByUid = async (db, uid) => {
         return null;
     }
 };
+
+exports.readCustomer = async (db, customerId) => {
+    return await db.collection('customers').findOne({ customerId });
+};
