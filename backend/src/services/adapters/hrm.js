@@ -21,7 +21,15 @@ const accessToken = async () => {
     return response.data.access_token;
 }
 
-// HRM Config
+/**
+ * Generates the configuration object required for HRM API requests.
+ * 
+ * @async
+ * @function getHrmConfig
+ * @returns {Promise<Object>} Configuration object containing headers with:
+ *   - Accept: 'application/json'
+ *   - Authorization: Bearer token obtained from the HRM authentication service
+ */
 const getHrmConfig = async () => {
     const access_token = await accessToken();
     return {
@@ -32,6 +40,14 @@ const getHrmConfig = async () => {
     }
 }
 
+/**
+ * Retrieves all employees from the HRM system.
+ * 
+ * @async
+ * @function queryAllEmployees
+ * @returns {Promise<Array>} Array of employee objects from the data.data property
+ * @throws {Error} Logs error message to console if request fails
+ */
 exports.queryAllEmployees = async () => {
     try {
         const hrmConfig = await getHrmConfig();
@@ -41,6 +57,15 @@ exports.queryAllEmployees = async () => {
     }
 };
 
+/**
+ * Retrieves detailed information for a specific employee.
+ * 
+ * @async
+ * @function queryEmployeeById
+ * @param {(string|number)} id - The unique identifier of the employee
+ * @returns {Promise<Object>} Employee data object
+ * @throws {Error} Logs error message to console if request fails
+ */
 exports.queryEmployeeById = async (id) => {
     try {
         const hrmConfig = await getHrmConfig();
@@ -50,8 +75,18 @@ exports.queryEmployeeById = async (id) => {
     }
 };
 
+/**
+ * Retrieves bonus salary information for a specific employee.
+ * 
+ * @async
+ * @function queryBonusSalariesById
+ * @param {(string|number)} id - The unique identifier of the employee
+ * @returns {Promise<Object>} Bonus salary data for the employee
+ * @throws {Error} Logs error message to console if request fails
+ */
 exports.queryBonusSalariesById = async (id) => {
     try {
+        console.log(id);
         const hrmConfig = await getHrmConfig();
         return (await axios.get(baseUrl + `/api/v1/employee/${id}/bonussalary`, hrmConfig)).data;
     } catch (error) {
@@ -59,6 +94,17 @@ exports.queryBonusSalariesById = async (id) => {
     }
 }
 
+/**
+ * Adds a new bonus salary record for a specific employee.
+ * 
+ * @async
+ * @function addBonusSalary
+ * @param {(string|number)} id - The unique identifier of the employee
+ * @param {number} year - The year for which the bonus is being added
+ * @param {number} value - The bonus amount to be added
+ * @returns {Promise<Object>} The created bonus salary record
+ * @throws {Error} Logs error message to console if request fails
+ */
 exports.addBonusSalary = async (id, year, value) => {
     try {
         const hrmConfig = await getHrmConfig();

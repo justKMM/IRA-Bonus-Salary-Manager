@@ -212,6 +212,9 @@ const startServer = async () => {
         await salesmen.updateSalesmenFromOpenCRX(db);
         await customers.updateCustomersFromOpenCRX(db);
         await salesOrders.updateSalesOrdersFromOpenCRX(db);
+        await salesmen.updateSalesmenFromOrangeHRM(db);
+        //TODO: OrangeHRM bonus salaries
+        //TODO: Odoo salesmen
         console.log('Fetched data successfully');
 
         gracefulShutdown(server, db);

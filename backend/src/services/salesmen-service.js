@@ -4,6 +4,7 @@ const crm = require('./adapters/crm.js');
 const employeeMapper = require('./employees-mapper-service.js');
 const Salesman = require('../models/Salesman.js');
 const SocialPerformance = require('../models/SocialPerformance.js');
+const BonusSalary = require('../models/BonusSalary.js');
 const util = require('../utils/util.js');
 
 /**
@@ -112,7 +113,7 @@ exports.readSalesMan = async (db, salesmanId) => {
             salesmanDoc.firstName,
             salesmanDoc.middleName,
             salesmanDoc.lastName,
-            salesmanDoc.bonusSalary,
+            new BonusSalary(salesmanDoc.bonusSalary),
             salesmanDoc.jobTitle,
             salesmanDoc.department,
             salesmanDoc.gender
@@ -138,7 +139,7 @@ exports.readAllSalesMen = async (db) => {
             doc.firstName,
             doc.middleName,
             doc.lastName,
-            doc.bonusSalary,
+            new BonusSalary(doc.bonusSalary),
             doc.jobTitle,
             doc.department,
             doc.gender
@@ -199,7 +200,7 @@ exports.updateSalesMan = async (db, salesmanId, salesmanData) => {
             salesmanData.hasOwnProperty('firstName') ? salesmanData.firstName : existingSalesman.firstName,
             salesmanData.hasOwnProperty('middleName') ? salesmanData.middleName : existingSalesman.middleName,
             salesmanData.hasOwnProperty('lastName') ? salesmanData.lastName : existingSalesman.lastName,
-            salesmanData.hasOwnProperty('bonusSalary') ? salesmanData.bonusSalary : existingSalesman.bonusSalary,
+            salesmanData.hasOwnProperty('bonusSalary') ? salesmanData.bonusSalary : new BonusSalary(salesmanData.bonusSalary),
             salesmanData.hasOwnProperty('jobTitle') ? salesmanData.jobTitle : existingSalesman.jobTitle,
             salesmanData.hasOwnProperty('department') ? salesmanData.department : existingSalesman.department,
             salesmanData.hasOwnProperty('gender') ? salesmanData.gender : existingSalesman.gender
@@ -355,13 +356,13 @@ exports.getAllSalesmenFromOpenCRX = async () => {
                     contact['firstName'] || '',
                     contact['middleName'] || '',
                     contact['lastName'] || '',
-                    0, // bonusSalary - not available in OpenCRX
+                    new BonusSalary(), // bonusSalary - not available in OpenCRX
                     contact['jobTitle'] || '',
                     contact['department'] || '',
                     genderMap[contact['gender']] || null
                 ).toJSON();
             } catch (error) {
-                console.warn(`Skipping invalid salesman ${contact['fullName']}: ${error.message}`);
+                console.warn(`Skipping invalid salesman ${contact['fullName']}: ${error.message} while fetching from OpenCRX`);
                 return null;
             }
         }).filter(salesman => salesman !== null);
@@ -411,3 +412,97 @@ exports.getSalesmanIdByUid = async (db, uid) => {
         return null;
     }
 };
+
+
+
+
+
+exports.getAllSalesmenFromOrangeHRM = async () => {
+    try {
+      const employees = await hrm.queryAllEmployees();
+  
+      // Filter employees to get only Sales unit employees with Senior Salesman job title
+      const salesmen = employees.filter(employee =>
+        employee.unit === 'Sales' &&
+        employee.jobTitle === 'Senior Salesman'
+      );
+  
+      const processedSalesmen = await Promise.all(salesmen.map(async employee => {
+        try {
+          const normalizedGender = employee.gender ? employee.gender.toLowerCase() : null;
+          const employeeId = parseInt(employee.employeeId, 10) || null;
+          return new Salesman(
+            parseInt(employee.code, 10) || null,
+            null,
+            employeeId,
+            employee.firstName || '',
+            employee.middleName || '',
+            employee.lastName || '',
+            new BonusSalary(),
+            employee.jobTitle || '',
+            employee.unit || '',
+            normalizedGender
+          ).toJSON();
+        } catch (error) {
+          console.warn(`Skipping invalid salesman ${employee.fullName}: ${error.message} while fetching from OrangeHRM`);
+          return null;
+        }
+      }));
+  
+      return processedSalesmen;
+    } catch (error) {
+      console.error('Error getting all salesmen:', error);
+      throw new Error('Failed to fetch salesmen: ' + error.message);
+    }
+};
+
+
+exports.updateSalesmenFromOrangeHRM = async (db) => {
+    const salesmen = await this.getAllSalesmenFromOrangeHRM();
+    try {
+        for (let salesman of salesmen) {
+            const existingSalesman = await db.collection('salesmen').findOne({ salesmanId: salesman.salesmanId });
+            if (!existingSalesman) {
+                await db.collection('salesmen').insertOne(salesman);
+            } else {
+
+                // Create a new Salesman instance with updated attributes
+                const updatedSalesman = new Salesman(
+                    existingSalesman.salesmanId,
+                    salesman.uid !== null ? salesman.uid : existingSalesman.uid,
+                    salesman.employeeId !== null ? salesman.employeeId : existingSalesman.employeeId,
+                    salesman.firstName !== null ? salesman.firstName : existingSalesman.firstName,
+                    salesman.middleName !== null ? salesman.middleName : existingSalesman.middleName,
+                    salesman.lastName !== null ? salesman.lastName : existingSalesman.lastName,
+                    salesman.bonusSalary !== null ? new BonusSalary(salesman.bonusSalary) : new BonusSalary(existingSalesman.bonusSalary),
+                    salesman.jobTitle !== null ? salesman.jobTitle : existingSalesman.jobTitle,
+                    salesman.department !== null ? salesman.department : existingSalesman.department,
+                    salesman.gender !== null ? salesman.gender : existingSalesman.gender
+                );
+
+                const updateQuery = {
+                    $set: {
+                        salesmanId: updatedSalesman.salesmanId,
+                        uid: updatedSalesman.uid,
+                        employeeId: updatedSalesman.employeeId,
+                        firstName: updatedSalesman.firstName,
+                        middleName: updatedSalesman.middleName,
+                        lastName: updatedSalesman.lastName,
+                        bonusSalary: updatedSalesman.bonusSalary,
+                        jobTitle: updatedSalesman.jobTitle,
+                        department: updatedSalesman.department,
+                        gender: updatedSalesman.gender
+                    }
+                };
+
+                await db.collection('salesmen').updateOne(
+                    { salesmanId: updatedSalesman.salesmanId },
+                    updateQuery
+                );
+            }
+        }
+    } catch (error) {
+        console.error('Failed to update salesmen:', error);
+        throw error;
+    }
+}
