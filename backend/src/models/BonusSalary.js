@@ -1,24 +1,46 @@
 class BonusSalary {
-    constructor() {
-        this.bonuses = [];
+    /**
+     * Constructor for BonusSalary.
+     * @param {Array<{year: string, value: string}> | null} [data=null] - Optional initial bonus data.
+     */
+    constructor(data = null) {
+        if (!data || !data.bonuses || data.bonuses.length === 0) {
+            this.bonuses = [];
+        } else {
+            if (!Array.isArray(data.bonuses)) {
+                throw new Error("Invalid data format: expected an array of bonus objects.");
+            }
+
+            // Validate and initialize bonuses
+            this.bonuses = data.bonuses.map(bonus => {
+                if (!bonus.year || typeof bonus.year !== 'string' || !bonus.value || typeof bonus.value !== 'string') {
+                    throw new Error("Invalid bonus entry format: each bonus must have a valid 'year' (string) and 'value' (string).");
+                }
+                return { year: bonus.year, value: bonus.value };
+            });
+        }
     }
 
     /**
      * Add a new bonus entry.
      * @param {string} year - The year of the bonus.
-     * @param {number} value - The value of the bonus.
+     * @param {string} value - The value of the bonus as a string.
      */
     addBonus(year, value) {
         const existingBonus = this.getBonusByYear(year);
         if (existingBonus) {
             throw new Error(`Bonus for year ${year} already exists.`);
         }
+        // Add the new bonus to the array
         this.bonuses.push({ year, value });
+    
+        // Sort the bonuses by year in descending order
+        this.bonuses.sort((a, b) => b.year - a.year);
     }
 
     /**
      * Get all bonuses.
-     * @returns {Array<{year: string, value: number}>} - List of bonus entries.
+     * @returns {Array<{year: string, value: string}>} - List of bonus entries.
      */
     getBonuses() {
         return this.bonuses;
@@ -27,7 +49,7 @@ class BonusSalary {
     /**
      * Get bonus by year.
      * @param {string} year - The year to search for.
-     * @returns {{year: string, value: number} | undefined} - The bonus entry for the given year.
+     * @returns {{year: string, value: string} | undefined} - The bonus entry for the given year.
      */
     getBonusByYear(year) {
         return this.bonuses.find(bonus => bonus.year === year);
@@ -36,7 +58,7 @@ class BonusSalary {
     /**
      * Update the bonus for a specific year.
      * @param {string} year - The year to update.
-     * @param {number} newValue - The new bonus value.
+     * @param {string} newValue - The new bonus value as a string.
      * @throws {Error} - Throws an error if the bonus for the given year doesn't exist.
      */
     updateBonus(year, newValue) {
@@ -62,7 +84,7 @@ class BonusSalary {
 
     /**
      * Convert the bonus entries to JSON format.
-     * @returns {Array<{year: string, value: number}>} - JSON representation of the bonus entries.
+     * @returns {Array<{year: string, value: string}>} - JSON representation of the bonus entries.
      */
     toJSON() {
         return this.bonuses;

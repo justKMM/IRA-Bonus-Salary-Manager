@@ -36,8 +36,6 @@ exports.queryAllSeniorSalesMen = async (db)=> {
     }
 };
 
-
-
 /**
  * Creates a new salesman record in MongoDB.
  * @param {Object} db - MongoDB database connection.
@@ -95,7 +93,6 @@ exports.createSalesPerformanceRecord = async (db, performanceRecordData) => {
     //TODO: Implement this function
 }
 
-
 /**
  * Reads a salesman record by their ID from MongoDB.
  * @param {Object} db - MongoDB database connection.
@@ -148,7 +145,6 @@ exports.readAllSalesMen = async (db) => {
         throw new Error(`Error reading all salesmen: ${error.message}`);
     }
 };
-
 
 /**
  * Reads social performance records for a salesman by their ID and optional year.
@@ -413,10 +409,11 @@ exports.getSalesmanIdByUid = async (db, uid) => {
     }
 };
 
-
-
-
-
+/**
+ * Retrieves and processes all senior salesmen accounts from OrangeHRM.
+ * @returns {Promise<Array<Object>>} Array of processed salesman objects ready for MongoDB insertion.
+ * @throws {Error} If there's an error fetching or processing the accounts.
+ */
 exports.getAllSalesmenFromOrangeHRM = async () => {
     try {
       const employees = await hrm.queryAllEmployees();
@@ -456,7 +453,11 @@ exports.getAllSalesmenFromOrangeHRM = async () => {
     }
 };
 
-
+/**
+ * Fetches salesmen from OrangeHRM and inserts new records into MongoDB.
+ * If the records already exist, they are merged in order to add OrangeHRM-specific data.
+ * @param {Object} db - MongoDB database connection.
+ */
 exports.updateSalesmenFromOrangeHRM = async (db) => {
     const salesmen = await this.getAllSalesmenFromOrangeHRM();
     try {
@@ -506,3 +507,70 @@ exports.updateSalesmenFromOrangeHRM = async (db) => {
         throw error;
     }
 }
+
+/**
+ * Updates the bonus salaries for all salesmen in the MongoDB collection.
+ * Fetches current bonus salary data from HRM system for each salesman
+ * and updates their records in the database.
+ * @param {Object} db - MongoDB database connection
+ * @throws {Error} If database operations or HRM queries fail
+ */
+exports.updateBonusSalariesFromOrangeHRM = async (db) => {
+    try {
+        // Fetch all salesmen from the database
+        const salesmen = await this.readAllSalesMen(db);
+        
+        for (const salesman of salesmen) {
+            try {
+                if (!salesman.employeeId) {
+                    console.warn(`Skipping salesman ${salesman.salesmanId}: No employeeId found`);
+                    continue;
+                }
+
+                const employeeId = parseInt(salesman.employeeId, 10);
+                const bonusSalaryData = await hrm.queryBonusSalariesById(employeeId);
+
+                const bonusSalary = {
+                    bonuses: Array.isArray(bonusSalaryData.data) ? bonusSalaryData.data : [bonusSalaryData.data]
+                };
+                const formattedBonusSalary = new BonusSalary(bonusSalary);
+
+                await db.collection('salesmen').updateOne(
+                    { salesmanId: salesman.salesmanId },
+                    { $set: { bonusSalary: formattedBonusSalary } }
+                );
+            } catch (error) {
+                console.error(`Failed to update bonus salary for salesman ${salesman.salesmanId}:`, error);
+            }
+        }
+    } catch (error) {
+        console.error('Failed to update bonus salaries:', error);
+        throw error;
+    }
+};
+
+/**
+ * Updates the bonus salaries for all salesmen in the MongoDB collection in OrangeHRM.
+ * @param {Object} db - MongoDB database connection
+ * @throws {Error} If database operations or HRM post request fail
+ */
+exports.updateBonusSalarieToOrangeHRM = async (db) => {
+    try {
+        const salesmen = await this.readAllSalesMen(db);
+        
+        if (!salesmen || salesmen.length === 0) {
+            console.error('No salesmen found in the database.');
+            return;
+        }
+
+        for (const salesman of salesmen) {
+            salesman.bonusSalary.bonuses.forEach(async bonus => {
+                await hrm.addBonusSalary(salesman.employeeId, bonus.year, bonus.value);
+            });
+        }
+    } catch (error) {
+        console.error('Failed to update bonus salaries:', error);
+        throw error;
+    }
+};
+

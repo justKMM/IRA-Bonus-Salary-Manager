@@ -190,6 +190,7 @@ const startServer = async () => {
         // Move test code here where db is available
         const salesOrders = require('./services/salesorder-service.js');
         const crm = require('./services/adapters/crm.js');
+        const hrm = require('./services/adapters/hrm.js');
         const salesmen = require('./services/salesmen-service.js');
         const customers = require('./services/customer-service.js');
         const evaluationService = require('./services/evaluation-service.js');
@@ -213,7 +214,10 @@ const startServer = async () => {
         await customers.updateCustomersFromOpenCRX(db);
         await salesOrders.updateSalesOrdersFromOpenCRX(db);
         await salesmen.updateSalesmenFromOrangeHRM(db);
-        //TODO: OrangeHRM bonus salaries
+        await salesmen.updateBonusSalariesFromOrangeHRM(db);
+        
+        // Call at the end of the evaluation process to write all bonus salaries to OrangeHRM
+        await salesmen.updateBonusSalarieToOrangeHRM(db);
         //TODO: Odoo salesmen
         console.log('Fetched data successfully');
 

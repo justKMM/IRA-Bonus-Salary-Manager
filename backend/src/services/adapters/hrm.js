@@ -10,16 +10,37 @@ const authRequestBody = {
     username: global_variables.username,
     password: global_variables.password,
 }
+
 const accessToken = async () => {
-    const response = await axios.post(baseUrl + '/oauth/issueToken',
-        authRequestBody,
-        {
-            headers: {
-                Accept: 'application/json',
+    try {
+        const authRequestBody = new URLSearchParams({
+            client_id: 'api_oauth_id',
+            client_secret: 'oauth_secret',
+            grant_type: 'password',
+            username: 'demouser',
+            password: '*Safb02da42Demo$',
+            // scope: 'admin' // Uncomment if required.
+        }).toString();
+
+        const response = await axios.post(
+            baseUrl + '/oauth/issueToken',
+            authRequestBody,
+            {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    Cookie: 'Loggedin=True; PHPSESSID=86oc7e0mp9uvasb38lq7t5qvm1'
+                }
             }
-        });
-    return response.data.access_token;
-}
+        );
+
+        return response.data.access_token;
+    } catch (error) {
+        console.error('Error fetching access token:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
 
 /**
  * Generates the configuration object required for HRM API requests.
@@ -35,7 +56,9 @@ const getHrmConfig = async () => {
     return {
         headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${access_token}`
+            Authorization: `Bearer ${access_token}`,
+            Cookie: 'Loggedin=True; PHPSESSID=86oc7e0mp9uvasb38lq7t5qvm1',
+            'Content-Type': 'application/x-www-form-urlencoded'
         }
     }
 }
@@ -86,13 +109,14 @@ exports.queryEmployeeById = async (id) => {
  */
 exports.queryBonusSalariesById = async (id) => {
     try {
-        console.log(id);
         const hrmConfig = await getHrmConfig();
         return (await axios.get(baseUrl + `/api/v1/employee/${id}/bonussalary`, hrmConfig)).data;
     } catch (error) {
-        console.error(`Error getBonusSalariesById: ${error.message}`);
+        console.error(`Error queryEmployeeById: ${error.message}`);
     }
-}
+};
+
+
 
 /**
  * Adds a new bonus salary record for a specific employee.
@@ -107,12 +131,18 @@ exports.queryBonusSalariesById = async (id) => {
  */
 exports.addBonusSalary = async (id, year, value) => {
     try {
+        // Cast year and value to integers
+        const body = {
+            year: parseInt(year, 10),
+            value: parseInt(value, 10),
+        };
+
         const hrmConfig = await getHrmConfig();
-        return (await axios.post(baseUrl + `/api/v1/employee/${id}/bonussalary`,
-            {
-                year: year,
-                value: value
-            }, hrmConfig)).data;
+        return (await axios.post(
+            `${baseUrl}/api/v1/employee/${id}/bonussalary`,
+            body,
+            hrmConfig
+        )).data;
     } catch (error) {
         console.error(`Error addBonusSalary: ${error.message}`);
     }
