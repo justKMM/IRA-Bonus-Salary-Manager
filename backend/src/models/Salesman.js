@@ -2,7 +2,7 @@ const BonusSalary = require('./BonusSalary');
 
 /**
  * Represents a salesman
- * @param {number} salesmanId - The unique identifier for the salesman.
+ * @param {number} salesmanId - The unique identifier for the salesman (his government ID).
  * @param {string} uid - The OpenCRX unique identifier for the salesman (account).
  * @param {string} employeeId - The OrangeHRM unique identifier for the salesman (employee)
  * @param {string} firstName - The first name of the salesman.
