@@ -2,17 +2,17 @@
     <table mat-table class="mat-elevation-z8 cdk-table" [dataSource]="salesmen">
         <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>ID</th>
-            <td mat-cell *matCellDef="let salesman">{{salesman.sid}}</td>
+            <td mat-cell *matCellDef="let salesman">{{salesman.employeeId}}</td>
         </ng-container>
 
         <ng-container matColumnDef="code">
             <th mat-header-cell *matHeaderCellDef>Code</th>
-            <td mat-cell *matCellDef="let salesman">{{salesman.code}}</td>
+            <td mat-cell *matCellDef="let salesman">{{salesman.salesmanId}}</td>
         </ng-container>
 
         <ng-container matColumnDef="fullName">
             <th mat-header-cell *matHeaderCellDef>Name</th>
-            <td mat-cell *matCellDef="let salesman">{{salesman.fullName}}</td>
+            <td mat-cell *matCellDef="let salesman">{{salesman.firstName}}</td>
         </ng-container>
 
         <ng-container matColumnDef="jobTitle">
@@ -23,7 +23,7 @@
         <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>Edit</th>
             <td mat-cell *matCellDef="let salesman">
-                <button mat-icon-button color="primary" (click)="editSalesman(salesman.sid)">
+                <button mat-icon-button color="primary" (click)="editSalesman(salesman.employeeId)">
                     <mat-icon>edit</mat-icon>
                 </button>
             </td>

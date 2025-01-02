@@ -12,17 +12,22 @@ export class SalesmenService {
     constructor(private http: HttpClient) { }
 
     getSalesMen(): Observable<HttpResponse<SalesManInterface[]>> {
-        return this.http.get<HRMResponse[]>(environment.apiEndpoint + '/api/salesmen', {observe: 'response'})
+        return this.http.get<HRMResponse[]>(environment.apiEndpoint + '/api/salesmen', {observe: 'response', withCredentials: true})
             .pipe(
                 map((response: HttpResponse<HRMResponse[]>): HttpResponse<SalesManInterface[]> => {
                     // Filter out any null or undefined entries before mapping
                     const mappedData: SalesManInterface[] = response.body
                         .filter((res: HRMResponse): boolean => res !== null && res !== undefined)
                         .map((res: HRMResponse): SalesManInterface => ({
-                            sid: res.sid,
-                            code: res.code,
-                            fullName: res.firstName + ' ' + res.lastName,
-                            jobTitle: res.jobTitle
+                            salesmanId: res.salesmanId,
+                            uid: res.uid,
+                            employeeId: res.employeeId,
+                            firstName: res.firstName,
+                            middleName: res.middleName,
+                            lastName: res.lastName,
+                            jobTitle: res.jobTitle,
+                            department: res.department,
+                            gender: res.gender
                         }));
                     console.log('Raw response:', response.body);
 
@@ -39,15 +44,13 @@ export class SalesmenService {
 }
 
 interface HRMResponse {
-    _id: string;
+    salesmanId: number;
+    uid?: string;
+    employeeId?: string;
     firstName: string;
+    middleName?: string;
     lastName: string;
-    code: string;
-    sid: string;
-    fullName: string;
-    status: string | null;
-    dob: string | null;
-    nationality: string | null;
-    unit: string | null;
     jobTitle: string;
+    department: string;
+    gender?: string;
 }

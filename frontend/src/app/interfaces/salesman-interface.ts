@@ -1,8 +1,13 @@
 // import {BonusSalaryRecord} from './bonus-salary-record-interface';
 
 export interface SalesManInterface {
-    sid: string;
-    code: string;
-    fullName: string;
+    salesmanId: number;
+    uid?: string;          // optional since it can be null
+    employeeId?: string;   // optional since it can be null
+    firstName: string;
+    middleName?: string;   // optional since it has default value
+    lastName: string;
     jobTitle: string;
+    department: string;
+    gender?: string;
 }
