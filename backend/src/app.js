@@ -214,6 +214,7 @@ const startServer = async () => {
         await customers.updateCustomersFromOpenCRX(db);
         await salesOrders.updateSalesOrdersFromOpenCRX(db);
         await salesmen.updateSalesmenFromOrangeHRM(db);
+        await salesmen.updateSalesmenFromOdoo(db);
         await salesmen.updateBonusSalariesFromOrangeHRM(db);
         
         // Call at the end of the evaluation process to write all bonus salaries to OrangeHRM

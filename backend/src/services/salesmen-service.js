@@ -1,40 +1,10 @@
 const hrm = require('./adapters/hrm.js');
 const odoo = require('./adapters/odoo.js');
 const crm = require('./adapters/crm.js');
-const employeeMapper = require('./employees-mapper-service.js');
 const Salesman = require('../models/Salesman.js');
 const SocialPerformance = require('../models/SocialPerformance.js');
 const BonusSalary = require('../models/BonusSalary.js');
 const util = require('../utils/util.js');
-
-/**
- * Queries all senior salesmen from OrangeHRM and Odoo systems, merges the data, and stores unique entries in MongoDB.
- * @param {Object} db - MongoDB database connection.
- */
-exports.queryAllSeniorSalesMen = async (db)=> {
-    try {
-        const seniorSalesMenOrangeHrm = (await hrm.queryAllEmployees()).filter(employee => employee['jobTitle'] === 'Senior Salesman');
-        const seniorSalesMenOdoo = (await odoo.getAllEmployees()).filter(employee => employee['job_title'] === 'Senior Salesperson');
-        const mergedSalesMenList = await employeeMapper.mergeEmployeeRecords(seniorSalesMenOdoo, seniorSalesMenOrangeHrm);
-        let addedCountHrm = 0;
-        let addedCountOdoo = 0;
-        for (let seniorSalesMan of mergedSalesMenList) {
-            try {
-                const exists = await db.collection('salesmen').findOne({ salesmanId: seniorSalesMan.salesmanId });
-                if (!exists) {
-                    await db.collection('salesmen').insertOne(seniorSalesMan);
-                    if (seniorSalesMan.sourceSystem === 'orangehrm') addedCountHrm++;
-                    if (seniorSalesMan.sourceSystem === 'odoo') addedCountOdoo++;
-                }
-            } catch (error) {
-                console.error(`Error processing senior salesman ${seniorSalesMan.fullName}:`, error);
-            }
-        }
-        console.log(`${addedCountHrm} new senior salesmen added from OrangeHRM and ${addedCountOdoo} from Odoo.`);
-    } catch (error) {
-        throw new Error(`Error querying salesmen from OrangeHRM and/or Odoo: ${error.message}`);
-    }
-};
 
 /**
  * Creates a new salesman record in MongoDB.
@@ -128,7 +98,11 @@ exports.readSalesMan = async (db, salesmanId) => {
  */
 exports.readAllSalesMen = async (db) => {
     try {
-        const salesmenDocs = await db.collection('salesmen').find({}).toArray();
+        let salesmenDocs = await db.collection('salesmen').find({}).toArray();
+        if (salesmenDocs.length === 0) {
+            await exports.queryAllSeniorSalesMen(db);
+            salesmenDocs = await db.collection('salesmen').find({}).toArray();
+        }
         return salesmenDocs.map(doc => new Salesman(
             doc.salesmanId,
             doc.uid,
@@ -460,6 +434,110 @@ exports.getAllSalesmenFromOrangeHRM = async () => {
  */
 exports.updateSalesmenFromOrangeHRM = async (db) => {
     const salesmen = await this.getAllSalesmenFromOrangeHRM();
+    try {
+        for (let salesman of salesmen) {
+            const existingSalesman = await db.collection('salesmen').findOne({ salesmanId: salesman.salesmanId });
+            if (!existingSalesman) {
+                await db.collection('salesmen').insertOne(salesman);
+            } else {
+
+                // Create a new Salesman instance with updated attributes
+                const updatedSalesman = new Salesman(
+                    existingSalesman.salesmanId,
+                    salesman.uid !== null ? salesman.uid : existingSalesman.uid,
+                    salesman.employeeId !== null ? salesman.employeeId : existingSalesman.employeeId,
+                    salesman.firstName !== null ? salesman.firstName : existingSalesman.firstName,
+                    salesman.middleName !== null ? salesman.middleName : existingSalesman.middleName,
+                    salesman.lastName !== null ? salesman.lastName : existingSalesman.lastName,
+                    salesman.bonusSalary !== null ? new BonusSalary(salesman.bonusSalary) : new BonusSalary(existingSalesman.bonusSalary),
+                    salesman.jobTitle !== null ? salesman.jobTitle : existingSalesman.jobTitle,
+                    salesman.department !== null ? salesman.department : existingSalesman.department,
+                    salesman.gender !== null ? salesman.gender : existingSalesman.gender
+                );
+
+                const updateQuery = {
+                    $set: {
+                        salesmanId: updatedSalesman.salesmanId,
+                        uid: updatedSalesman.uid,
+                        employeeId: updatedSalesman.employeeId,
+                        firstName: updatedSalesman.firstName,
+                        middleName: updatedSalesman.middleName,
+                        lastName: updatedSalesman.lastName,
+                        bonusSalary: updatedSalesman.bonusSalary,
+                        jobTitle: updatedSalesman.jobTitle,
+                        department: updatedSalesman.department,
+                        gender: updatedSalesman.gender
+                    }
+                };
+
+                await db.collection('salesmen').updateOne(
+                    { salesmanId: updatedSalesman.salesmanId },
+                    updateQuery
+                );
+            }
+        }
+    } catch (error) {
+        console.error('Failed to update salesmen:', error);
+        throw error;
+    }
+}
+
+/**
+ * Retrieves and processes all senior salesmen accounts from Odoo.
+ * @returns {Promise<Array<Object>>} Array of processed salesman objects ready for MongoDB insertion.
+ * @throws {Error} If there's an error fetching or processing the accounts.
+ */
+exports.getAllSalesmenFromOdoo = async () => {
+    try {
+        const employees = await odoo.getAllEmployees();
+
+        // Filter employees to get only Sales unit employees with Senior Salesman job title
+        const salesmen = employees.filter(employee =>
+            employee.department_id[1] === 'Sales' &&
+            employee.job_title === 'Senior Salesperson'
+        );
+
+        const processedSalesmen = await Promise.all(salesmen.map(async employee => {
+            try {
+                const normalizedGender = employee.gender ? employee.gender.toLowerCase() : null;
+                const employeeId = parseInt(employee.work_contact_id[0], 10) || null;
+                const jobTitle = 'Senior Salesman';
+                const department = employee.department_id[1];
+                // Extract name from display_name
+                const fullName = employee.name || '';
+                const [firstName = '', lastName = ''] = fullName.split(' ');
+                return new Salesman(
+                    parseInt(employee.resource_id[0], 10) || null,
+                    null,
+                    employeeId,
+                    firstName,
+                    '',
+                    lastName,
+                    new BonusSalary(),
+                    jobTitle,
+                    employee.unit || '',
+                    normalizedGender
+                ).toJSON();
+            } catch (error) {
+                console.warn(`Skipping invalid salesman ${employee.fullName}: ${error.message} while fetching from OrangeHRM`);
+                return null;
+            }
+        }));
+
+        return processedSalesmen;
+    } catch (error) {
+        console.error('Error getting all salesmen:', error);
+        throw new Error('Failed to fetch salesmen: ' + error.message);
+    }
+};
+
+/**
+ * Fetches salesmen from Odoo and inserts new records into MongoDB.
+ * If the records already exist, they are merged in order to add OrangeHRM-specific data.
+ * @param {Object} db - MongoDB database connection.
+ */
+exports.updateSalesmenFromOdoo = async (db) => {
+    const salesmen = await this.getAllSalesmenFromOdoo();
     try {
         for (let salesman of salesmen) {
             const existingSalesman = await db.collection('salesmen').findOne({ salesmanId: salesman.salesmanId });
