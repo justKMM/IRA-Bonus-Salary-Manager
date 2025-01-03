@@ -55,8 +55,8 @@ router.get('/login', authApi.isLoggedIn);
  *       200:
  *         description: User details
  */
-//const userApi = require('../apis/user-api');
-//router.get('/user', checkAuthorization(), userApi.getSelf);
+const userApi = require('../apis/user-api');
+router.get('/user', checkAuthorization(), userApi.getSelf);
 
 /**
  * @openapi
