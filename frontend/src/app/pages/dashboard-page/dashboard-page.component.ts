@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {SalesManInterface} from '../../interfaces/salesman-interface';
 import {SalesmenService} from '../../services/salesmen.service';
-import { getSeniorSalesMen, setSeniorSalesMen } from '../../../utils/GLOBALS';
+import { getSeniorSalesmen, setSeniorSalesMen } from '../../../utils/GLOBALS';
 import {Router} from '@angular/router';
 
 @Component({
@@ -20,10 +20,10 @@ export class DashboardPageComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        if (getSeniorSalesMen().length < 1) {
+        if (getSeniorSalesmen().length < 1) {
             this.fetchSalesMen();
         } else {
-            this.salesmen = getSeniorSalesMen();
+            this.salesmen = getSeniorSalesmen();
             this.isLoading = false;
         }
     }
