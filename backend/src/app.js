@@ -219,7 +219,6 @@ const startServer = async () => {
         
         // Call at the end of the evaluation process to write all bonus salaries to OrangeHRM
         await salesmen.updateBonusSalarieToOrangeHRM(db);
-        //TODO: Odoo salesmen
         console.log('Fetched data successfully');
 
         gracefulShutdown(server, db);

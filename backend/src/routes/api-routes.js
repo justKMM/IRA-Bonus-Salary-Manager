@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-//const {checkAuthorization} = require('../middlewares/auth-middleware');
+const {checkAuthorization} = require('../middlewares/auth-middleware');
 const salesmenApi = require('../apis/salesmen-api');
 const evaluationApi = require('../apis/evaluation-api');
 const authorization = require('../middlewares/authorization');
@@ -38,10 +38,10 @@ const authorization = require('../middlewares/authorization');
  *       200:
  *         description: Login status
  */
-//const authApi = require('../apis/auth-api');
-//router.post('/login', authApi.login);
-//router.delete('/login', checkAuthorization(), authApi.logout);
-//router.get('/login', authApi.isLoggedIn);
+const authApi = require('../apis/auth-api');
+router.post('/login', authApi.login);
+router.delete('/login', checkAuthorization(), authApi.logout);
+router.get('/login', authApi.isLoggedIn);
 
 /**
  * @openapi

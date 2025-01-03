@@ -110,7 +110,15 @@ exports.queryEmployeeById = async (id) => {
 exports.queryBonusSalariesById = async (id) => {
     try {
         const hrmConfig = await getHrmConfig();
-        return (await axios.get(baseUrl + `/api/v1/employee/${id}/bonussalary`, hrmConfig)).data;
+        const response = await axios.get(baseUrl + `/api/v1/employee/${id}/bonussalary`, hrmConfig);
+    
+    if (response.data?.error?.status === '202' && 
+        response.data?.error?.text === 'No Matching Employee For Given ID Found') {
+      console.error('No matching employee found for eployeeId ' + id);
+      return null;
+    }
+    
+    return response.data;
     } catch (error) {
         console.error(`Error queryEmployeeById: ${error.message}`);
     }

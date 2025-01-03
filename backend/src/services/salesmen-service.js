@@ -607,16 +607,19 @@ exports.updateBonusSalariesFromOrangeHRM = async (db) => {
 
                 const employeeId = parseInt(salesman.employeeId, 10);
                 const bonusSalaryData = await hrm.queryBonusSalariesById(employeeId);
+                
+                if(bonusSalaryData != null) {
+                    const bonusSalary = {
+                        bonuses: Array.isArray(bonusSalaryData.data) ? bonusSalaryData.data : [bonusSalaryData.data]
+                    };
+                    const formattedBonusSalary = new BonusSalary(bonusSalary);
 
-                const bonusSalary = {
-                    bonuses: Array.isArray(bonusSalaryData.data) ? bonusSalaryData.data : [bonusSalaryData.data]
-                };
-                const formattedBonusSalary = new BonusSalary(bonusSalary);
+                    await db.collection('salesmen').updateOne(
+                        { salesmanId: salesman.salesmanId },
+                        { $set: { bonusSalary: formattedBonusSalary } }
+                    );
+                }
 
-                await db.collection('salesmen').updateOne(
-                    { salesmanId: salesman.salesmanId },
-                    { $set: { bonusSalary: formattedBonusSalary } }
-                );
             } catch (error) {
                 console.error(`Failed to update bonus salary for salesman ${salesman.salesmanId}:`, error);
             }
