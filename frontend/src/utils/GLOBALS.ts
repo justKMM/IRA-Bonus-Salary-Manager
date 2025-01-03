@@ -9,9 +9,9 @@ const getSeniorSalesmen = (): SalesManInterface[] => seniorSalesMen;
     even those from JavaScript library itself is just straight up retarded.
  */
 // eslint-disable-next-line
-const getSalesmanById = (id: number): SalesManInterface | undefined => {
+const getSalesmanById = (salesmanId: number): SalesManInterface | undefined => {
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    return getSeniorSalesmen().find(salesman => salesman.salesmanId === id);
+    return getSeniorSalesmen().find(salesman => salesman.salesmanId === salesmanId);
 };
 
 const setSeniorSalesmen = (updatedSeniorSalesMen: SalesManInterface[]): void => {
