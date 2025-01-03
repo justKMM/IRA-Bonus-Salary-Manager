@@ -8,7 +8,7 @@ const getSeniorSalesmen = (): SalesManInterface[] => seniorSalesMen;
     but when I do that the length of the function is too long. Also enforced return type for lambda functions,
     even those from JavaScript library itself is just straight up retarded.
  */
-// eslint-disable-next-line
+// eslint-disable-next-line arrow-body-style
 const getSalesmanById = (salesmanId: number): SalesManInterface | undefined => {
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     return getSeniorSalesmen().find(salesman => salesman.salesmanId === salesmanId);
