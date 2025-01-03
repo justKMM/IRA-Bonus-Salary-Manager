@@ -14,12 +14,12 @@ const getSalesmanById = (id: number): SalesManInterface | undefined => {
     return getSeniorSalesmen().find(salesman => salesman.salesmanId === id);
 };
 
-const setSeniorSalesMen = (updatedSeniorSalesMen: SalesManInterface[]): void => {
+const setSeniorSalesmen = (updatedSeniorSalesMen: SalesManInterface[]): void => {
     seniorSalesMen = updatedSeniorSalesMen;
 };
 
 export {
     getSeniorSalesmen,
     getSalesmanById,
-    setSeniorSalesMen
+    setSeniorSalesmen
 };

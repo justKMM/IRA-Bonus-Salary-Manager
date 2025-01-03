@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {SalesManInterface} from '../../interfaces/salesman-interface';
 import {SalesmenService} from '../../services/salesmen.service';
-import { getSeniorSalesmen, setSeniorSalesMen } from '../../../utils/GLOBALS';
+import { getSeniorSalesmen, setSeniorSalesmen } from '../../../utils/GLOBALS';
 import {Router} from '@angular/router';
 
 @Component({
@@ -32,7 +32,7 @@ export class DashboardPageComponent implements OnInit {
         this.salesMenService.getSalesMen().subscribe({
             next: (response): void => {
                 if (response.status === 200) {
-                    setSeniorSalesMen(response.body);
+                    setSeniorSalesmen(response.body);
                     this.salesmen = response.body;
                 }
             },
