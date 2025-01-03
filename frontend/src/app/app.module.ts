@@ -20,6 +20,7 @@ import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.com
 import {MatTableModule} from '@angular/material/table';
 import { DashboardPageComponent } from './pages/dashboard-page/dashboard-page.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { SalesmanDetailsPageComponent } from './pages/salesman-details-page/salesman-details-page.component';
 
 @NgModule({
     declarations: [
@@ -31,6 +32,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
         ExamplePageComponent,
         NotFoundPageComponent,
         DashboardPageComponent,
+        SalesmanDetailsPageComponent,
     ],
     imports: [
         BrowserModule,
