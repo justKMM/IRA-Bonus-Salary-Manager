@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { SalesManInterface } from '../interfaces/salesman-interface';
 import { environment } from '../../../environments/environment';
 import {map} from 'rxjs/operators';
+import {BonusSalaryRecordInterface} from '../interfaces/bonus-salary-record-interface';
 
 @Injectable({
     providedIn: 'root'
@@ -12,19 +13,20 @@ export class SalesmenService {
     constructor(private http: HttpClient) { }
 
     getSalesMen(): Observable<HttpResponse<SalesManInterface[]>> {
-        return this.http.get<HRMResponse[]>(environment.apiEndpoint + '/api/salesmen', {observe: 'response', withCredentials: true})
+        return this.http.get<BackendResponse[]>(environment.apiEndpoint + '/api/salesmen', {observe: 'response', withCredentials: true})
             .pipe(
-                map((response: HttpResponse<HRMResponse[]>): HttpResponse<SalesManInterface[]> => {
+                map((response: HttpResponse<BackendResponse[]>): HttpResponse<SalesManInterface[]> => {
                     // Filter out any null or undefined entries before mapping
                     const mappedData: SalesManInterface[] = response.body
-                        .filter((res: HRMResponse): boolean => res !== null && res !== undefined)
-                        .map((res: HRMResponse): SalesManInterface => ({
+                        .filter((res: BackendResponse): boolean => res !== null && res !== undefined)
+                        .map((res: BackendResponse): SalesManInterface => ({
                             salesmanId: res.salesmanId,
                             uid: res.uid,
                             employeeId: res.employeeId,
                             firstName: res.firstName,
                             middleName: res.middleName,
                             lastName: res.lastName,
+                            bonusSalary: res.bonusSalary,
                             jobTitle: res.jobTitle,
                             department: res.department,
                             gender: res.gender
@@ -43,13 +45,16 @@ export class SalesmenService {
     }
 }
 
-interface HRMResponse {
+interface BackendResponse {
     salesmanId: number;
     uid?: string;
     employeeId?: string;
     firstName: string;
     middleName?: string;
     lastName: string;
+    bonusSalary: {
+        bonuses: BonusSalaryRecordInterface[];
+    };
     jobTitle: string;
     department: string;
     gender?: string;
