@@ -41,7 +41,7 @@ export class DashboardPageComponent implements OnInit {
         });
     }
 
-    editSalesman(sid: number): void {
-        void this.router.navigate(['/salesmen', sid]);
+    editSalesman(salesmanId: number): void {
+        void this.router.navigate(['/salesmen', salesmanId]);
     }
 }

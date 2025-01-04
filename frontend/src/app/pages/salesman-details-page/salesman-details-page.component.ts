@@ -24,7 +24,7 @@ export class SalesmanDetailsPageComponent implements OnInit{
         const id = Number(this.route.snapshot.paramMap.get('id'));
 
         // First check if data exists in GLOBALS
-        const salesman = getSalesmanById(id);
+        const salesman: SalesManInterface = getSalesmanById(id);
 
         if (salesman) {
             this.loadSalesman(salesman);
