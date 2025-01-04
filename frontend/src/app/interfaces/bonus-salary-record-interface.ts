@@ -1,4 +1,4 @@
-export interface BonusSalaryRecord {
-    id: string;
-    amount: number;
+export interface BonusSalaryRecordInterface {
+    year: string;
+    value: string;
 }

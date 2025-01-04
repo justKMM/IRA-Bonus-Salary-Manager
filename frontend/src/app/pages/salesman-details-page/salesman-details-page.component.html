@@ -1,0 +1,60 @@
+<div class="container">
+    <!-- Return Button -->
+    <button
+        (click)="navigateToDashboard()"
+        class="return-btn">
+        Return
+    </button>
+
+    <!-- Main Form -->
+    <div class="form-container">
+        <div *ngIf="salesman; else loading">
+            <!-- Personal Information Section -->
+            <div class="personal-info">
+                <h2>Personal Information</h2>
+                <div class="info-grid">
+                    <div>
+                        <p>ID: {{ salesman.salesmanId }}</p>
+                        <p>Employee ID: {{ salesman.employeeId || 'N/A' }}</p>
+                        <p>First Name: {{ salesman.firstName }}</p>
+                        <p>Middle Name: {{ salesman.middleName || 'N/A' }}</p>
+                        <p>Last Name: {{ salesman.lastName }}</p>
+                    </div>
+                    <div>
+                        <p>Job Title: {{ salesman.jobTitle }}</p>
+                        <p>Department: {{ salesman.department }}</p>
+                        <p>Gender: {{ salesman.gender || 'N/A' }}</p>
+                        <p>UID: {{ salesman.uid || 'N/A' }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bonus Salary Records Section -->
+            <div class="bonus-records">
+                <h2>Bonus Salary Records</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>Value</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let record of sortedBonusRecords">
+                            <td>{{ record.year }}</td>
+                            <td>{{ record.value }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <ng-template #loading>
+            <div class="loading">
+                <p>Loading salesman details...</p>
+            </div>
+        </ng-template>
+    </div>
+</div>

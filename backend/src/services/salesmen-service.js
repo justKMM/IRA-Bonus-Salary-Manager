@@ -499,15 +499,16 @@ exports.getAllSalesmenFromOdoo = async () => {
 
         const processedSalesmen = await Promise.all(salesmen.map(async employee => {
             try {
+                const salesmanId = 80000 + parseInt(employee.resource_id[0], 10) || null;
                 const normalizedGender = employee.gender ? employee.gender.toLowerCase() : null;
-                const employeeId = parseInt(employee.work_contact_id[0], 10) || null;
+                const employeeId = 100 + parseInt(employee.work_contact_id[0], 10) || null;
                 const jobTitle = 'Senior Salesman';
                 const department = employee.department_id[1];
                 // Extract name from display_name
                 const fullName = employee.name || '';
                 const [firstName = '', lastName = ''] = fullName.split(' ');
                 return new Salesman(
-                    parseInt(employee.resource_id[0], 10) || null,
+                    salesmanId,
                     null,
                     employeeId,
                     firstName,

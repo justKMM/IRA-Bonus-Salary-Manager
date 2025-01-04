@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {SalesManInterface} from '../../interfaces/salesman-interface';
 import {SalesmenService} from '../../services/salesmen.service';
-import { getSeniorSalesMen, setSeniorSalesMen } from '../../../utils/GLOBALS';
+import { getSeniorSalesmen, setSeniorSalesmen } from '../../../utils/GLOBALS';
 import {Router} from '@angular/router';
 
 @Component({
@@ -20,10 +20,10 @@ export class DashboardPageComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        if (getSeniorSalesMen().length < 1) {
+        if (getSeniorSalesmen().length < 1) {
             this.fetchSalesMen();
         } else {
-            this.salesmen = getSeniorSalesMen();
+            this.salesmen = getSeniorSalesmen();
             this.isLoading = false;
         }
     }
@@ -32,8 +32,8 @@ export class DashboardPageComponent implements OnInit {
         this.salesMenService.getSalesMen().subscribe({
             next: (response): void => {
                 if (response.status === 200) {
-                    setSeniorSalesMen(response.body);
-                    this.salesmen = response.body;
+                    setSeniorSalesmen(response.body);
+                    this.salesmen = getSeniorSalesmen();
                 }
             },
             error: (error: Error): void => console.error(`Salesmen retrieval unsuccessful. Error: ${error.message}`),
@@ -41,7 +41,7 @@ export class DashboardPageComponent implements OnInit {
         });
     }
 
-    editSalesman(sid: number): void {
-        void this.router.navigate(['/salesmen/edit', sid]);
+    editSalesman(salesmanId: number): void {
+        void this.router.navigate(['/salesmen', salesmanId]);
     }
 }
