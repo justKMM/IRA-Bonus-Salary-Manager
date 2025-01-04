@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SalesManInterface} from '../../interfaces/salesman-interface';
+import {SalesmenService} from '../../services/salesmen.service';
 import {BonusSalaryRecordInterface} from '../../interfaces/bonus-salary-record-interface';
-import {getSalesmanById} from '../../../utils/GLOBALS';
+import {getSalesmanById, setSeniorSalesmen} from '../../../utils/GLOBALS';
 
 @Component({
     selector: 'app-salesman-details-page',
@@ -15,18 +16,35 @@ export class SalesmanDetailsPageComponent implements OnInit{
 
     constructor(
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private salesmenService: SalesmenService
     ) {}
 
     ngOnInit(): void {
         const id = Number(this.route.snapshot.paramMap.get('id'));
-        this.salesman = getSalesmanById(id);
 
+        // First check if data exists in GLOBALS
+        const salesman = getSalesmanById(id);
+
+        if (salesman) {
+            this.loadSalesman(salesman);
+        } else {
+            // If not, fetch from service
+            this.salesmenService.getSalesMen().subscribe((response): void => {
+                if (response.body) {
+                    setSeniorSalesmen(response.body);
+                    this.loadSalesman(getSalesmanById(id));
+                }
+            });
+        }
+    }
+
+    private loadSalesman(salesman: SalesManInterface | undefined): void {
+        this.salesman = salesman;
         if (this.salesman?.bonusSalary?.bonuses) {
             this.sortedBonusRecords = [...this.salesman.bonusSalary.bonuses]
-                // eslint-disable-next-line arrow-body-style
-                .sort((bonusSalaryRecord1: BonusSalaryRecordInterface, bonusSalaryRecord2: BonusSalaryRecordInterface): number => {
-                    return bonusSalaryRecord2.year.localeCompare(bonusSalaryRecord1.year);
+                .sort((firstBonusSalaryRecord, secondBonusSalaryRecord): number => {
+                    return secondBonusSalaryRecord.year.localeCompare(firstBonusSalaryRecord.year);
                 });
         }
     }

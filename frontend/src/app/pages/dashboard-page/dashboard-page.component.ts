@@ -33,7 +33,7 @@ export class DashboardPageComponent implements OnInit {
             next: (response): void => {
                 if (response.status === 200) {
                     setSeniorSalesmen(response.body);
-                    this.salesmen = response.body;
+                    this.salesmen = getSeniorSalesmen();
                 }
             },
             error: (error: Error): void => console.error(`Salesmen retrieval unsuccessful. Error: ${error.message}`),
@@ -42,6 +42,6 @@ export class DashboardPageComponent implements OnInit {
     }
 
     editSalesman(sid: number): void {
-        void this.router.navigate(['/salesmen/edit', sid]);
+        void this.router.navigate(['/salesmen', sid]);
     }
 }
