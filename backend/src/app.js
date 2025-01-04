@@ -136,7 +136,7 @@ const initDb = async (db) => {
         await Promise.all([
             db.createCollection('salesmen'),
             db.createCollection('socialperformance'),
-            db.createCollection('salesperformance'),
+            //db.createCollection('salesperformance'),
             db.createCollection('customers'),
             db.createCollection('salesorders'),
             db.createCollection('users'),
@@ -147,7 +147,7 @@ const initDb = async (db) => {
         await Promise.all([
             db.collection('salesmen').createIndex({ "salesmanId": 1 }, { unique: true }),
             db.collection('socialperformance').createIndex({ "salesmanId": 1, "socialId": 1, "year": 1 }, { unique: true }),
-            db.collection('salesperformance').createIndex({ "salesmanId": 1, "salesId": 1, "year": 1 }, { unique: true }),
+            //db.collection('salesperformance').createIndex({ "salesmanId": 1, "salesId": 1, "year": 1 }, { unique: true }),
             db.collection('customers').createIndex({ "uid": 1 }, { unique: true }),
             db.collection('salesorders').createIndex({ "uid": 1 }, { unique: true }),
             db.collection('users').createIndex({ "username": 1 }, { unique: true }),
@@ -200,7 +200,8 @@ const startServer = async () => {
                 //const querry = await evaluationService.generateEvaluation(db, 90123, '2018');
                 //console.log('Querry:', JSON.stringify(querry, null, 2));
                 //const querry = await salesOrders.getSalesmanOrders(db, 90123, '2018');
-                //console.log('Querry:', JSON.stringify(querry, null, 2));
+                //const querry = await salesmen.readSalesMan(db, 90123);
+                //console.log('Querry:', JSON.stringify(querry.getAllBonuses(), null, 2));
             } catch (error) {
                 console.error('Test failed:', error);
             }
@@ -218,7 +219,7 @@ const startServer = async () => {
         await salesmen.updateBonusSalariesFromOrangeHRM(db);
         
         // Call at the end of the evaluation process to write all bonus salaries to OrangeHRM
-        await salesmen.updateBonusSalarieToOrangeHRM(db);
+        //await salesmen.updateAllBonusSalarieToOrangeHRM(db);
         console.log('Fetched data successfully');
 
         gracefulShutdown(server, db);

@@ -1,18 +1,14 @@
 class BonusSalary {
     /**
      * Constructor for BonusSalary.
-     * @param {Array<{year: string, value: string}> | null} [data=null] - Optional initial bonus data.
+     * @param {Array<{year: string, value: string}> | null} [bonuses=null] - Optional initial bonus data.
      */
-    constructor(data = null) {
-        if (!data || !data.bonuses || data.bonuses.length === 0) {
+    constructor(bonuses = null) {
+        if (!bonuses || !Array.isArray(bonuses) || bonuses.length === 0) {
             this.bonuses = [];
         } else {
-            if (!Array.isArray(data.bonuses)) {
-                throw new Error("Invalid data format: expected an array of bonus objects.");
-            }
-
             // Validate and initialize bonuses
-            this.bonuses = data.bonuses.map(bonus => {
+            this.bonuses = bonuses.map(bonus => {
                 if (!bonus.year || typeof bonus.year !== 'string' || !bonus.value || typeof bonus.value !== 'string') {
                     throw new Error("Invalid bonus entry format: each bonus must have a valid 'year' (string) and 'value' (string).");
                 }

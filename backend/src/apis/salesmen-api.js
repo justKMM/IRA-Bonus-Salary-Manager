@@ -189,4 +189,27 @@ exports.deletePerformanceRecordsFromSalesManBySocialId = async function (req, re
     }
 };
 
+
+
+exports.updateAllBonusSalarieToOrangeHRM = async function (req, res){
+    try {
+        const result = await SalesMenService.updateAllBonusSalarieToOrangeHRM(req.app.get('db'));
+        res.status(201).json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.updateBonusSalarieToOrangeHRM = async function (req, res){
+    try {
+        const salesmanId = req.params.salesmanId;
+        const result = await SalesMenService.updateBonusSalarieToOrangeHRM(req.app.get('db'), salesmanId, req.body);
+        res.status(201).json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+
 module.exports = exports;
