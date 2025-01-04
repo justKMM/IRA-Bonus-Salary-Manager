@@ -9,9 +9,7 @@ export interface SalesmanInterface {
     firstName: string;
     middleName?: string;   // optional since it has default value
     lastName: string;
-    bonusSalary?: {
-        bonuses: BonusSalaryRecordInterface[];
-    };
+    bonusSalary?: BonusSalaryRecordInterface[];
     jobTitle: string;
     department: string;
     gender?: string;

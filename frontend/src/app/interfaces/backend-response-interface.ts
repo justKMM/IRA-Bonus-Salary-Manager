@@ -7,9 +7,7 @@ export interface BackendResponseInterface {
     firstName: string;
     middleName?: string;
     lastName: string;
-    bonusSalary: {
-        bonuses: BonusSalaryRecordInterface[];
-    };
+    bonusSalary: BonusSalaryRecordInterface[];
     jobTitle: string;
     department: string;
     gender?: string;

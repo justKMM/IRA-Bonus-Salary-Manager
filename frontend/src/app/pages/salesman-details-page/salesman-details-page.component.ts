@@ -41,8 +41,8 @@ export class SalesmanDetailsPageComponent implements OnInit{
 
     private loadSalesman(salesman: SalesmanInterface | undefined): void {
         this.salesman = salesman;
-        if (this.salesman?.bonusSalary?.bonuses) {
-            this.sortedBonusRecords = [...this.salesman.bonusSalary.bonuses]
+        if (this.salesman?.bonusSalary) {
+            this.sortedBonusRecords = [...this.salesman.bonusSalary]
                 .sort((
                     firstBonusSalaryRecord: BonusSalaryRecordInterface,
                     secondBonusSalaryRecord: BonusSalaryRecordInterface
