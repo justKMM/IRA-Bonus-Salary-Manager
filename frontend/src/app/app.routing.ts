@@ -6,7 +6,7 @@ import { AuthGuardService } from './services/auth-guard.service';
 import { ExamplePageComponent } from './pages/example-page/example-page.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 import {DashboardPageComponent} from './pages/dashboard-page/dashboard-page.component';
-import {SalesmanDetailsPageComponent} from "./pages/salesman-details-page/salesman-details-page.component";
+import {SalesmanDetailsPageComponent} from './pages/salesman-details-page/salesman-details-page.component';
 
 /*
   This array holds the relation of paths and components which angular router should resolve.
@@ -34,4 +34,5 @@ const routes: Routes = [
         RouterModule
     ]
 })
+
 export class AppRouting { }

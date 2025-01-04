@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {SalesManInterface} from '../../interfaces/salesman-interface';
+import {SalesmanInterface} from '../../interfaces/salesman-interface';
 import {SalesmenService} from '../../services/salesmen.service';
 import { getSeniorSalesmen, setSeniorSalesmen } from '../../../utils/GLOBALS';
 import {Router} from '@angular/router';
@@ -11,7 +11,7 @@ import {Router} from '@angular/router';
 })
 export class DashboardPageComponent implements OnInit {
     salesMenDisplayedColumns = ['id', 'code', 'fullName', 'jobTitle', 'actions'];
-    salesmen: SalesManInterface[] = [];
+    salesmen: SalesmanInterface[] = [];
     isLoading = true;
 
     constructor(
