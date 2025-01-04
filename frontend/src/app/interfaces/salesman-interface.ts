@@ -2,7 +2,7 @@
 
 import {BonusSalaryRecordInterface} from './bonus-salary-record-interface';
 
-export interface SalesManInterface {
+export interface SalesmanInterface {
     salesmanId: number;
     uid?: string;          // optional since it can be null
     employeeId?: string;   // optional since it can be null
