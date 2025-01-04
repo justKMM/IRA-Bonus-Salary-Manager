@@ -46,7 +46,10 @@ import { SalesmanDetailsPageComponent } from './pages/salesman-details-page/sale
         MatToolbarModule,
         MatIconModule,
         MatTableModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        MatTableModule,
+        MatIconModule,
+        MatButtonModule
     ],
     providers: [],
     bootstrap: [AppComponent]

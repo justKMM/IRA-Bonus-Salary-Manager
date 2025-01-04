@@ -4,6 +4,7 @@
     padding: 1rem;
 }
 
+/* Return button */
 .return-btn {
     background-color: #3b82f6;
     color: white;
@@ -19,7 +20,8 @@
     background-color: #2563eb;
 }
 
-.form-container {
+/* Form */
+.form-container{
     margin-top: 2rem;
     max-width: 56rem;
     margin-left: auto;
@@ -30,6 +32,7 @@
     padding: 1.5rem;
 }
 
+/* Personal Info Section */
 .personal-info {
     margin-bottom: 2rem;
 }
@@ -51,33 +54,47 @@ h2 {
     margin-bottom: 0.5rem;
 }
 
+/* Bonus Records Section */
 .bonus-records {
     margin-top: 2rem;
-}
-
-.table-container {
-    overflow-x: auto;
+    max-width: 56rem;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
 }
 
 table {
     width: 100%;
-    background-color: white;
-    border-collapse: collapse;
 }
 
-th {
-    background-color: #f3f4f6;
-    padding: 0.5rem 1rem;
-    text-align: center;
-    border-bottom: 1px solid #e5e7eb;
+tr.detail-row {
+    height: 0;
 }
 
-td {
-    padding: 0.5rem 1rem;
-    border-bottom: 1px solid #e5e7eb;
-    text-align: center;
+tr.record-row:not(.expanded-row):hover {
+    background: whitesmoke;
 }
 
+tr.record-row:not(.expanded-row):active {
+    background: #efefef;
+}
+
+.record-row td {
+    border-bottom-width: 0;
+}
+
+.record-detail {
+    overflow: hidden;
+}
+
+.detail-content {
+    padding: 16px;
+}
+
+/* Loading */
 .loading {
     text-align: center;
     padding: 2rem 0;
