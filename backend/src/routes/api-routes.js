@@ -80,20 +80,27 @@ router.get('/user', checkAuthorization(), userApi.getSelf);
 
 router.use(authorization.basicAuth);
 
+// Salesman
 router.get('/salesmen', salesmenApi.getAllSalesMen);
 router.get('/salesmen/:salesmanId', salesmenApi.getSalesMan);
 router.post('/salesmen/create', salesmenApi.createSalesMan);
 router.put('/salesmen/update/:salesmanId', salesmenApi.updateSalesMan);
 router.delete('/salesmen/delete/:salesmanId', salesmenApi.deleteSalesMan);
 
+// SocialPerformance
 router.get('/salesmen/performance/:salesmanId', salesmenApi.getPerformancesFromSalesMan);
 router.post('/salesmen/performance/create', salesmenApi.createPerformance);
 router.put('/salesmen/performance/update/:salesmanId/social/:socialId', salesmenApi.updatePerformance);
 router.delete('/salesmen/performance/delete/:salesmanId', salesmenApi.deletePerformanceRecordsFromSalesManByYear);
 router.delete('/salesmen/performance/delete/:salesmanId/social/:socialId', salesmenApi.deletePerformanceRecordsFromSalesManBySocialId);
 
+// Evaluation
 router.get('/evaluation/:salesmanId/:year', evaluationApi.getEvaluation);
 router.put('/evaluation/update/:salesmanId/:year', evaluationApi.updateEvaluation);
+
+// Write BonusSalary to OrangeHRM
+router.post('/bonus', salesmenApi.updateAllBonusSalarieToOrangeHRM);
+router.post('/bonus/:salesmanId', salesmenApi.updateBonusSalarieToOrangeHRM);
 
 
 

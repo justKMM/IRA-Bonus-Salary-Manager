@@ -22,7 +22,7 @@ exports.createSalesMan = async (db, salesmanData) => {
             salesmanData.firstName,
             salesmanData.middleName,
             salesmanData.lastName,
-            salesmanData.bonusSalary,
+            new BonusSalary(salesmanData.bonusSalary),
             salesmanData.jobTitle,
             salesmanData.department,
             salesmanData.gender
@@ -157,9 +157,18 @@ exports.readSocialPerformanceRecord = async (db, salesmanId, year) => {
 exports.updateSalesMan = async (db, salesmanId, salesmanData) => {
     try {
         const existingSalesman = await db.collection('salesmen').findOne({ salesmanId: parseInt(salesmanId) });
-        
         if (!existingSalesman) {
             throw new Error(`SalesMan with salesmanId ${salesmanId} not found.`);
+        }
+
+        // Handle bonusSalary data properly
+        let bonusSalaryInstance;
+        if (salesmanData.hasOwnProperty('bonusSalary')) {
+            // If new bonusSalary data is provided
+            bonusSalaryInstance = new BonusSalary(salesmanData.bonusSalary);
+        } else {
+            // Use existing bonusSalary data
+            bonusSalaryInstance = new BonusSalary(existingSalesman.bonusSalary);
         }
 
         // Create new Salesman instance with existing data merged with updates
@@ -170,24 +179,26 @@ exports.updateSalesMan = async (db, salesmanId, salesmanData) => {
             salesmanData.hasOwnProperty('firstName') ? salesmanData.firstName : existingSalesman.firstName,
             salesmanData.hasOwnProperty('middleName') ? salesmanData.middleName : existingSalesman.middleName,
             salesmanData.hasOwnProperty('lastName') ? salesmanData.lastName : existingSalesman.lastName,
-            salesmanData.hasOwnProperty('bonusSalary') ? salesmanData.bonusSalary : new BonusSalary(salesmanData.bonusSalary),
+            bonusSalaryInstance,
             salesmanData.hasOwnProperty('jobTitle') ? salesmanData.jobTitle : existingSalesman.jobTitle,
             salesmanData.hasOwnProperty('department') ? salesmanData.department : existingSalesman.department,
             salesmanData.hasOwnProperty('gender') ? salesmanData.gender : existingSalesman.gender
         );
 
+        // Create update query using toJSON() for proper serialization
+        const salesmanJSON = salesman.toJSON();
         const updateQuery = {
             $set: {
-                salesmanId: salesman.salesmanId,
-                uid: salesman.uid,
-                employeeId: salesman.employeeId,
-                firstName: salesman.firstName,
-                middleName: salesman.middleName,
-                lastName: salesman.lastName,
-                bonusSalary: salesman.bonusSalary,
-                jobTitle: salesman.jobTitle,
-                department: salesman.department,
-                gender: salesman.gender
+                salesmanId: salesmanJSON.salesmanId,
+                uid: salesmanJSON.uid,
+                employeeId: salesmanJSON.employeeId,
+                firstName: salesmanJSON.firstName,
+                middleName: salesmanJSON.middleName,
+                lastName: salesmanJSON.lastName,
+                bonusSalary: salesmanJSON.bonusSalary,
+                jobTitle: salesmanJSON.jobTitle,
+                department: salesmanJSON.department,
+                gender: salesmanJSON.gender
             }
         };
 
@@ -609,15 +620,16 @@ exports.updateBonusSalariesFromOrangeHRM = async (db) => {
                 const employeeId = parseInt(salesman.employeeId, 10);
                 const bonusSalaryData = await hrm.queryBonusSalariesById(employeeId);
                 
-                if(bonusSalaryData != null) {
-                    const bonusSalary = {
-                        bonuses: Array.isArray(bonusSalaryData.data) ? bonusSalaryData.data : [bonusSalaryData.data]
-                    };
-                    const formattedBonusSalary = new BonusSalary(bonusSalary);
+                if (bonusSalaryData != null) {
+                    const bonusArray = Array.isArray(bonusSalaryData.data) 
+                        ? bonusSalaryData.data 
+                        : [bonusSalaryData.data];
+
+                    const formattedBonusSalary = new BonusSalary(bonusArray);
 
                     await db.collection('salesmen').updateOne(
                         { salesmanId: salesman.salesmanId },
-                        { $set: { bonusSalary: formattedBonusSalary } }
+                        { $set: { bonusSalary: formattedBonusSalary.toJSON() } }
                     );
                 }
 
@@ -636,13 +648,12 @@ exports.updateBonusSalariesFromOrangeHRM = async (db) => {
  * @param {Object} db - MongoDB database connection
  * @throws {Error} If database operations or HRM post request fail
  */
-exports.updateBonusSalarieToOrangeHRM = async (db) => {
+exports.updateAllBonusSalarieToOrangeHRM = async (db) => {
     try {
         const salesmen = await this.readAllSalesMen(db);
         
         if (!salesmen || salesmen.length === 0) {
-            console.error('No salesmen found in the database.');
-            return;
+            throw new Error('No salesmen found in the database.');
         }
 
         for (const salesman of salesmen) {
@@ -656,3 +667,25 @@ exports.updateBonusSalarieToOrangeHRM = async (db) => {
     }
 };
 
+/**
+ * Updates the bonus salary for a specific salesman in the MongoDB collection to OrangeHRM.
+ * @param {Object} db - MongoDB database connection
+ * @param {string} salesmanId - The ID of the salesman to update
+ * @throws {Error} If database operations or HRM post request fail
+ */
+exports.updateBonusSalarieToOrangeHRM = async (db, salesmanId) => {
+    try {
+        const salesman = await this.readSalesMan(db, salesmanId);
+        
+        if (!salesman) {
+            throw new Error(`No salesman found with ID: ${salesmanId}`);
+        }
+
+        for (const bonus of salesman.bonusSalary.bonuses) {
+            await hrm.addBonusSalary(salesman.employeeId, bonus.year, bonus.value);
+        }
+    } catch (error) {
+        console.error(`Failed to update bonus salary for salesman ${salesmanId}:`, error);
+        throw error;
+    }
+};
