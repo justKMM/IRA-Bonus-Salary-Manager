@@ -4,8 +4,8 @@ import {SalesmanInterface} from '../../interfaces/salesman-interface';
 import {SalesmenService} from '../../services/salesmen.service';
 import {BonusSalaryRecordInterface} from '../../interfaces/bonus-salary-record-interface';
 import {getSalesmanById, setSeniorSalesmen} from '../../../utils/GLOBALS';
-import {animate, state, style, transition, trigger} from "@angular/animations";
-import {MatTableDataSource} from "@angular/material/table";
+import {animate, state, style, transition, trigger} from '@angular/animations';
+import {MatTableDataSource} from '@angular/material/table';
 
 @Component({
     selector: 'app-salesman-details-page',
