@@ -11,6 +11,8 @@ import {SocialPerformanceInterface} from '../interfaces/social-performance-inter
 export class SocialPerformanceService {
 
     constructor(private http: HttpClient) { }
+    private currentSocialId = 0;
+    private currentTargetValue = 20;
 
     getSocialPerformanceBySalesmanId(salesmanId: number): Observable<HttpResponse<SocialPerformanceInterface[]>> {
         return this.http.get<SocialPerformanceInterface[]>(
@@ -47,10 +49,16 @@ export class SocialPerformanceService {
             );
     }
 
-    createSocialPerformanceBySalesmanId(salesmanId: number): void {
+    createSocialPerformance(salesmanId: number, year: number, value: number, description: string): void {
         this.http.post(
             environment.apiEndpoint + '/salesmen/performance/create',
-            {salesmanId},
+            {
+                salesmanId,
+                socialId: this.currentSocialId++,
+                description,
+                targetValue: this.currentTargetValue,
+                year,
+            },
             {observe: 'response', withCredentials: true}
         );
     }
