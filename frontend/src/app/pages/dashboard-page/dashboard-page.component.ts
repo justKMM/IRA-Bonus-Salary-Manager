@@ -5,8 +5,8 @@ import { getSeniorSalesmen, setSeniorSalesmen } from '../../../utils/GLOBALS';
 import {Router} from '@angular/router';
 import {
     SocialPerformanceFormComponent
-} from "../../components/social-performance-form/social-performance-form.component";
-import {MatDialog} from "@angular/material/dialog";
+} from '../../components/social-performance-form/social-performance-form.component';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
     selector: 'app-dashboard-page',
