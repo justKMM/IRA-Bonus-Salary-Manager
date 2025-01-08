@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { SalesmanInterface } from '../interfaces/salesman-interface';
 import { environment } from '../../../environments/environment';
 import {map} from 'rxjs/operators';
-import {BackendResponseInterface} from '../interfaces/backend-response-interface';
 
 @Injectable({
     providedIn: 'root'
@@ -13,16 +12,16 @@ export class SalesmenService {
     constructor(private http: HttpClient) { }
 
     getSalesMen(): Observable<HttpResponse<SalesmanInterface[]>> {
-        return this.http.get<BackendResponseInterface[]>(
+        return this.http.get<SalesmanInterface[]>(
             environment.apiEndpoint + '/api/salesmen',
             {observe: 'response', withCredentials: true}
         )
             .pipe(
-                map((response: HttpResponse<BackendResponseInterface[]>): HttpResponse<SalesmanInterface[]> => {
+                map((response: HttpResponse<SalesmanInterface[]>): HttpResponse<SalesmanInterface[]> => {
                     // Filter out any null or undefined entries before mapping
                     const mappedData: SalesmanInterface[] = response.body
-                        .filter((res: BackendResponseInterface): boolean => res !== null && res !== undefined)
-                        .map((res: BackendResponseInterface): SalesmanInterface => ({
+                        .filter((res: SalesmanInterface): boolean => res !== null && res !== undefined);
+                        /* .map((res: SalesmanInterface): SalesmanInterface => ({
                             salesmanId: res.salesmanId,
                             uid: res.uid,
                             employeeId: res.employeeId,
@@ -33,7 +32,7 @@ export class SalesmenService {
                             jobTitle: res.jobTitle,
                             department: res.department,
                             gender: res.gender
-                        }));
+                        }));*/
                     console.log('Raw response:', response.body);
 
                     return new HttpResponse({
