@@ -57,6 +57,7 @@ export class SocialPerformanceService {
                 socialId: this.currentSocialId++,
                 description,
                 targetValue: this.currentTargetValue,
+                actualValue: value,
                 year,
             },
             {observe: 'response', withCredentials: true}
