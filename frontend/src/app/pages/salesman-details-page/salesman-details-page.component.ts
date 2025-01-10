@@ -57,7 +57,7 @@ export class SalesmanDetailsPageComponent implements OnInit{
                 .sort((
                     firstBonusSalaryRecord: BonusSalaryRecordInterface,
                     secondBonusSalaryRecord: BonusSalaryRecordInterface
-                ): number => secondBonusSalaryRecord.year.localeCompare(firstBonusSalaryRecord.year)
+                ): number => secondBonusSalaryRecord.year - firstBonusSalaryRecord.year
                 );
             this.dataSource = new MatTableDataSource(sortedData);
         }
