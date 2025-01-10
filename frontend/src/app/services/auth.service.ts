@@ -17,6 +17,7 @@ export class AuthService {
     loggedIn = false;
     authPreCheck = false;
     listeners: ((param: boolean) => void)[] = [];
+    credentials: Credentials = {username: '', password: ''};
 
     constructor(private http: HttpClient) {
     }
@@ -86,6 +87,7 @@ export class AuthService {
                     if (response.status === 200) { // if request was successful
                         this.loggedIn = true; // set new stat
                         this.emitLoginChange(true); // notify listeners
+                        this.credentials = credentials;
                     }
                 })
             );
@@ -105,5 +107,10 @@ export class AuthService {
                 }
             })
         );
+    }
+
+    getAuthHeader(): string {
+        const encodedCredentials = btoa(`${this.credentials.username}:${this.credentials.password}`);
+        return `Basic ${encodedCredentials}`;
     }
 }

@@ -33,7 +33,7 @@ exports.createSalesMan = async function (req, res) {
  */
 exports.createPerformance = async function (req, res) {
     try {
-        const result = await SalesMenService.createSocialPerformanceRecord(req.app.get('db'), req.body, req.params.salesmanId);
+        const result = await SalesMenService.createSocialPerformanceRecord(req.app.get('db'), req.body);
         res.status(201).json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });

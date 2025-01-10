@@ -37,7 +37,7 @@ exports.createSalesMan = async (db, salesmanData) => {
 /**
  * Creates a new social performance record for a salesman in MongoDB.
  * @param {Object} db - MongoDB database connection.
- * @param {Object} performanceRecordData - Data for the performance record.
+ * @param {Object} socialPerformanceData - Data for the performance record.
  * @returns {SocialPerformance} The created performance record
  * @throws {Error} If there's an error during performance record creation
  */

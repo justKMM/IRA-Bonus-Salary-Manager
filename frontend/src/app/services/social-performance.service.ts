@@ -1,26 +1,28 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { SalesmanInterface } from '../interfaces/salesman-interface';
-import { environment } from '../../../environments/environment';
+import {HttpClient, HttpResponse} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {environment} from '../../../environments/environment';
 import {map} from 'rxjs/operators';
+import {SocialPerformanceInterface} from '../interfaces/social-performance-interface';
 
 @Injectable({
     providedIn: 'root'
 })
-export class SalesmenService {
-    constructor(private http: HttpClient) { }
+export class SocialPerformanceService {
 
-    getSalesMen(): Observable<HttpResponse<SalesmanInterface[]>> {
-        return this.http.get<SalesmanInterface[]>(
-            environment.apiEndpoint + '/api/salesmen',
+    constructor(private http: HttpClient) { }
+    private currentCounter = 0;
+
+    getSocialPerformanceBySalesmanId(salesmanId: number): Observable<HttpResponse<SocialPerformanceInterface[]>> {
+        return this.http.get<SocialPerformanceInterface[]>(
+            environment.apiEndpoint + `/api/salesmen/performance/${salesmanId}`,
             {observe: 'response', withCredentials: true}
         )
             .pipe(
-                map((response: HttpResponse<SalesmanInterface[]>): HttpResponse<SalesmanInterface[]> => {
+                map((response: HttpResponse<SocialPerformanceInterface[]>): HttpResponse<SocialPerformanceInterface[]> => {
                     // Filter out any null or undefined entries before mapping
-                    const mappedData: SalesmanInterface[] = response.body
-                        .filter((res: SalesmanInterface): boolean => res !== null && res !== undefined);
+                    const mappedData: SocialPerformanceInterface[] = response.body
+                        .filter((res: SocialPerformanceInterface): boolean => res !== null && res !== undefined);
                         /* .map((res: SalesmanInterface): SalesmanInterface => ({
                             salesmanId: res.salesmanId,
                             uid: res.uid,
@@ -44,5 +46,14 @@ export class SalesmenService {
                     });
                 })
             );
+    }
+
+    createSocialPerformance(socialPerformanceData: SocialPerformanceInterface): void {
+        socialPerformanceData.socialId = Number(socialPerformanceData.socialId) + this.currentCounter++;
+        this.http.post(
+            environment.apiEndpoint + '/salesmen/performance/create',
+            socialPerformanceData,
+            {observe: 'response', withCredentials: true}
+        );
     }
 }

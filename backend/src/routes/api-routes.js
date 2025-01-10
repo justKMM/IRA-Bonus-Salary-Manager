@@ -77,7 +77,6 @@ router.get('/user', checkAuthorization(), userApi.getSelf);
 //const peopleDemoApi = require('../apis/people-demo-api');
 //router.get('/people', checkAuthorization(), peopleDemoApi.getPeople);
 
-
 router.use(authorization.basicAuth);
 
 // Salesman

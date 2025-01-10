@@ -6,8 +6,8 @@ import { AppComponent } from './app.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { LoginComponent } from './components/login/login.component';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
-import {FormsModule} from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
@@ -21,6 +21,9 @@ import {MatTableModule} from '@angular/material/table';
 import { DashboardPageComponent } from './pages/dashboard-page/dashboard-page.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { SalesmanDetailsPageComponent } from './pages/salesman-details-page/salesman-details-page.component';
+import { SocialPerformanceFormComponent } from './components/social-performance-form/social-performance-form.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import {BasicAuthInterceptor} from './interceptors/basic-auth.interceptor';
 
 @NgModule({
     declarations: [
@@ -33,6 +36,7 @@ import { SalesmanDetailsPageComponent } from './pages/salesman-details-page/sale
         NotFoundPageComponent,
         DashboardPageComponent,
         SalesmanDetailsPageComponent,
+        SocialPerformanceFormComponent,
     ],
     imports: [
         BrowserModule,
@@ -49,9 +53,17 @@ import { SalesmanDetailsPageComponent } from './pages/salesman-details-page/sale
         MatProgressSpinnerModule,
         MatTableModule,
         MatIconModule,
-        MatButtonModule
+        MatButtonModule,
+        MatDialogModule,
+        ReactiveFormsModule
     ],
-    providers: [],
+    providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: BasicAuthInterceptor,
+            multi: true
+        }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

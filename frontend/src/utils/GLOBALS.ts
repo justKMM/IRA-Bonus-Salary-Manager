@@ -14,6 +14,8 @@ const setSeniorSalesmen = (updatedSeniorSalesMen: SalesmanInterface[]): void => 
     seniorSalesMen = updatedSeniorSalesMen;
 };
 
+
+
 export {
     getSeniorSalesmen,
     getSalesmanById,

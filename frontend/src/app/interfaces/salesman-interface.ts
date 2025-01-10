@@ -1,5 +1,3 @@
-// import {BonusSalaryRecord} from './bonus-salary-record-interface';
-
 import {BonusSalaryRecordInterface} from './bonus-salary-record-interface';
 
 export interface SalesmanInterface {
