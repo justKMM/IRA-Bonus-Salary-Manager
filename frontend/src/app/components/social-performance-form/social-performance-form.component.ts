@@ -11,6 +11,7 @@ import {SocialPerformanceInterface} from '../../interfaces/social-performance-in
 })
 export class SocialPerformanceFormComponent {
     form: FormGroup;
+    protected maxPoint: number;
 
     constructor(
         private fb: FormBuilder,
@@ -29,6 +30,9 @@ export class SocialPerformanceFormComponent {
             actualValue: [{value: 0, disabled: true}],
             comments: ''
         });
+
+        // Max points
+        this.maxPoint = 4;
 
         // Update actualValue when any score changes
         const scoreControls = ['leadershipScore', 'opennessScore', 'socialBehaviorScore',

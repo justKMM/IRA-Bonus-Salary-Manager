@@ -16,13 +16,13 @@ export class BasicAuthInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         // Only add auth header for API requests to backend
-        if (request.url.startsWith(environment.apiEndpoint)) {
+        if (request.url.startsWith(environment.apiEndpoint) && !request.url.includes('login')) {
             console.log('API Request to Backend found, Interceptor working');
-            const authHeader = this.authService.getAuthHeader();
+            const authHeader = localStorage.getItem('authHeader');
             if (authHeader) {
                 request = request.clone({
                     setHeaders: {
-                        Authorization: authHeader
+                        Authorization: authHeader,
                     }
                 });
             }

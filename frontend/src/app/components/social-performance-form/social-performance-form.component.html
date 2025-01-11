@@ -1,44 +1,56 @@
 <h2 mat-dialog-title>New Social Performance</h2>
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <mat-dialog-content>
-        <mat-form-field appearance="fill">
+        <mat-form-field>
             <mat-label>Year</mat-label>
             <input matInput type="number" formControlName="year">
         </mat-form-field>
 
-        <mat-form-field appearance="fill">
-            <mat-label>Leadership Score</mat-label>
-            <input matInput type="number" formControlName="leadershipScore">
+        <mat-form-field>
+            <mat-label>Leadership</mat-label>
+            <div class="input-container">
+                <input matInput type="number" formControlName="leadershipScore">
+                <span class="score-max">/{{ maxPoint }}</span>
+            </div>
         </mat-form-field>
 
-        <mat-form-field appearance="fill">
-            <mat-label>Openness Score</mat-label>
-            <input matInput type="number" formControlName="opennessScore">
+        <mat-form-field>
+            <mat-label>Openness</mat-label>
+            <div class="input-container">
+                <input matInput type="number" formControlName="opennessScore">
+                <span class="score-max">/{{ maxPoint }}</span>
+            </div>
         </mat-form-field>
 
-        <mat-form-field appearance="fill">
-            <mat-label>Social Behavior Score</mat-label>
-            <input matInput type="number" formControlName="socialBehaviorScore">
+        <mat-form-field>
+            <mat-label>Social Behavior</mat-label>
+            <div class="input-container">
+                <input matInput type="number" formControlName="socialBehaviorScore">
+                <span class="score-max">/{{ maxPoint }}</span>
+            </div>
         </mat-form-field>
 
-        <mat-form-field appearance="fill">
-            <mat-label>Communication Score</mat-label>
-            <input matInput type="number" formControlName="communicationScore">
+        <mat-form-field>
+            <mat-label>Communication</mat-label>
+            <div class="input-container">
+                <input matInput type="number" formControlName="communicationScore">
+                <span class="score-max">/{{ maxPoint }}</span>
+            </div>
         </mat-form-field>
 
-        <mat-form-field appearance="fill">
-            <mat-label>Integrity Score</mat-label>
-            <input matInput type="number" formControlName="integrityScore">
+        <mat-form-field>
+            <mat-label>Integrity</mat-label>
+            <div class="input-container">
+                <input matInput type="number" formControlName="integrityScore">
+                <span class="score-max">/{{ maxPoint }}</span>
+            </div>
         </mat-form-field>
 
-        <mat-form-field appearance="fill">
-            <mat-label>Comments</mat-label>
-            <textarea matInput formControlName="comments"></textarea>
-        </mat-form-field>
     </mat-dialog-content>
 
-    <mat-dialog-actions align="center">
+    <mat-dialog-actions align="end">
         <button mat-button mat-dialog-close>Cancel</button>
         <button mat-raised-button color="primary" type="submit">Save</button>
     </mat-dialog-actions>
 </form>
+

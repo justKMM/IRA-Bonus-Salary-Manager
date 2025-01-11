@@ -88,6 +88,7 @@ export class AuthService {
                         this.loggedIn = true; // set new stat
                         this.emitLoginChange(true); // notify listeners
                         this.credentials = credentials;
+                        localStorage.setItem('authHeader', this.getAuthHeader());
                     }
                 })
             );
@@ -109,7 +110,10 @@ export class AuthService {
         );
     }
 
-    getAuthHeader(): string {
+    /**
+     *
+     */
+    private getAuthHeader(): string {
         const encodedCredentials = btoa(`${this.credentials.username}:${this.credentials.password}`);
         return `Basic ${encodedCredentials}`;
     }

@@ -55,5 +55,6 @@ export class SocialPerformanceService {
             socialPerformanceData,
             {observe: 'response', withCredentials: true}
         );
+        console.log('HTTP Request to backend made.');
     }
 }
