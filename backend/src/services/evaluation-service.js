@@ -5,6 +5,16 @@ const SalesmanService = require('../services/salesmen-service');
 const SalesOrderService = require('../services/salesorder-service');
 const CustomerService = require('./customer-service');
 
+/**
+ * Generates an evaluation for a specific salesman for a given year.
+ * Combines sales performance and social performance evaluations into a comprehensive evaluation object.
+ * 
+ * @param {Object} db - MongoDB database connection.
+ * @param {number} salesmanId - The salesmanId of the salesman for whom the evaluation is being generated.
+ * @param {number} year - The year for which the evaluation is generated.
+ * @returns {Promise<Object>} - A promise that resolves to the generated evaluation object.
+ * @throws {Error} - If the salesman is not found or there is an issue generating the evaluation.
+ */
 exports.generateEvaluation = async function (db, salesmanId, year) {
   try {
     // Fetch salesman details from database (implement this based on your data layer)
@@ -36,6 +46,14 @@ exports.generateEvaluation = async function (db, salesmanId, year) {
   }
 }
 
+/**
+ * Fetches details for a specific salesman by their ID.
+ * 
+ * @param {Object} db - MongoDB database connection.
+ * @param {number} salesmanId - The ID of the salesman to fetch details for.
+ * @returns {Promise<Object|null>} - The fetched details
+ * @throws {Error} - If fetching salesman details fails.
+ */
 async function fetchSalesmanDetails(db, salesmanId) {
     try {
         const salesman = await SalesmanService.readSalesMan(db, salesmanId);
@@ -52,6 +70,14 @@ async function fetchSalesmanDetails(db, salesmanId) {
     }
 }
 
+/**
+ * Generates social performance records for a specific salesman in a given year.
+ * @param {Object} db - MongoDB database connection.
+ * @param {number} salesmanId - The ID of the salesman.
+ * @param {number} year - The year for which to generate the social performance records.
+ * @returns {Promise<Array>} - The transformed list of social performance records.
+ * @throws {Error} - If an error occurs during the process.
+ */
 async function generateSocialPerformance(db, salesmanId, year) {
     try {
         const socialPerformances = await SalesmanService.readSocialPerformanceRecord(db, salesmanId, year);
@@ -76,6 +102,13 @@ async function generateSocialPerformance(db, salesmanId, year) {
     }
 }
 
+/**
+ * Calculates the bonus based on customer rating, quantity, and price per unit.
+ * @param {number} customerRating - The customer rating (0-3), where 0 is okay and 3 is excellent.
+ * @param {number} quantity - The number of units sold.
+ * @param {number} pricePerUnit - The price per unit of the product.
+ * @returns {number} - The calculated bonus rounded up to the next multiple of 10.
+ */
 function calculateBonus(customerRating, quantity, pricePerUnit) {
     let bonus = (pricePerUnit * quantity) * 0.05;
 
@@ -93,6 +126,14 @@ function calculateBonus(customerRating, quantity, pricePerUnit) {
     return bonus;
 }
 
+/**
+ * Generates sales performance records for a specific salesman in a given year.
+ * @param {Object} db - MongoDB database connection.
+ * @param {number} salesmanId - The ID of the salesman.
+ * @param {number} year - The year for which to generate the sales performance records.
+ * @returns {Promise<Array>} - The list of generated sales performance records.
+ * @throws {Error} - If an error occurs during the process.
+ */
 async function generateSalesPerformance(db, salesmanId, year) {
     try {
         const salesOrders = await SalesOrderService.getSalesmanOrders(db, salesmanId, year);
@@ -111,7 +152,7 @@ async function generateSalesPerformance(db, salesmanId, year) {
                 return {
                     salesmanId: salesmanId,
                     productName: position.product.name,
-                    customer: order.name,
+                    customer: customer.name,
                     customerRating: customer.rating,
                     items: position.quantity,
                     bonus: bonus
@@ -128,6 +169,14 @@ async function generateSalesPerformance(db, salesmanId, year) {
     }
 }
 
+/**
+ * Reads an evaluation record for a specific salesman and year from the database.
+ * @param {Object} db - MongoDB database connection.
+ * @param {number} salesmanId - The ID of the salesman.
+ * @param {number} year - The year of the evaluation.
+ * @returns {Promise<Evaluation|null>} - The evaluation instance, or null if no evaluation is found.
+ * @throws {Error} - If an error occurs during the process.
+ */
 exports.readEvaluation = async function (db, salesmanId, year) {
     try {
         const evaluationData = await db.collection('evaluation').findOne({
@@ -153,6 +202,7 @@ exports.readEvaluation = async function (db, salesmanId, year) {
         evaluation.socialEvaluation = evaluationData.socialEvaluation || [];
 
         // Set the boolean flags
+        evaluation.acceptedHR = evaluationData.acceptedHR || false;
         evaluation.acceptedCEO = evaluationData.acceptedCEO || false;
         evaluation.acceptedSalesman = evaluationData.acceptedSalesman || false;
 
@@ -163,6 +213,13 @@ exports.readEvaluation = async function (db, salesmanId, year) {
     }
 }
 
+/**
+ * Creates a new evaluation record in the database for a specific salesman.
+ * @param {Object} db - MongoDB database connection.
+ * @param {Object} evaluationData - The data for the evaluation to be created.
+ * @returns {Promise<Evaluation>} - The created evaluation instance.
+ * @throws {Error} - If an error occurs during the creation process.
+ */
 exports.createEvaluation = async function (db, evaluationData) {
     try {
         const evaluation = new Evaluation(
@@ -182,6 +239,7 @@ exports.createEvaluation = async function (db, evaluationData) {
         }
 
         // Set boolean flags
+        evaluation.acceptedHR = evaluationData.acceptedHR || false;
         evaluation.acceptedCEO = evaluationData.acceptedCEO || false;
         evaluation.acceptedSalesman = evaluationData.acceptedSalesman || false;
 
@@ -192,6 +250,15 @@ exports.createEvaluation = async function (db, evaluationData) {
     }
 }
 
+/**
+ * Updates an existing evaluation record in the database for a specific salesman.
+ * @param {Object} db - MongoDB database connection.
+ * @param {number} salesmanId - The ID of the salesman whose evaluation is to be updated.
+ * @param {number} year - The year of the evaluation to be updated.
+ * @param {Object} evaluationData - The data to update in the evaluation.
+ * @returns {Promise<Evaluation>} - The updated evaluation instance.
+ * @throws {Error} - If an error occurs during the update process or if the evaluation is not found.
+ */
 exports.updateEvaluation = async function (db, salesmanId, year, evaluationData) {
     try {
         // First fetch the existing evaluation
@@ -223,6 +290,10 @@ exports.updateEvaluation = async function (db, salesmanId, year, evaluationData)
             : existingEvaluation.socialEvaluation || [];
 
         // Set boolean flags only if provided, otherwise keep existing
+        evaluation.acceptedHR = evaluationData.hasOwnProperty('acceptedHR')
+            ? evaluationData.acceptedHR
+            : existingEvaluation.acceptedHR || false;
+
         evaluation.acceptedCEO = evaluationData.hasOwnProperty('acceptedCEO')
             ? evaluationData.acceptedCEO
             : existingEvaluation.acceptedCEO || false;
@@ -240,5 +311,104 @@ exports.updateEvaluation = async function (db, salesmanId, year, evaluationData)
         return evaluation;
     } catch (error) {
         throw new Error(`Error updating evaluation: ${error.message}`);
+    }
+}
+
+/**
+ * Marks the evaluation as accepted by HR for a specific salesman and year.
+ * If all evaluation acceptance flags are true, adds a bonus salary for the salesman.
+ * @param {Object} db - MongoDB database connection.
+ * @param {number} salesmanId - The ID of the salesman whose evaluation is to be accepted by HR.
+ * @param {number} year - The year of the evaluation to be accepted.
+ * @returns {Promise<Evaluation>} - The updated evaluation instance after HR's acceptance.
+ * @throws {Error} - If an error occurs during the process or if the evaluation is not found.
+ */
+exports.acceptHR = async function (db, salesmanId, year) {
+    try {
+        const result = await db.collection('evaluation').updateOne(
+            { salesmanId: salesmanId, year: year },
+            { $set: { acceptedHR: true } }
+        );
+
+        if (result.matchedCount === 0) {
+            throw new Error(`Evaluation for salesman ${salesmanId} in year ${year} not found.`);
+        }
+
+        const evaluation = await exports.readEvaluation(db, salesmanId, year);
+        
+        // Check if all flags are true
+        if (evaluation.acceptedHR && evaluation.acceptedCEO && evaluation.acceptedSalesman) {
+            SalesmanService.addBonusSalary(db, salesmanId, year, evaluation.totalBonus);
+        }
+
+        return evaluation;
+    } catch (error) {
+        throw new Error(`Error accepting evaluation by HR: ${error.message}`);
+    }
+}
+
+/**
+ * Marks the evaluation as accepted by the CEO for a specific salesman and year.
+ * If all evaluation acceptance flags are true, adds a bonus salary for the salesman.
+ * @param {Object} db - MongoDB database connection.
+ * @param {number} salesmanId - The ID of the salesman whose evaluation is to be accepted by the CEO.
+ * @param {number} year - The year of the evaluation to be accepted.
+ * @returns {Promise<Evaluation>} - The updated evaluation instance after CEO's acceptance.
+ * @throws {Error} - If an error occurs during the process or if the evaluation is not found.
+ */
+exports.acceptCEO = async function (db, salesmanId, year) {
+    try {
+        const result = await db.collection('evaluation').updateOne(
+            { salesmanId: salesmanId, year: year },
+            { $set: { acceptedCEO: true } }
+        );
+
+        if (result.matchedCount === 0) {
+            throw new Error(`Evaluation for salesman ${salesmanId} in year ${year} not found.`);
+        }
+
+        const evaluation = await exports.readEvaluation(db, salesmanId, year);
+        
+        // Check if all flags are true
+        if (evaluation.acceptedHR && evaluation.acceptedCEO && evaluation.acceptedSalesman) {
+            SalesmanService.addBonusSalary(db, salesmanId, year, evaluation.totalBonus);
+        }
+
+        return evaluation;
+    } catch (error) {
+        throw new Error(`Error accepting evaluation by CEO: ${error.message}`);
+    }
+}
+
+/**
+ * Marks the evaluation as accepted by the salesman for a specific year.
+ * If all evaluation acceptance flags are true, adds a bonus salary for the salesman.
+ * @param {Object} db - MongoDB database connection.
+ * @param {number} salesmanId - The ID of the salesman whose evaluation is to be accepted.
+ * @param {number} year - The year of the evaluation to be accepted.
+ * @returns {Promise<Evaluation>} - The updated evaluation instance after the salesman's acceptance.
+ * @throws {Error} - If an error occurs during the process or if the evaluation is not found.
+ */
+exports.acceptSalesman = async function (db, salesmanId, year) {
+    try {
+        const result = await db.collection('evaluation').updateOne(
+            { salesmanId: salesmanId, year: year },
+            { $set: { acceptedSalesman: true } }
+        );
+
+        if (result.matchedCount === 0) {
+            throw new Error(`Evaluation for salesman ${salesmanId} in year ${year} not found.`);
+        }
+
+        const evaluation = await exports.readEvaluation(db, salesmanId, year);
+        
+        // Check if all flags are true
+        if (evaluation.acceptedHR && evaluation.acceptedCEO && evaluation.acceptedSalesman) {
+            SalesmanService.addBonusSalary(db, salesmanId, year, evaluation.totalBonus);
+        }
+
+        return evaluation;
+    } catch (error) {
+        throw new Error(`Error accepting evaluation by salesman: ${error.message}`);
     }
 }

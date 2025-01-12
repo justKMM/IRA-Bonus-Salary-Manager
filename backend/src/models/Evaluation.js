@@ -7,6 +7,7 @@ class Evaluation {
         this.salesEvaluation = [];
         this.socialEvaluation = [];
         this.remark = remark || '';
+        this.acceptedHR = false;
         this.acceptedCEO = false;
         this.acceptedSalesman = false;
     }
@@ -72,6 +73,15 @@ class Evaluation {
     }
 
     // Getter and setter for acceptedCEO
+    get acceptedHR() {
+        return this._acceptedHR;
+    }
+
+    set acceptedHR(value) {
+        this._acceptedHR = Boolean(value);
+    }
+
+    // Getter and setter for acceptedCEO
     get acceptedCEO() {
         return this._acceptedCEO;
     }
@@ -118,6 +128,7 @@ class Evaluation {
             socialTotalBonus: this.socialTotalBonus,
             totalBonus: this.totalBonus,
             remark: this.remark,
+            acceptedHR: this.acceptedHR,
             acceptedCEO: this.acceptedCEO,
             acceptedSalesman: this.acceptedSalesman
         };

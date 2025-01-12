@@ -689,3 +689,70 @@ exports.updateBonusSalarieToOrangeHRM = async (db, salesmanId) => {
         throw error;
     }
 };
+
+/**
+ * Retrieves all bonusSalaries for a specific salesman.
+ * @param {Object} db - MongoDB database connection.
+ * @param {number} salesmanId - The ID of the salesman.
+ * @returns {Promise<Array>} - The list of bonusSalary entries.
+ */
+exports.getAllBonusSalaries = async (db, salesmanId) => {
+    try {
+        const collection = db.collection('salesmen');
+        const salesman = await collection.findOne(
+            { salesmanId: salesmanId },
+            { projection: { bonusSalary: 1, _id: 0 } }
+        );
+
+        if (!salesman) {
+            throw new Error(`Salesman with ID ${salesmanId} not found.`);
+        }
+
+        return salesman.bonusSalary || [];
+    } catch (err) {
+        console.error('Error retrieving bonus salaries:', err);
+        throw err;
+    }
+};
+
+/**
+ * Adds a BonusSalary for a specific year with a specific amount to a salesman.
+ * @param {Object} db - MongoDB database connection.
+ * @param {number} salesmanId - The ID of the salesman.
+ * @param {number} year - The year for the bonus.
+ * @param {number} bonus - The bonus amount.
+ * @returns {Promise<Object>} - The result of the update operation.
+ */
+exports.addBonusSalary = async (db, salesmanId, year, bonus) => {
+    try {
+        const collection = db.collection('salesmen');
+
+        const result = await collection.updateOne(
+            { salesmanId: salesmanId, "bonusSalary.year": year.toString() },
+            {
+                $set: { "bonusSalary.$.value": bonus.toString() }
+            }
+        );
+
+        if (result.matchedCount === 0) {
+            // No matching year
+            await collection.updateOne(
+                { salesmanId: salesmanId },
+                {
+                    $push: {
+                        bonusSalary: {
+                            year: year.toString(),
+                            value: bonus.toString()
+                        }
+                    }
+                }
+            );
+        }
+
+        return exports.getAllBonusSalaries(db, salesmanId);
+    } catch (err) {
+        console.error('Error adding bonus salary:', err);
+        throw err;
+    }
+};
+

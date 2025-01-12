@@ -96,6 +96,9 @@ router.delete('/salesmen/performance/delete/:salesmanId/social/:socialId', sales
 // Evaluation
 router.get('/evaluation/:salesmanId/:year', evaluationApi.getEvaluation);
 router.put('/evaluation/update/:salesmanId/:year', evaluationApi.updateEvaluation);
+router.put('/evaluation/acceptHR/:salesmanId/:year', evaluationApi.acceptHR);
+router.put('/evaluation/acceptCEO/:salesmanId/:year', evaluationApi.acceptCEO);
+router.put('/evaluation/acceptSalesman/:salesmanId/:year', evaluationApi.acceptSalesman);
 
 // Write BonusSalary to OrangeHRM
 router.post('/bonus', salesmenApi.updateAllBonusSalarieToOrangeHRM);

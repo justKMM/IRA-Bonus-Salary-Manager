@@ -202,6 +202,8 @@ const startServer = async () => {
                 //const querry = await salesOrders.getSalesmanOrders(db, 90123, '2018');
                 //const querry = await salesmen.readSalesMan(db, 90123);
                 //console.log('Querry:', JSON.stringify(querry.getAllBonuses(), null, 2));
+                //const querry = await salesmen.addBonusSalary(db, 90123, 20100, 10000);
+                //console.log('Querry:', JSON.stringify(querry, null, 2));
             } catch (error) {
                 console.error('Test failed:', error);
             }
