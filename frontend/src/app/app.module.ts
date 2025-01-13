@@ -1,32 +1,34 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { AppRouting } from './app.routing';
-import { AppComponent } from './app.component';
-import { LoginPageComponent } from './pages/login-page/login-page.component';
-import { LoginComponent } from './components/login/login.component';
-import { LandingPageComponent } from './pages/landing-page/landing-page.component';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatInputModule} from '@angular/material/input';
-import {MatButtonModule} from '@angular/material/button';
-import {MatCardModule} from '@angular/material/card';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatIconModule} from '@angular/material/icon';
+
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
+import { AppComponent } from './app.component';
+import { AppRouting } from './app.routing';
+import { LoginComponent } from './components/login/login.component';
 import { MenuBarComponent } from './components/menu-bar/menu-bar.component';
-import { ExamplePageComponent } from './pages/example-page/example-page.component';
-import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
-import {MatTableModule} from '@angular/material/table';
-import { DashboardPageComponent } from './pages/dashboard-page/dashboard-page.component';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import { SalesmanDetailsPageComponent } from './pages/salesman-details-page/salesman-details-page.component';
 import { SocialPerformanceFormComponent } from './components/social-performance-form/social-performance-form.component';
-import {MatDialogModule} from '@angular/material/dialog';
-import {BasicAuthInterceptor} from './interceptors/basic-auth.interceptor';
+import { BasicAuthInterceptor } from './interceptors/basic-auth.interceptor';
 import { AddUserPageComponent } from './pages/add-user-page/add-user-page.component';
-import {MatSelectModule} from '@angular/material/select';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { DashboardPageComponent } from './pages/dashboard-page/dashboard-page.component';
+import { ExamplePageComponent } from './pages/example-page/example-page.component';
+import { LandingPageComponent } from './pages/landing-page/landing-page.component';
+import { LoginPageComponent } from './pages/login-page/login-page.component';
+import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
+import { SalesmanDetailsPageComponent } from './pages/salesman-details-page/salesman-details-page.component';
 
 @NgModule({
     declarations: [
@@ -58,6 +60,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
         MatTableModule,
         MatIconModule,
         MatButtonModule,
+        MatDatepickerModule,
         MatDialogModule,
         ReactiveFormsModule,
         MatSelectModule,
