@@ -23,7 +23,15 @@ class SocialPerformance {
     }
 
     set salesmanId(value) {
-        if (typeof value !== 'number' || value <= 0) {
+        if (typeof value !== 'number') {
+            try {
+                value = parseInt(value);
+            } catch (e) {
+                console.error(`Error parsing salesmanId to number: ${{e}}`);
+                return;
+            }
+        }
+        if (value <= 0) {
             throw new Error('salesmanId must be a positive number.');
         }
         this._salesmanId = value;
@@ -35,7 +43,15 @@ class SocialPerformance {
     }
 
     set socialId(value) {
-        if (typeof value !== 'number' || value <= 0) {
+        if (typeof value !== 'number') {
+            try {
+                value = parseInt(value);
+            } catch (e) {
+                console.error(`Error parsing socialId to number: ${{e}}`);
+                return;
+            }
+        }
+        if (value <= 0) {
             throw new Error('socialId must be a positive number.');
         }
         this._socialId = value;
@@ -59,7 +75,15 @@ class SocialPerformance {
     }
 
     set targetValue(value) {
-        if (typeof value !== 'number' || value < 0) {
+        if (typeof value !== 'number') {
+            try {
+                value = parseInt(value);
+            } catch (e) {
+                console.error(`Error parsing targetValue to number: ${{e}}`);
+                return;
+            }
+        }
+        if (value < 0) {
             throw new Error('targetValue must be a non-negative number.');
         }
         this._targetValue = value;
@@ -71,7 +95,15 @@ class SocialPerformance {
     }
 
     set actualValue(value) {
-        if (typeof value !== 'number' || value < 0) {
+        if (typeof value !== 'number') {
+            try {
+                value = parseInt(value);
+            } catch (e) {
+                console.error(`Error parsing actualValue to number: ${{e}}`);
+                return;
+            }
+        }
+        if (value < 0) {
             throw new Error('actualValue must be a non-negative number.');
         }
         this._actualValue = value;
@@ -83,7 +115,15 @@ class SocialPerformance {
     }
 
     set year(value) {
-        if (typeof value !== 'number' || value < 1900 || value > new Date().getFullYear()) {
+        if (typeof value !== 'number') {
+            try {
+                value = parseInt(value);
+            } catch (e) {
+                console.error(`Error parsing year to number: ${{e}}`);
+                return;
+            }
+        }
+        if (value < 1900 || value > new Date().getFullYear()) {
             throw new Error('year must be a valid number between 1900 and the current year.');
         }
         this._year = value;
