@@ -37,27 +37,29 @@ export class SocialPerformanceService {
     }
 
     createSocialPerformance(socialPerformanceData: SocialPerformanceInterface): void {
-        socialPerformanceData.socialId = Number(socialPerformanceData.socialId) + this.currentCounter++;
-        const salesmanId = socialPerformanceData.salesmanId;
-        const socialId = socialPerformanceData.socialId;
-        const body = {
-            salesmanId: socialPerformanceData.salesmanId,
-            socialId: socialPerformanceData.socialId,
-            description: socialPerformanceData.description,
-            targetValue: socialPerformanceData.targetValue,
-            actualValue: socialPerformanceData.actualValue,
-            year: socialPerformanceData.year
+        const payload = {
+            salesmanId: Number(socialPerformanceData.salesmanId),
+            socialId: typeof socialPerformanceData.socialId === 'object' ?
+                Number(socialPerformanceData.socialId.value) + this.currentCounter++ :
+                Number(socialPerformanceData.socialId) + this.currentCounter++,
+            description: typeof socialPerformanceData.description === 'object' ?
+                String(socialPerformanceData.description.value) :
+                String(socialPerformanceData.description),
+            targetValue: typeof socialPerformanceData.targetValue === 'object' ?
+                Number(socialPerformanceData.targetValue.value) :
+                Number(socialPerformanceData.targetValue),
+            actualValue: typeof socialPerformanceData.actualValue === 'object' ?
+                Number(socialPerformanceData.actualValue.value) :
+                Number(socialPerformanceData.actualValue),
+            year: typeof socialPerformanceData.year === 'object' ?
+                Number(socialPerformanceData.year.value) :
+                Number(socialPerformanceData.year)
         };
+
         this.http.post(
-            environment.apiEndpoint + '/salesmen/performance/create',
-            body,
+            environment.apiEndpoint + '/api/salesmen/performance/create',
+            payload,
             {observe: 'response', withCredentials: true}
-        );
-        this.http.put(
-            environment.apiEndpoint + `/salesmen/performance/update/${{salesmanId}}/social/${{socialId}}`,
-            body,
-            {observe: 'response', withCredentials: true}
-        );
-        console.log('HTTP Request to backend made.');
+        ).subscribe();
     }
 }
