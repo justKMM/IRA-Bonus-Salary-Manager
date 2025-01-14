@@ -56,7 +56,8 @@ router.get('/login', authApi.isLoggedIn);
  *         description: User details
  */
 const userApi = require('../apis/user-api');
-router.get('/user', checkAuthorization(), userApi.getSelf);
+router.get('/user', checkAuthorization, userApi.getSelf);
+router.post('/user/create', userApi.createNewUser);
 
 /**
  * @openapi
@@ -134,7 +135,7 @@ router.get('/test-hrm', (req, res) => {
     });
 });
 router.get('/test-crm', (req, res) => {
-    crm.queryAccountIdByGovernmentId(90123).then(response => {
+    crm.querySalesman(90123).then(response => {
         if (response) {
             res.status(200).json(response);
         } else {

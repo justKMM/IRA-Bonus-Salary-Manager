@@ -163,7 +163,7 @@ const initDb = async (db) => {
                 throw new Error('Default admin password not configured');
             }
             
-            await userService.add(db, new User('admin', '', 'admin', '', environment.defaultAdminPassword, true));
+            await userService.add(db, new User('admin', '', 'admin', '', environment.defaultAdminPassword, true, User.Roles.ADMIN));
             console.log('Created admin user successfully');
         }
     } catch (err) {

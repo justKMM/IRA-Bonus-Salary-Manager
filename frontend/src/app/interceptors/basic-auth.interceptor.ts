@@ -6,15 +6,15 @@ import {
     HttpInterceptor
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {AuthService} from '../services/auth.service';
 import {environment} from '../../../environments/environment';
 
 @Injectable()
 export class BasicAuthInterceptor implements HttpInterceptor {
 
-    constructor(private authService: AuthService) {}
+    constructor() {}
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        console.log('API Request to Backend found');
         // Only add auth header for API requests to backend
         if (request.url.startsWith(environment.apiEndpoint) && !request.url.includes('login')) {
             console.log('API Request to Backend found, Interceptor working');
