@@ -6,9 +6,20 @@
  * @param {string} email
  * @param {string} password
  * @param {boolean} isAdmin
+ * @param {string} role
  */
 class User{
-    constructor(username, firstname, lastname, email, password, isAdmin) {
+    static Roles = {
+        ADMIN: 'admin',
+        CEO: 'ceo',
+        HR: 'hr',
+        SALESMAN: 'salesman'
+    };
+
+    constructor(username, firstname, lastname, email, password, isAdmin, role) {
+        if (!Object.values(User.Roles).includes(role)) {
+            throw new Error(`Invalid role. Role must be one of: ${Object.values(User.Roles).join(', ')}`);
+        }
         this._id = undefined;
         this.username = username;
         this.firstname = firstname;
@@ -16,6 +27,18 @@ class User{
         this.email = email;
         this.password = password;
         this.isAdmin = isAdmin;
+        this.role = role;
+    }
+
+    set role(value) {
+        if (!Object.values(User.Roles).join(', ')) {
+            throw new Error(`Invalid role. Role must be one of: ${Object.values(User.Roles).join(', ')}`);
+        }
+        this._role = value;
+    }
+
+    get role() {
+        return this._role;
     }
 }
 
