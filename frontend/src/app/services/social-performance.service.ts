@@ -23,18 +23,6 @@ export class SocialPerformanceService {
                     // Filter out any null or undefined entries before mapping
                     const mappedData: SocialPerformanceInterface[] = response.body
                         .filter((res: SocialPerformanceInterface): boolean => res !== null && res !== undefined);
-                        /* .map((res: SalesmanInterface): SalesmanInterface => ({
-                            salesmanId: res.salesmanId,
-                            uid: res.uid,
-                            employeeId: res.employeeId,
-                            firstName: res.firstName,
-                            middleName: res.middleName,
-                            lastName: res.lastName,
-                            bonusSalary: res.bonusSalary,
-                            jobTitle: res.jobTitle,
-                            department: res.department,
-                            gender: res.gender
-                        }));*/
                     console.log('Raw response:', response.body);
 
                     return new HttpResponse({
@@ -50,9 +38,24 @@ export class SocialPerformanceService {
 
     createSocialPerformance(socialPerformanceData: SocialPerformanceInterface): void {
         socialPerformanceData.socialId = Number(socialPerformanceData.socialId) + this.currentCounter++;
+        const salesmanId = socialPerformanceData.salesmanId;
+        const socialId = socialPerformanceData.socialId;
+        const body = {
+            salesmanId: socialPerformanceData.salesmanId,
+            socialId: socialPerformanceData.socialId,
+            description: socialPerformanceData.description,
+            targetValue: socialPerformanceData.targetValue,
+            actualValue: socialPerformanceData.actualValue,
+            year: socialPerformanceData.year
+        };
         this.http.post(
             environment.apiEndpoint + '/salesmen/performance/create',
-            socialPerformanceData,
+            body,
+            {observe: 'response', withCredentials: true}
+        );
+        this.http.put(
+            environment.apiEndpoint + `/salesmen/performance/update/${{salesmanId}}/social/${{socialId}}`,
+            body,
             {observe: 'response', withCredentials: true}
         );
         console.log('HTTP Request to backend made.');
