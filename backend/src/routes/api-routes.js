@@ -57,7 +57,7 @@ router.get('/login', authApi.isLoggedIn);
  */
 const userApi = require('../apis/user-api');
 router.get('/user', checkAuthorization, userApi.getSelf);
-router.post('/user/create', checkAuthorization, userApi.createNewUser);
+router.post('/user/create', userApi.createNewUser);
 
 /**
  * @openapi

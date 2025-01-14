@@ -24,6 +24,9 @@ import { SalesmanDetailsPageComponent } from './pages/salesman-details-page/sale
 import { SocialPerformanceFormComponent } from './components/social-performance-form/social-performance-form.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {BasicAuthInterceptor} from './interceptors/basic-auth.interceptor';
+import { AddUserPageComponent } from './pages/add-user-page/add-user-page.component';
+import {MatSelectModule} from '@angular/material/select';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @NgModule({
     declarations: [
@@ -37,6 +40,7 @@ import {BasicAuthInterceptor} from './interceptors/basic-auth.interceptor';
         DashboardPageComponent,
         SalesmanDetailsPageComponent,
         SocialPerformanceFormComponent,
+        AddUserPageComponent,
     ],
     imports: [
         BrowserModule,
@@ -55,7 +59,9 @@ import {BasicAuthInterceptor} from './interceptors/basic-auth.interceptor';
         MatIconModule,
         MatButtonModule,
         MatDialogModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MatSelectModule,
+        MatCheckboxModule
     ],
     providers: [
         {

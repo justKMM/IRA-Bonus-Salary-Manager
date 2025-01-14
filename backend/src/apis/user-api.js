@@ -16,10 +16,16 @@ exports.getSelf = async function(req, res){
  * @param res express response
  * @return {Promise<void>}
  */
-exports.createNewUser = async function(req, res){
-    const user = exports.getSelf;
+exports.createNewUser = async function(req, res) {
+    const user = req.session.user;
+    if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: 'Unauthorized' });
+    }
 
-    if (user.isAdmin) {
-        await userService.add(req.app.get('db'), user);
+    try {
+        await userService.add(req.app.get('db'), req.body); // Use req.body for new user data
+        res.status(201).json({ message: 'User created successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating user' });
     }
 }
