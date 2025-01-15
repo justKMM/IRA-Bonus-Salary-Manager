@@ -1,45 +1,48 @@
-<div class="mat-elevation-z8">
-  <table mat-table [dataSource]="salesmen">
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef>ID</th>
-      <td mat-cell *matCellDef="let salesman">{{salesman.employeeId}}</td>
-    </ng-container>
+<table mat-table [dataSource]="salesmen" class="mat-elevation-z8">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>ID</th>
+    <td mat-cell *matCellDef="let salesman">{{ salesman.employeeId }}</td>
+  </ng-container>
 
-    <ng-container matColumnDef="code">
-      <th mat-header-cell *matHeaderCellDef>Code</th>
-      <td mat-cell *matCellDef="let salesman">{{salesman.salesmanId}}</td>
-    </ng-container>
+  <ng-container matColumnDef="code">
+    <th mat-header-cell *matHeaderCellDef>Code</th>
+    <td mat-cell *matCellDef="let salesman">{{ salesman.salesmanId }}</td>
+  </ng-container>
 
-    <ng-container matColumnDef="fullName">
-      <th mat-header-cell *matHeaderCellDef>Name</th>
-      <td mat-cell *matCellDef="let salesman">{{salesman.firstName}}</td>
-    </ng-container>
+  <ng-container matColumnDef="fullName">
+    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <td mat-cell *matCellDef="let salesman">{{ salesman.firstName }} {{ salesman.lastName }}</td>
+  </ng-container>
 
-    <ng-container matColumnDef="jobTitle">
-      <th mat-header-cell *matHeaderCellDef>Job Title</th>
-      <td mat-cell *matCellDef="let salesman">{{salesman.jobTitle}}</td>
-    </ng-container>
+  <ng-container matColumnDef="jobTitle">
+    <th mat-header-cell *matHeaderCellDef>Job Title</th>
+    <td mat-cell *matCellDef="let salesman">{{ salesman.jobTitle }}</td>
+  </ng-container>
 
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>Actions</th>
-      <td mat-cell *matCellDef="let salesman">
-        <button mat-button color="primary" (click)="addNewSocialPerformance(salesman.salesmanId)">
-          <mat-icon>add_box</mat-icon>
-          New Social Performance
-        </button>
+  <ng-container matColumnDef="socialPerformance">
+    <th mat-header-cell *matHeaderCellDef>Social Performance</th>
+    <td mat-cell *matCellDef="let salesman">
+      <button mat-raised-button (click)="addNewSocialPerformance(salesman.salesmanId)">
+        <mat-icon color="primary">add_box</mat-icon>
+        Add
+      </button>
+    </td>
+  </ng-container>
 
-        <button mat-button color="accent" (click)="editSalesman(salesman.salesmanId)">
-          <mat-icon>edit</mat-icon>
-          Edit Bonus Salaries
-        </button>
-      </td>
-    </ng-container>
+  <ng-container matColumnDef="bonusSalary">
+    <th mat-header-cell *matHeaderCellDef>Bonus Salary</th>
+    <td mat-cell *matCellDef="let salesman">
+      <button mat-raised-button (click)="editSalesman(salesman.salesmanId)">
+        <mat-icon color="accent">edit</mat-icon>
+        Edit
+      </button>
+    </td>
+  </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="salesMenDisplayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: salesMenDisplayedColumns"></tr>
-  </table>
+  <tr mat-header-row *matHeaderRowDef="salesMenDisplayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: salesMenDisplayedColumns"></tr>
+</table>
 
-  <div *ngIf="isLoading" class="loading-spinner">
-    <mat-spinner></mat-spinner>
-  </div>
+<div *ngIf="isLoading" class="loading-spinner">
+  <mat-spinner></mat-spinner>
 </div>
