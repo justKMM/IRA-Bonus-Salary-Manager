@@ -1,89 +1,86 @@
 <div class="container">
-    <!-- Return Button -->
-    <button
-        (click)="navigateToDashboard()"
-        class="return-btn">
-        Return
-    </button>
 
-    <!-- Main Form -->
-    <div class="form-container">
-        <div *ngIf="salesman; else loading">
-            <!-- Personal Information Section -->
-            <div class="personal-info">
-                <h2>Personal Information</h2>
-                <div class="info-grid">
-                    <div>
-                        <p>ID: {{ salesman.salesmanId }}</p>
-                        <p>Employee ID: {{ salesman.employeeId || 'N/A' }}</p>
-                        <p>First Name: {{ salesman.firstName }}</p>
-                        <p>Middle Name: {{ salesman.middleName || 'N/A' }}</p>
-                        <p>Last Name: {{ salesman.lastName }}</p>
-                    </div>
-                    <div>
-                        <p>Job Title: {{ salesman.jobTitle }}</p>
-                        <p>Department: {{ salesman.department }}</p>
-                        <p>Gender: {{ salesman.gender || 'N/A' }}</p>
-                        <p>UID: {{ salesman.uid || 'N/A' }}</p>
-                    </div>
-                </div>
-            </div>
+  <!-- Return Button -->
+  <button mat-raised-button (click)="navigateToDashboard()">
+    <mat-icon color="primary">arrow_back_ios</mat-icon>
+    Return
+  </button>
 
-            <!-- Bonus Salary Records Section -->
-            <div class="bonus-records">
-                <h2>Bonus Salary Records</h2>
-                <table mat-table
-                       [dataSource]="dataSource"
-                       multiTemplateDataRows>
-
-                    <ng-container matColumnDef="year">
-                        <th mat-header-cell *matHeaderCellDef> Year </th>
-                        <td mat-cell *matCellDef="let record"> {{record.year}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="value">
-                        <th mat-header-cell *matHeaderCellDef> Value </th>
-                        <td mat-cell *matCellDef="let record"> {{record.value}} € </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="actions">
-                        <th mat-header-cell *matHeaderCellDef> Actions </th>
-                        <td mat-cell *matCellDef="let record">
-                            <button mat-icon-button color="primary" (click)="editRecord(record)">
-                                <mat-icon>edit</mat-icon>
-                            </button>
-                        </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="expandedDetail">
-                        <td mat-cell *matCellDef="let record" [attr.colspan]="columnsToDisplay.length">
-                            <div class="record-detail"
-                                 [@detailExpand]="record === expandedElement ? 'expanded' : 'collapsed'">
-                                <div class="detail-content">
-                                    <!-- TODO: Add additional details for each record -->
-                                    <p>Year: {{ record.year }}</p>
-                                    <p>Total value: {{ record.value }}</p>
-                                    <p>Additional details for year {{record.year}}</p>
-                                </div>
-                            </div>
-                        </td>
-                    </ng-container>
-
-                    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-                    <tr mat-row *matRowDef="let record; columns: columnsToDisplay;"
-                        class="record-row"
-                        [class.expanded-row]="expandedElement === record"
-                        (click)="expandedElement = expandedElement === record ? null : record">
-                    </tr>
-                    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
-                </table>
-            </div>
+  <!-- Main Form -->
+  <div class="form-container">
+    <div *ngIf="salesman; else loading">
+      <!-- Personal Information Section -->
+      <div class="personal-info">
+        <h2>Personal Information</h2>
+        <div class="info-grid">
+          <div>
+            <p>ID: {{ salesman.salesmanId }}</p>
+            <p>Employee ID: {{ salesman.employeeId || 'N/A' }}</p>
+            <p>First Name: {{ salesman.firstName }}</p>
+            <p>Middle Name: {{ salesman.middleName || 'N/A' }}</p>
+            <p>Last Name: {{ salesman.lastName }}</p>
+          </div>
+          <div>
+            <p>Job Title: {{ salesman.jobTitle }}</p>
+            <p>Department: {{ salesman.department }}</p>
+            <p>Gender: {{ salesman.gender || 'N/A' }}</p>
+            <p>UID: {{ salesman.uid || 'N/A' }}</p>
+          </div>
         </div>
+      </div>
 
-        <ng-template #loading>
-            <div class="loading">
-                <p>Loading salesman details...</p>
-            </div>
-        </ng-template>
+      <!-- Bonus Salary Records Section -->
+      <div class="bonus-records">
+        <h2>Bonus Salary Records</h2>
+        <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+
+          <ng-container matColumnDef="year">
+            <th mat-header-cell *matHeaderCellDef> Year </th>
+            <td mat-cell *matCellDef="let record"> {{record.year}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="value">
+            <th mat-header-cell *matHeaderCellDef> Value </th>
+            <td mat-cell *matCellDef="let record"> {{record.value}} € </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let record">
+              <button mat-raised-button (click)="editRecord(record)">
+                <mat-icon color="primary">edit</mat-icon>
+                Edit
+              </button>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let record" [attr.colspan]="columnsToDisplay.length">
+              <div class="record-detail" [@detailExpand]="record === expandedElement ? 'expanded' : 'collapsed'">
+                <div class="detail-content">
+                  <!-- TODO: Add additional details for each record -->
+                  <p>Year: {{ record.year }}</p>
+                  <p>Total value: {{ record.value }}</p>
+                  <p>Additional details for year {{record.year}}</p>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+          <tr mat-row *matRowDef="let record; columns: columnsToDisplay;" class="record-row"
+            [class.expanded-row]="expandedElement === record"
+            (click)="expandedElement = expandedElement === record ? null : record">
+          </tr>
+          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+        </table>
+      </div>
     </div>
+
+    <ng-template #loading>
+      <div class="loading">
+        <p>Loading salesman details...</p>
+      </div>
+    </ng-template>
+  </div>
 </div>
