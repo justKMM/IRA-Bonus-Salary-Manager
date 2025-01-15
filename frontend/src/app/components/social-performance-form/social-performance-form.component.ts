@@ -1,8 +1,8 @@
-import {Component, Inject} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {SocialPerformanceService} from '../../services/social-performance.service';
-import {SocialPerformanceInterface} from '../../interfaces/social-performance-interface';
+import { Component, Inject } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { SocialPerformanceInterface } from '../../interfaces/social-performance-interface';
+import { SocialPerformanceService } from '../../services/social-performance.service';
 
 @Component({
     selector: 'app-social-performance-form',
@@ -17,7 +17,7 @@ export class SocialPerformanceFormComponent {
         private fb: FormBuilder,
         private dialogRef: MatDialogRef<SocialPerformanceFormComponent>,
         private socialPerformanceService: SocialPerformanceService,
-        @Inject(MAT_DIALOG_DATA) public data: {salesmanId: number}
+        @Inject(MAT_DIALOG_DATA) public data: { salesmanId: number }
     ) {
         this.form = this.fb.group({
             year: 0,
@@ -27,7 +27,7 @@ export class SocialPerformanceFormComponent {
             communicationScore: 0,
             integrityScore: 0,
             targetValue: 20,
-            actualValue: [{value: 0, disabled: true}],
+            actualValue: [{ value: 0, disabled: true }],
             comments: ''
         });
 
@@ -41,7 +41,7 @@ export class SocialPerformanceFormComponent {
             this.form.get(controlName)?.valueChanges.subscribe((): void => {
                 const sum = scoreControls.reduce((total: number, score: string): number =>
                     total + Number(this.form.get(score)?.value || 0), 0);
-                this.form.patchValue({actualValue: sum}, {emitEvent: false});
+                this.form.patchValue({ actualValue: sum }, { emitEvent: false });
             });
         });
     }
