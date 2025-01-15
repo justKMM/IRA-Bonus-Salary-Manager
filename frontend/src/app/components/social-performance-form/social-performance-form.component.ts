@@ -11,7 +11,9 @@ import { SocialPerformanceService } from '../../services/social-performance.serv
 })
 export class SocialPerformanceFormComponent {
     form: FormGroup;
-    protected maxPoint: number;
+
+    scores: number[] = [0, 1, 2, 3, 4]; // Score options
+    years: number[] = Array.from({ length: new Date().getFullYear() - 1950 + 1 }, (_, i): number => 1950 + i); // Year options
 
     constructor(
         private fb: FormBuilder,
@@ -20,7 +22,7 @@ export class SocialPerformanceFormComponent {
         @Inject(MAT_DIALOG_DATA) public data: { salesmanId: number }
     ) {
         this.form = this.fb.group({
-            year: 0,
+            year: new Date().getFullYear(),
             leadershipScore: 0,
             opennessScore: 0,
             socialBehaviorScore: 0,
@@ -30,9 +32,6 @@ export class SocialPerformanceFormComponent {
             actualValue: [{ value: 0, disabled: true }],
             comments: ''
         });
-
-        // Max points
-        this.maxPoint = 4;
 
         // Update actualValue when any score changes
         const scoreControls = ['leadershipScore', 'opennessScore', 'socialBehaviorScore',
