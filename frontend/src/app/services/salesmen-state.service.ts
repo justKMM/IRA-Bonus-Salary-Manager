@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SalesmanInterface } from '../interfaces/salesman-interface';
 import { SalesmenService } from './salesmen.service';
-import {HttpResponse} from "@angular/common/http";
+import {HttpResponse} from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root'
