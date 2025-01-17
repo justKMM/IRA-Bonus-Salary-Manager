@@ -11,7 +11,7 @@ import {map} from 'rxjs/operators';
 export class SalesmenService {
     constructor(private http: HttpClient) { }
 
-    getSalesMen(): Observable<HttpResponse<SalesmanInterface[]>> {
+    querySalesmenFromBackend(): Observable<HttpResponse<SalesmanInterface[]>> {
         return this.http.get<SalesmanInterface[]>(
             environment.apiEndpoint + '/api/salesmen',
             {observe: 'response', withCredentials: true}
