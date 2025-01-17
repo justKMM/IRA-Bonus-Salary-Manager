@@ -4,3 +4,11 @@ main{
   margin-top: 70px;
   padding: 25px;
 }
+/* Ensuring Menu Bar always on top of other Elements */
+app-menu-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}

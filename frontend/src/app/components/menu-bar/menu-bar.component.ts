@@ -20,6 +20,7 @@ export class MenuBarComponent implements OnInit {
         {title: 'Welcome', routerLink: ''}, // the tile is the text on the button, the routerLink specifies, where it will navigate
         {title: 'Example', routerLink: 'example'},
         {title: 'Dashboard', routerLink: 'dashboard'},
+        {title: 'Verify Bonuses', routerLink: 'verify-bonus-salaries'},
         {title: 'Add User', routerLink: 'add-user'},
     ];
 
