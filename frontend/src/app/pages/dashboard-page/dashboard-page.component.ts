@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import {SalesmanInterface} from '../../interfaces/salesman-interface';
-import {SalesmenService} from '../../services/salesmen.service';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { getSeniorSalesmen, setSeniorSalesmen } from '../../../utils/GLOBALS';
-import {Router} from '@angular/router';
 import {
     SocialPerformanceFormComponent
 } from '../../components/social-performance-form/social-performance-form.component';
-import {MatDialog} from '@angular/material/dialog';
+import { SalesmanInterface } from '../../interfaces/salesman-interface';
+import { SalesmenService } from '../../services/salesmen.service';
 
 @Component({
     selector: 'app-dashboard-page',
@@ -14,7 +14,7 @@ import {MatDialog} from '@angular/material/dialog';
     styleUrls: ['./dashboard-page.component.css']
 })
 export class DashboardPageComponent implements OnInit {
-    salesMenDisplayedColumns = ['id', 'code', 'fullName', 'jobTitle', 'actions'];
+    salesMenDisplayedColumns = ['id', 'code', 'fullName', 'jobTitle', 'socialPerformance', 'bonusSalary'];
     salesmen: SalesmanInterface[] = [];
     isLoading = true;
 
@@ -22,7 +22,7 @@ export class DashboardPageComponent implements OnInit {
         private salesMenService: SalesmenService,
         private router: Router,
         private dialog: MatDialog
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         if (getSeniorSalesmen().length < 1) {

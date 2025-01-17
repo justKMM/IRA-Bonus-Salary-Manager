@@ -6,8 +6,8 @@ const environment = {
     db:{
         host: '127.0.0.1',
         port: 27017,
-        username: '',
-        password: '',
+        username: 'admin',
+        password: 'admin',
         authSource: 'admin',
         name: 'intArch'
     },

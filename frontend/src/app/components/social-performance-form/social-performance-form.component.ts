@@ -1,8 +1,8 @@
-import {Component, Inject} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {SocialPerformanceService} from '../../services/social-performance.service';
-import {SocialPerformanceInterface} from '../../interfaces/social-performance-interface';
+import { Component, Inject } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { SocialPerformanceInterface } from '../../interfaces/social-performance-interface';
+import { SocialPerformanceService } from '../../services/social-performance.service';
 
 @Component({
     selector: 'app-social-performance-form',
@@ -11,28 +11,27 @@ import {SocialPerformanceInterface} from '../../interfaces/social-performance-in
 })
 export class SocialPerformanceFormComponent {
     form: FormGroup;
-    protected maxPoint: number;
+
+    scores: number[] = [0, 1, 2, 3, 4]; // Score options
+    years: number[] = Array.from({ length: new Date().getFullYear() - 1950 + 1 }, (_, i): number => 1950 + i); // Year options
 
     constructor(
         private fb: FormBuilder,
         private dialogRef: MatDialogRef<SocialPerformanceFormComponent>,
         private socialPerformanceService: SocialPerformanceService,
-        @Inject(MAT_DIALOG_DATA) public data: {salesmanId: number}
+        @Inject(MAT_DIALOG_DATA) public data: { salesmanId: number }
     ) {
         this.form = this.fb.group({
-            year: 0,
+            year: new Date().getFullYear(),
             leadershipScore: 0,
             opennessScore: 0,
             socialBehaviorScore: 0,
             communicationScore: 0,
             integrityScore: 0,
             targetValue: 20,
-            actualValue: [{value: 0, disabled: true}],
+            actualValue: [{ value: 0, disabled: true }],
             comments: ''
         });
-
-        // Max points
-        this.maxPoint = 4;
 
         // Update actualValue when any score changes
         const scoreControls = ['leadershipScore', 'opennessScore', 'socialBehaviorScore',
@@ -41,7 +40,7 @@ export class SocialPerformanceFormComponent {
             this.form.get(controlName)?.valueChanges.subscribe((): void => {
                 const sum = scoreControls.reduce((total: number, score: string): number =>
                     total + Number(this.form.get(score)?.value || 0), 0);
-                this.form.patchValue({actualValue: sum}, {emitEvent: false});
+                this.form.patchValue({ actualValue: sum }, { emitEvent: false });
             });
         });
     }
