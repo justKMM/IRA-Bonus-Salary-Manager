@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SalesmanInterface} from '../../interfaces/salesman-interface';
-import {SalesmenService} from '../../services/salesmen.service';
 import {BonusSalaryRecordInterface} from '../../interfaces/bonus-salary-record-interface';
-import {getSalesmanById, setSeniorSalesmen} from '../../../utils/GLOBALS';
+import { SalesmenStateService } from '../../services/salesmen-state.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {MatTableDataSource} from '@angular/material/table';
 
@@ -28,25 +27,20 @@ export class SalesmanDetailsPageComponent implements OnInit{
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private salesmenService: SalesmenService
+        private salesmenStateService: SalesmenStateService
     ) {}
 
     ngOnInit(): void {
         const id = Number(this.route.snapshot.paramMap.get('id'));
 
-        // First check if data exists in GLOBALS
-        const salesman: SalesmanInterface = getSalesmanById(id);
+        // First check if data exists in state management store
+        const salesman: SalesmanInterface = this.salesmenStateService.getSalesmanById(id);
 
         if (salesman) {
             this.loadSalesman(salesman);
         } else {
             // If not, fetch from service
-            this.salesmenService.getSalesMen().subscribe((response): void => {
-                if (response.body) {
-                    setSeniorSalesmen(response.body);
-                    this.loadSalesman(getSalesmanById(id));
-                }
-            });
+            this.salesmenStateService.fetchSalesmen();
         }
     }
 

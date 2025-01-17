@@ -29,6 +29,7 @@ import { LandingPageComponent } from './pages/landing-page/landing-page.componen
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 import { SalesmanDetailsPageComponent } from './pages/salesman-details-page/salesman-details-page.component';
+import { BonusSalariesVerifyPageComponent } from './pages/bonus-salaries-verify-page/bonus-salaries-verify-page.component';
 
 @NgModule({
     declarations: [
@@ -43,6 +44,7 @@ import { SalesmanDetailsPageComponent } from './pages/salesman-details-page/sale
         SalesmanDetailsPageComponent,
         SocialPerformanceFormComponent,
         AddUserPageComponent,
+        BonusSalariesVerifyPageComponent,
     ],
     imports: [
         BrowserModule,

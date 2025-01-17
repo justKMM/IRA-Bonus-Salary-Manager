@@ -1,0 +1,29 @@
+.form-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+}
+
+.form-row mat-form-field {
+    width: 380px;
+}
+
+.form-field {
+    display: flex;
+}
+
+.form-field mat-form-field {
+    width: 380px;
+}
+
+.button-container {
+    margin-top: 16px;
+    display: flex;
+}

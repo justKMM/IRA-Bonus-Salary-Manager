@@ -1,0 +1,64 @@
+<div class="bonus-verify-container">
+    <mat-form-field appearance="fill">
+        <mat-label>Select Year</mat-label>
+        <mat-select [(ngModel)]="selectedYear" (selectionChange)="onYearChange()">
+            <mat-option *ngFor="let year of years" [value]="year">
+                {{year}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="employeeId">
+            <th mat-header-cell *matHeaderCellDef>Employee ID</th>
+            <td mat-cell *matCellDef="let row">{{row.employeeId}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let row">{{row.name}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="targetValue">
+            <th mat-header-cell *matHeaderCellDef>Target Value</th>
+            <td mat-cell *matCellDef="let row">{{row.targetValue | currency}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actualValue">
+            <th mat-header-cell *matHeaderCellDef>Actual Value</th>
+            <td mat-cell *matCellDef="let row">{{row.actualValue | currency}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalBonus">
+            <th mat-header-cell *matHeaderCellDef>Total Bonus</th>
+            <td mat-cell *matCellDef="let row">{{row.totalBonus | currency}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let row">
+                <button mat-raised-button
+                        color="primary"
+                        (click)="acceptBonus(row.salesmanId)"
+                        [disabled]="row.accepted">
+                    <mat-icon>check</mat-icon>
+                    Accept
+                </button>
+                <button mat-raised-button
+                        color="accent"
+                        (click)="viewDetails(row.salesmanId)"
+                        class="ml-2">
+                    <mat-icon>info</mat-icon>
+                    Details
+                </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <div *ngIf="isLoading" class="loading-spinner">
+        <mat-spinner></mat-spinner>
+    </div>
+</div>
