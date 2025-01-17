@@ -1,0 +1,28 @@
+.bonus-verify-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+table {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.ml-2 {
+    margin-left: 8px;
+}
+
+mat-form-field {
+    width: 200px;
+}
+
+button {
+    min-width: 100px;
+}
