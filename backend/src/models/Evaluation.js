@@ -1,3 +1,5 @@
+const SocialPerformance = require('./SocialPerformance');
+
 class Evaluation {
     constructor(fullname, salesmanId, department, year, remark) {
         this.fullname = fullname;
@@ -103,9 +105,20 @@ class Evaluation {
     get salesTotalBonus() {
         return this.salesEvaluation.reduce((total, sale) => total + sale.bonus, 0);
     }
-    
+
     get socialTotalBonus() {
-        return this.socialEvaluation.reduce((total, social) => total + social.bonus, 0);
+        return this.socialEvaluation.reduce((total, socialData) => {
+            // Ensure each entry is an instance of SocialPerformance
+            const social = new SocialPerformance(
+                socialData.salesmanId,
+                socialData.socialId,
+                socialData.description,
+                socialData.targetValue,
+                socialData.actualValue,
+                socialData.year
+            );
+            return total + social.bonus;
+        }, 0);
     }
 
     get totalBonus() {
@@ -132,7 +145,7 @@ class Evaluation {
             acceptedCEO: this.acceptedCEO,
             acceptedSalesman: this.acceptedSalesman
         };
-    }   
+    }
 }
 
 module.exports = Evaluation;
