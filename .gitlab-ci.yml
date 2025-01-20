@@ -33,6 +33,7 @@ install-dependencies:backend:
   script:
     - cd backend
     - npm install
+    - npm install -g nyc
   rules:
     - !reference [.backend_rules, rules]
   cache:
