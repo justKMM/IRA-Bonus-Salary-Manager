@@ -20,7 +20,15 @@ export class MenuBarComponent implements OnInit {
         {title: 'Welcome', routerLink: '', roles: [USER_ROLES.ADMIN, USER_ROLES.CEO, USER_ROLES.HR, USER_ROLES.SALESMAN]},
         {title: 'Example', routerLink: 'example', roles: [USER_ROLES.ADMIN, USER_ROLES.CEO, USER_ROLES.HR, USER_ROLES.SALESMAN]},
         {title: 'Dashboard', routerLink: 'dashboard', roles: [USER_ROLES.ADMIN, USER_ROLES.CEO, USER_ROLES.HR]},
-        {title: 'Verify Bonuses', routerLink: 'verify-bonus-salaries', roles: [USER_ROLES.ADMIN, USER_ROLES.CEO]},
+        {
+            title: 'Verify Bonuses',
+            routerLink: 'verify-bonus-salaries',
+            roles: [
+                USER_ROLES.ADMIN,
+                USER_ROLES.CEO,
+                USER_ROLES.HR,
+                USER_ROLES.SALESMAN
+            ]},
         {title: 'Add User', routerLink: 'add-user', roles: [USER_ROLES.ADMIN]},
     ];
 

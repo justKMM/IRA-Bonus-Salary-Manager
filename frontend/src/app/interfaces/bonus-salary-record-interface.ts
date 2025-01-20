@@ -16,4 +16,7 @@ export interface BonusSalaryRecordInterface extends Iterable<BonusSalaryRecordIn
     actualValue: number;
     year: number;
     bonus: number;
+    hrVerified: false;
+    ceoVerified: false;
+    salesmanAccepted: false;
 }

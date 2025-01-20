@@ -17,7 +17,10 @@ export class RoleAccessDirective implements OnInit {
 
     ngOnInit(): void {
         this.userService.getOwnUser().pipe(
-            map((user: User): boolean => this.allowedRoles.includes(user?.role) || user.isAdmin)
+            map((user: User): boolean =>
+                this.allowedRoles.includes(user?.role) ||
+                user.isAdmin
+            )
         ).subscribe((hasAccess: boolean): void => {
             this.viewContainer.clear();
             if (hasAccess) {
