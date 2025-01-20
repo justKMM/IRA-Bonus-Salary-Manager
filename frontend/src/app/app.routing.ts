@@ -11,6 +11,8 @@ import { AuthGuardService } from './services/auth-guard.service';
 import {
     BonusSalariesVerifyPageComponent
 } from './pages/bonus-salaries-verify-page/bonus-salaries-verify-page.component';
+import {RoleGuardService} from './services/role-guard.service';
+import {USER_ROLES} from './models/User';
 
 /*
   This array holds the relation of paths and components which angular router should resolve.
@@ -25,7 +27,12 @@ const routes: Routes = [
     { path: 'login', component: LoginPageComponent },
     { path: 'example', component: ExamplePageComponent, canActivate: [AuthGuardService] },
     { path: 'dashboard', component: DashboardPageComponent, canActivate: [AuthGuardService] },
-    { path: 'add-user', component: AddUserPageComponent, canActivate: [AuthGuardService] },
+    {
+        path: 'add-user',
+        component: AddUserPageComponent,
+        canActivate: [AuthGuardService, RoleGuardService],
+        data: { roles: [USER_ROLES.ADMIN] }
+    },
     { path: 'verify-bonus-salaries', component: BonusSalariesVerifyPageComponent, canActivate: [AuthGuardService] },
     { path: 'salesmen/:id', component: SalesmanDetailsPageComponent, canActivate: [AuthGuardService] },
     { path: '', component: LandingPageComponent, canActivate: [AuthGuardService] },
