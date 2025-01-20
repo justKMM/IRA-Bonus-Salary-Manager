@@ -8,7 +8,7 @@
  * @param {boolean} isAdmin
  * @param {string} role
  */
-class User{
+class User {
     static Roles = {
         ADMIN: 'admin',
         CEO: 'ceo',
@@ -31,7 +31,7 @@ class User{
     }
 
     set role(value) {
-        if (!Object.values(User.Roles).join(', ')) {
+        if (!Object.values(User.Roles).includes(value)) {
             throw new Error(`Invalid role. Role must be one of: ${Object.values(User.Roles).join(', ')}`);
         }
         this._role = value;
