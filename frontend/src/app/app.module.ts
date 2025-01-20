@@ -30,6 +30,7 @@ import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 import { SalesmanDetailsPageComponent } from './pages/salesman-details-page/salesman-details-page.component';
 import { BonusSalariesVerifyPageComponent } from './pages/bonus-salaries-verify-page/bonus-salaries-verify-page.component';
+import { RoleAccessDirective } from './directives/role-access.directive';
 
 @NgModule({
     declarations: [
@@ -45,6 +46,7 @@ import { BonusSalariesVerifyPageComponent } from './pages/bonus-salaries-verify-
         SocialPerformanceFormComponent,
         AddUserPageComponent,
         BonusSalariesVerifyPageComponent,
+        RoleAccessDirective,
     ],
     imports: [
         BrowserModule,
