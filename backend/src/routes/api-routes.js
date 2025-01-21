@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {checkAuthorization} = require('../middlewares/auth-middleware');
+const { checkAuthorization } = require('../middlewares/auth-middleware');
 const salesmenApi = require('../apis/salesmen-api');
 const evaluationApi = require('../apis/evaluation-api');
 const authorization = require('../middlewares/authorization');
@@ -118,8 +118,8 @@ router.post('/bonus/:salesmanId', salesmenApi.updateBonusSalarieToOrangeHRM);
  *       200:
  *         description: Test successful
  */
-router.get('/test', (req,res)=>{
-    res.status(200).json({status: 'Backend Running'});
+router.get('/test', (req, res) => {
+    res.status(200).json({ status: 'Backend Running' });
 });
 
 // These are only for internal testing - do not push into docs
@@ -130,7 +130,7 @@ router.get('/test-hrm', (req, res) => {
         if (response && response.data) {
             res.status(200).json(response.data);
         } else {
-            res.status(500).json({error: 'No data received from HRM service'});
+            res.status(500).json({ error: 'No data received from HRM service' });
         }
     });
 });
@@ -139,7 +139,7 @@ router.get('/test-crm', (req, res) => {
         if (response) {
             res.status(200).json(response);
         } else {
-            res.status(500).json({error: 'No data received from CRM service'});
+            res.status(500).json({ error: 'No data received from CRM service' });
         }
     });
 });
@@ -149,18 +149,18 @@ router.get('/test-sales-order', (req, res) => {
         if (response) {
             res.status(200).json(response);
         } else {
-            res.status(500).json({error: 'No data received from Sales Order service'});
+            res.status(500).json({ error: 'No data received from Sales Order service' });
         }
     });
 });
 const odoo = require('../services/adapters/odoo');
-const {response} = require("express");
+const { response } = require("express");
 router.get('/test-odoo', (req, res) => {
     odoo.getAllEmployees().then(response => {
         if (response) {
             res.status(200).json(response);
         } else {
-            res.status(500).json({error: 'No data received from Sales Order service'});
+            res.status(500).json({ error: 'No data received from Sales Order service' });
         }
     })
 });

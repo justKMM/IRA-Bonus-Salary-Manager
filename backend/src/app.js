@@ -158,11 +158,11 @@ const initDb = async (db) => {
         if (userCount < 1) {
             const userService = require('./services/user-service');
             const User = require("./models/User");
-            
+
             if (!environment.defaultAdminPassword) {
                 throw new Error('Default admin password not configured');
             }
-            
+
             await userService.add(db, new User('admin', '', 'admin', '', environment.defaultAdminPassword, true, User.Roles.ADMIN));
             console.log('Created admin user successfully');
         }
@@ -174,7 +174,7 @@ const initDb = async (db) => {
 
 // Main application startup
 const startServer = async () => {
-    const db_credentials = environment.db.username 
+    const db_credentials = environment.db.username
         ? `${environment.db.username}:${environment.db.password}@`
         : '';
 
@@ -219,7 +219,7 @@ const startServer = async () => {
         await salesmen.updateSalesmenFromOrangeHRM(db);
         await salesmen.updateSalesmenFromOdoo(db);
         await salesmen.updateBonusSalariesFromOrangeHRM(db);
-        
+
         // Call at the end of the evaluation process to write all bonus salaries to OrangeHRM
         //await salesmen.updateAllBonusSalarieToOrangeHRM(db);
         console.log('Fetched data successfully');

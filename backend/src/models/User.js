@@ -40,6 +40,17 @@ class User {
     get role() {
         return this._role;
     }
+
+    set salesmanId(value) {
+        if (this.role !== User.Roles.SALESMAN) {
+            throw new Error("salesmanId can only be set for users with the 'salesman' role.");
+        }
+        this._salesmanId = value;
+    }
+
+    get salesmanId() {
+        return this._salesmanId;
+    }
 }
 
 module.exports = User;
