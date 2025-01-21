@@ -133,15 +133,15 @@ const gracefulShutdown = (server, db) => {
 const initDb = async (db) => {
     try {
         // Explicitly create all collections
-        await Promise.all([
-            db.createCollection('salesmen'),
-            db.createCollection('socialperformance'),
-            //db.createCollection('salesperformance'),
-            db.createCollection('customers'),
-            db.createCollection('salesorders'),
-            db.createCollection('users'),
-            db.createCollection('evaluation')
-        ]);
+        const collections = ['salesmen', 'socialperformance', 'customers',
+            'salesorders', 'users', 'evaluation'];
+
+        for (const collection of collections) {
+            const exists = await db.listCollections({name: collection}).hasNext();
+            if (!exists) {
+                await db.createCollection(collection);
+            }
+        }
 
         // Create indexes after ensuring collections exist
         await Promise.all([
