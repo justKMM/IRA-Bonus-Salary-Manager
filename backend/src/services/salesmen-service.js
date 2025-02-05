@@ -224,11 +224,11 @@ exports.updateSalesMan = async (db, salesmanId, salesmanData) => {
  */
 exports.updateSocialPerformanceRecord = async (db, salesmanId, socialId, performanceData) => {
     try {
-        const existingRecord = await db.collection('socialperformance').findOne({ 
+        const existingRecord = await db.collection('socialperformance').findOne({
             salesmanId: parseInt(salesmanId),
             socialId: parseInt(socialId)
         });
-        
+
         if (!existingRecord) {
             throw new Error(`Social performance record with salesmanId ${salesmanId} and socialId ${socialId} not found.`);
         }
@@ -244,7 +244,7 @@ exports.updateSocialPerformanceRecord = async (db, salesmanId, socialId, perform
         );
 
         await db.collection('performance').updateOne(
-            { 
+            {
                 salesmanId: parseInt(salesmanId),
                 socialId: parseInt(socialId)
             },
@@ -313,9 +313,9 @@ exports.deleteSocialPerformanceRecordBySocialId = async (db, salesmanId, socialI
 exports.getAllSalesmenFromOpenCRX = async () => {
     try {
         const accounts = await crm.queryAllAccounts();
-        
+
         // Filter accounts to get only Contact type accounts with Senior Salesman job title
-        const salesmen = accounts.filter(account => 
+        const salesmen = accounts.filter(account =>
             account['@type'] === 'org.opencrx.kernel.account1.Contact' &&
             account['jobTitle'] === 'Senior Salesman'
         );
@@ -329,7 +329,7 @@ exports.getAllSalesmenFromOpenCRX = async () => {
                     2: 'female',
                     0: null
                 };
-                
+
                 return new Salesman(
                     contact['governmentId'] || null,
                     util.extractUID(contact['vcard']),
@@ -347,7 +347,7 @@ exports.getAllSalesmenFromOpenCRX = async () => {
                 return null;
             }
         }).filter(salesman => salesman !== null);
-        
+
         return processedSalesmen;
     } catch (error) {
         console.error('Error getting all salesmen:', error);
@@ -367,7 +367,7 @@ exports.updateSalesmenFromOpenCRX = async (db) => {
         for (let salesman of salesmen) {
             const existingSalesman = await db.collection('salesmen').findOne({ salesmanId: salesman.salesmanId });
             if (!existingSalesman) {
-            await db.collection('salesmen').insertOne(salesman);
+                await db.collection('salesmen').insertOne(salesman);
             }
         }
     } catch (error) {
@@ -384,9 +384,9 @@ exports.updateSalesmenFromOpenCRX = async (db) => {
  */
 exports.getSalesmanIdByUid = async (db, uid) => {
     if (!uid) return null;
-    
+
     try {
-        const salesman = await db.collection('salesmen').findOne({ uid: uid});
+        const salesman = await db.collection('salesmen').findOne({ uid: uid });
         return salesman ? salesman.salesmanId : null;
     } catch (error) {
         console.error('Error finding salesman by UID:', error);
@@ -401,40 +401,40 @@ exports.getSalesmanIdByUid = async (db, uid) => {
  */
 exports.getAllSalesmenFromOrangeHRM = async () => {
     try {
-      const employees = await hrm.queryAllEmployees();
-  
-      // Filter employees to get only Sales unit employees with Senior Salesman job title
-      const salesmen = employees.filter(employee =>
-        employee.unit === 'Sales' &&
-        employee.jobTitle === 'Senior Salesman'
-      );
-  
-      const processedSalesmen = await Promise.all(salesmen.map(async employee => {
-        try {
-          const normalizedGender = employee.gender ? employee.gender.toLowerCase() : null;
-          const employeeId = parseInt(employee.employeeId, 10) || null;
-          return new Salesman(
-            parseInt(employee.code, 10) || null,
-            null,
-            employeeId,
-            employee.firstName || '',
-            employee.middleName || '',
-            employee.lastName || '',
-            new BonusSalary(),
-            employee.jobTitle || '',
-            employee.unit || '',
-            normalizedGender
-          ).toJSON();
-        } catch (error) {
-          console.warn(`Skipping invalid salesman ${employee.fullName}: ${error.message} while fetching from OrangeHRM`);
-          return null;
-        }
-      }));
-  
-      return processedSalesmen;
+        const employees = await hrm.queryAllEmployees();
+
+        // Filter employees to get only Sales unit employees with Senior Salesman job title
+        const salesmen = employees.filter(employee =>
+            employee.unit === 'Sales' &&
+            employee.jobTitle === 'Senior Salesman'
+        );
+
+        const processedSalesmen = await Promise.all(salesmen.map(async employee => {
+            try {
+                const normalizedGender = employee.gender ? employee.gender.toLowerCase() : null;
+                const employeeId = parseInt(employee.employeeId, 10) || null;
+                return new Salesman(
+                    parseInt(employee.code, 10) || null,
+                    null,
+                    employeeId,
+                    employee.firstName || '',
+                    employee.middleName || '',
+                    employee.lastName || '',
+                    new BonusSalary(),
+                    employee.jobTitle || '',
+                    employee.unit || '',
+                    normalizedGender
+                ).toJSON();
+            } catch (error) {
+                console.warn(`Skipping invalid salesman ${employee.fullName}: ${error.message} while fetching from OrangeHRM`);
+                return null;
+            }
+        }));
+
+        return processedSalesmen;
     } catch (error) {
-      console.error('Error getting all salesmen:', error);
-      throw new Error('Failed to fetch salesmen: ' + error.message);
+        console.error('Error getting all salesmen:', error);
+        throw new Error('Failed to fetch salesmen: ' + error.message);
     }
 };
 
@@ -609,7 +609,7 @@ exports.updateBonusSalariesFromOrangeHRM = async (db) => {
     try {
         // Fetch all salesmen from the database
         const salesmen = await this.readAllSalesMen(db);
-        
+
         for (const salesman of salesmen) {
             try {
                 if (!salesman.employeeId) {
@@ -619,10 +619,10 @@ exports.updateBonusSalariesFromOrangeHRM = async (db) => {
 
                 const employeeId = parseInt(salesman.employeeId, 10);
                 const bonusSalaryData = await hrm.queryBonusSalariesById(employeeId);
-                
+
                 if (bonusSalaryData != null) {
-                    const bonusArray = Array.isArray(bonusSalaryData.data) 
-                        ? bonusSalaryData.data 
+                    const bonusArray = Array.isArray(bonusSalaryData.data)
+                        ? bonusSalaryData.data
                         : [bonusSalaryData.data];
 
                     const formattedBonusSalary = new BonusSalary(bonusArray);
@@ -651,7 +651,7 @@ exports.updateBonusSalariesFromOrangeHRM = async (db) => {
 exports.updateAllBonusSalarieToOrangeHRM = async (db) => {
     try {
         const salesmen = await this.readAllSalesMen(db);
-        
+
         if (!salesmen || salesmen.length === 0) {
             throw new Error('No salesmen found in the database.');
         }
@@ -676,7 +676,7 @@ exports.updateAllBonusSalarieToOrangeHRM = async (db) => {
 exports.updateBonusSalarieToOrangeHRM = async (db, salesmanId) => {
     try {
         const salesman = await this.readSalesMan(db, salesmanId);
-        
+
         if (!salesman) {
             throw new Error(`No salesman found with ID: ${salesmanId}`);
         }

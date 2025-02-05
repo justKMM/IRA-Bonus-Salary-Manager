@@ -27,7 +27,7 @@ class SocialPerformance {
             try {
                 value = parseInt(value);
             } catch (e) {
-                console.error(`Error parsing salesmanId to number: ${{e}}`);
+                console.error(`Error parsing salesmanId to number: ${{ e }}`);
                 return;
             }
         }
@@ -47,7 +47,7 @@ class SocialPerformance {
             try {
                 value = parseInt(value);
             } catch (e) {
-                console.error(`Error parsing socialId to number: ${{e}}`);
+                console.error(`Error parsing socialId to number: ${{ e }}`);
                 return;
             }
         }
@@ -79,7 +79,7 @@ class SocialPerformance {
             try {
                 value = parseInt(value);
             } catch (e) {
-                console.error(`Error parsing targetValue to number: ${{e}}`);
+                console.error(`Error parsing targetValue to number: ${{ e }}`);
                 return;
             }
         }
@@ -99,7 +99,7 @@ class SocialPerformance {
             try {
                 value = parseInt(value);
             } catch (e) {
-                console.error(`Error parsing actualValue to number: ${{e}}`);
+                console.error(`Error parsing actualValue to number: ${{ e }}`);
                 return;
             }
         }
@@ -119,7 +119,7 @@ class SocialPerformance {
             try {
                 value = parseInt(value);
             } catch (e) {
-                console.error(`Error parsing year to number: ${{e}}`);
+                console.error(`Error parsing year to number: ${{ e }}`);
                 return;
             }
         }
@@ -146,11 +146,11 @@ class SocialPerformance {
      */
     get bonus() {
         if (this.targetValue === 0) return 0;
-        
+
         const baseBonus = this.actualValue * 10; // 10€ per actual value unit
         const multiplier = this.actualValue >= this.targetValue ? 1 : 0.8;
         const calculatedBonus = baseBonus * multiplier;
-        
+
         return Math.ceil(calculatedBonus / 10) * 10;
     }
 

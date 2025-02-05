@@ -16,34 +16,34 @@ const CustomerService = require('./customer-service');
  * @throws {Error} - If the salesman is not found or there is an issue generating the evaluation.
  */
 exports.generateEvaluation = async function (db, salesmanId, year) {
-  try {
-    // Fetch salesman details from database (implement this based on your data layer)
-    const salesmanDetails = await fetchSalesmanDetails(db, salesmanId);
-    if (!salesmanDetails) {
-      throw new Error('Salesman not found');
+    try {
+        // Fetch salesman details from database (implement this based on your data layer)
+        const salesmanDetails = await fetchSalesmanDetails(db, salesmanId);
+        if (!salesmanDetails) {
+            throw new Error('Salesman not found');
+        }
+
+        // Create new evaluation instance
+        const evaluation = new Evaluation(
+            salesmanDetails.fullname,
+            salesmanId,
+            salesmanDetails.department,
+            year,
+            null
+        );
+
+        // Generate sales performance evaluations
+        const salesPerformanceData = await generateSalesPerformance(db, salesmanId, year);
+        evaluation.salesEvaluation = salesPerformanceData;
+
+        // Generate social performance evaluations
+        const socialPerformanceData = await generateSocialPerformance(db, salesmanId, year);
+        evaluation.socialEvaluation = socialPerformanceData;
+
+        return evaluation;
+    } catch (error) {
+        throw new Error(`Failed to generate evaluation: ${error.message}`);
     }
-
-    // Create new evaluation instance
-    const evaluation = new Evaluation(
-      salesmanDetails.fullname,
-      salesmanId,
-      salesmanDetails.department,
-      year,
-      null
-    );
-
-    // Generate sales performance evaluations
-    const salesPerformanceData = await generateSalesPerformance(db,salesmanId, year);
-    evaluation.salesEvaluation = salesPerformanceData;
-
-    // Generate social performance evaluations
-    const socialPerformanceData = await generateSocialPerformance(db, salesmanId, year);
-    evaluation.socialEvaluation = socialPerformanceData;
-
-    return evaluation;
-  } catch (error) {
-    throw new Error(`Failed to generate evaluation: ${error.message}`);
-  }
 }
 
 /**
@@ -81,20 +81,19 @@ async function fetchSalesmanDetails(db, salesmanId) {
 async function generateSocialPerformance(db, salesmanId, year) {
     try {
         const socialPerformances = await SalesmanService.readSocialPerformanceRecord(db, salesmanId, year);
-        
+
         if (!socialPerformances || socialPerformances.length === 0) {
             return [];
         }
 
-        // Transform the social performances to remove underscores
-        return socialPerformances.map(performance => ({
-            salesmanId: performance._salesmanId,
-            socialId: performance._socialId,
-            description: performance._description,
-            targetValue: performance._targetValue,
-            actualValue: performance._actualValue,
-            year: performance._year
-        }));
+        return socialPerformances.map(performance => new SocialPerformance(
+            performance._salesmanId,
+            performance._socialId,
+            performance._description,
+            performance._targetValue,
+            performance._actualValue,
+            performance._year
+        ).toJSON());
 
     } catch (error) {
         console.error('Error generating social performance:', error);
@@ -109,7 +108,7 @@ async function generateSocialPerformance(db, salesmanId, year) {
  * @param {number} pricePerUnit - The price per unit of the product.
  * @returns {number} - The calculated bonus rounded up to the next multiple of 10.
  */
-function calculateBonus(customerRating, quantity, pricePerUnit) {
+function calculateSalesBonus(customerRating, quantity, pricePerUnit) {
     let bonus = (pricePerUnit * quantity) * 0.05;
 
     // Bonus multiplier based on customer rating (0-3)
@@ -120,7 +119,7 @@ function calculateBonus(customerRating, quantity, pricePerUnit) {
         3: 3.0   // Excellent rating
     }
 
-    // Calculate total bonus and round up to next multiple of 10
+    // Calculate bonus and round up to next multiple of 10
     bonus = Math.ceil((bonus * ratingMultiplier[customerRating]) / 10) * 10;
 
     return bonus;
@@ -137,7 +136,7 @@ function calculateBonus(customerRating, quantity, pricePerUnit) {
 async function generateSalesPerformance(db, salesmanId, year) {
     try {
         const salesOrders = await SalesOrderService.getSalesmanOrders(db, salesmanId, year);
-        
+
         if (!salesOrders || salesOrders.length === 0) {
             console.log(`No sales orders found for salesman ${salesmanId} in year ${year}`);
             return [];
@@ -146,9 +145,9 @@ async function generateSalesPerformance(db, salesmanId, year) {
         const salesPerformances = [];
         for (const order of salesOrders) {
             const customer = await CustomerService.readCustomer(db, order.customerId);
-            
+
             const orderPerformances = order.positions.map(position => {
-                const bonus = calculateBonus(customer.rating, position.quantity, position.pricePerUnit);
+                const bonus = calculateSalesBonus(customer.rating, position.quantity, position.pricePerUnit);
                 return {
                     salesmanId: salesmanId,
                     productName: position.product.name,
@@ -158,7 +157,7 @@ async function generateSalesPerformance(db, salesmanId, year) {
                     bonus: bonus
                 };
             });
-            
+
             salesPerformances.push(...orderPerformances);
         }
 
@@ -183,7 +182,7 @@ exports.readEvaluation = async function (db, salesmanId, year) {
             salesmanId: salesmanId,
             year: year
         });
-        
+
         if (!evaluationData) {
             return null;
         }
@@ -281,8 +280,8 @@ exports.updateEvaluation = async function (db, salesmanId, year, evaluationData)
         );
 
         // Set arrays only if provided, otherwise keep existing
-        evaluation.salesEvaluation = evaluationData.hasOwnProperty('salesEvaluation') 
-            ? evaluationData.salesEvaluation 
+        evaluation.salesEvaluation = evaluationData.hasOwnProperty('salesEvaluation')
+            ? evaluationData.salesEvaluation
             : existingEvaluation.salesEvaluation || [];
 
         evaluation.socialEvaluation = evaluationData.hasOwnProperty('socialEvaluation')
@@ -335,10 +334,11 @@ exports.acceptHR = async function (db, salesmanId, year) {
         }
 
         const evaluation = await exports.readEvaluation(db, salesmanId, year);
-        
+
         // Check if all flags are true
         if (evaluation.acceptedHR && evaluation.acceptedCEO && evaluation.acceptedSalesman) {
-            SalesmanService.addBonusSalary(db, salesmanId, year, evaluation.totalBonus);
+            await SalesmanService.addBonusSalary(db, salesmanId, year, evaluation.totalBonus);
+            SalesmanService.updateBonusSalarieToOrangeHRM(db, salesmanId);
         }
 
         return evaluation;
@@ -368,10 +368,11 @@ exports.acceptCEO = async function (db, salesmanId, year) {
         }
 
         const evaluation = await exports.readEvaluation(db, salesmanId, year);
-        
+
         // Check if all flags are true
         if (evaluation.acceptedHR && evaluation.acceptedCEO && evaluation.acceptedSalesman) {
-            SalesmanService.addBonusSalary(db, salesmanId, year, evaluation.totalBonus);
+            await SalesmanService.addBonusSalary(db, salesmanId, year, evaluation.totalBonus);
+            SalesmanService.updateBonusSalarieToOrangeHRM(db, salesmanId);
         }
 
         return evaluation;
@@ -401,10 +402,11 @@ exports.acceptSalesman = async function (db, salesmanId, year) {
         }
 
         const evaluation = await exports.readEvaluation(db, salesmanId, year);
-        
+
         // Check if all flags are true
         if (evaluation.acceptedHR && evaluation.acceptedCEO && evaluation.acceptedSalesman) {
-            SalesmanService.addBonusSalary(db, salesmanId, year, evaluation.totalBonus);
+            await SalesmanService.addBonusSalary(db, salesmanId, year, evaluation.totalBonus);
+            SalesmanService.updateBonusSalarieToOrangeHRM(db, salesmanId);
         }
 
         return evaluation;
