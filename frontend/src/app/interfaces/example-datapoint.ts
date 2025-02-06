@@ -1,4 +1,4 @@
-export interface ExampleDatapoint{
+export interface ExampleDatapoint {
     id: string;
     name: string;
     favourite_color: {

@@ -1,6 +1,6 @@
-import {AbstractControl} from '@angular/forms';
+import { AbstractControl } from '@angular/forms';
 
-export interface SocialPerformanceInterface{
+export interface SocialPerformanceInterface {
     salesmanId: number;
     socialId: number | AbstractControl<any, any>;
     description: string | AbstractControl<any, any>;

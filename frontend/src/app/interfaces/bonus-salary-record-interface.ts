@@ -8,7 +8,7 @@
  * @param {number} actualValue - The actual value achieved by the salesman.
  * @param {number} year - The year the performance record is for.
  */
-export interface BonusSalaryRecordInterface extends Iterable<BonusSalaryRecordInterface>{
+export interface BonusSalaryRecordInterface extends Iterable<BonusSalaryRecordInterface> {
     salesmanId: number;
     socialId: number;
     description: string;
