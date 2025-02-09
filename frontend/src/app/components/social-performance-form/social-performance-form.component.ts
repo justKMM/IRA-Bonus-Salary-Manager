@@ -51,7 +51,7 @@ export class SocialPerformanceFormComponent {
                     {
                         description: 'leadership',
                         actualValue: this.form.get('actualLeadershipScore')?.value as number,
-                        targetValue: this.form.get('targetLeadershipValue')?.value as number,
+                        targetValue: this.form.get('targetLeadershipScore')?.value as number,
                     },
                     // Openness
                     {
