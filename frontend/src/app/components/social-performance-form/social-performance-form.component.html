@@ -1,70 +1,119 @@
 <h2 mat-dialog-title>New Social Performance</h2>
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <mat-dialog-content>
+    <mat-dialog-content>
+        <!-- Year -->
+        <mat-form-field appearance="fill">
+            <mat-label>Year</mat-label>
+            <mat-select formControlName="year">
+                <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+            </mat-select>
+        </mat-form-field>
 
-    <!-- Year -->
-    <mat-form-field appearance="fill">
-      <mat-label>Year</mat-label>
-      <mat-select formControlName="year">
-        <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+        <!-- Leadership -->
+        <div class="score-label">Leadership</div>
+        <div class="score-pair">
+            <mat-form-field appearance="fill">
+                <mat-label>Actual</mat-label>
+                <mat-select formControlName="actualLeadershipScore">
+                    <mat-option *ngFor="let score of scores" [value]="score">{{ score }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            /
+            <mat-form-field appearance="fill">
+                <mat-label>Target</mat-label>
+                <mat-select formControlName="targetLeadershipScore">
+                    <mat-option *ngFor="let score of scores" [value]="score">{{ score }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
 
-    <!-- Leadership -->
-    <mat-form-field appearance="fill">
-      <mat-label>Leadership</mat-label>
-      <mat-select formControlName="leadershipScore">
-        <mat-option *ngFor="let score of scores" [value]="score">{{ score }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+        <!-- Openness -->
+        <div class="score-label">Openness</div>
+        <div class="score-pair">
+            <mat-form-field appearance="fill">
+                <mat-label>Actual</mat-label>
+                <mat-select formControlName="actualOpennessScore">
+                    <mat-option *ngFor="let score of scores" [value]="score">{{ score }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            /
+            <mat-form-field appearance="fill">
+                <mat-label>Target</mat-label>
+                <mat-select formControlName="targetOpennessScore">
+                    <mat-option *ngFor="let score of scores" [value]="score">{{ score }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
 
-    <!-- Openness -->
-    <mat-form-field appearance="fill">
-      <mat-label>Openness</mat-label>
-      <mat-select formControlName="opennessScore">
-        <mat-option *ngFor="let score of scores" [value]="score">{{ score }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+        <!-- Social Behavior -->
+        <div class="score-label">Social Behavior</div>
+        <div class="score-pair">
+            <mat-form-field appearance="fill">
+                <mat-label>Actual</mat-label>
+                <mat-select formControlName="actualSocialBehaviorScore">
+                    <mat-option *ngFor="let score of scores" [value]="score">{{ score }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            /
+            <mat-form-field appearance="fill">
+                <mat-label>Target</mat-label>
+                <mat-select formControlName="targetSocialBehaviorScore">
+                    <mat-option *ngFor="let score of scores" [value]="score">{{ score }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
 
-    <!-- Social Behavior -->
-    <mat-form-field appearance="fill">
-      <mat-label>Social Behavior</mat-label>
-      <mat-select formControlName="socialBehaviorScore">
-        <mat-option *ngFor="let score of scores" [value]="score">{{ score }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+        <!-- Communication -->
+        <div class="score-label">Communication</div>
+        <div class="score-pair">
+            <mat-form-field appearance="fill">
+                <mat-label>Actual</mat-label>
+                <mat-select formControlName="actualCommunicationScore">
+                    <mat-option *ngFor="let score of scores" [value]="score">{{ score }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            /
+            <mat-form-field appearance="fill">
+                <mat-label>Target</mat-label>
+                <mat-select formControlName="targetCommunicationScore">
+                    <mat-option *ngFor="let score of scores" [value]="score">{{ score }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
 
-    <!-- Communication -->
-    <mat-form-field appearance="fill">
-      <mat-label>Communication</mat-label>
-      <mat-select formControlName="communicationScore">
-        <mat-option *ngFor="let score of scores" [value]="score">{{ score }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+        <!-- Integrity -->
+        <div class="score-label">Integrity</div>
+        <div class="score-pair">
+            <mat-form-field appearance="fill">
+                <mat-label>Actual</mat-label>
+                <mat-select formControlName="actualIntegrityScore">
+                    <mat-option *ngFor="let score of scores" [value]="score">{{ score }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            /
+            <mat-form-field appearance="fill">
+                <mat-label>Target</mat-label>
+                <mat-select formControlName="targetIntegrityScore">
+                    <mat-option *ngFor="let score of scores" [value]="score">{{ score }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
 
-    <!-- Integrity -->
-    <mat-form-field appearance="fill">
-      <mat-label>Integrity</mat-label>
-      <mat-select formControlName="integrityScore">
-        <mat-option *ngFor="let score of scores" [value]="score">{{ score }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+        <!-- Comments -->
+        <mat-form-field appearance="fill">
+            <mat-label>Comments</mat-label>
+            <textarea matInput formControlName="comments"></textarea>
+        </mat-form-field>
+    </mat-dialog-content>
 
-    <!-- Comments -->
-    <mat-form-field appearance="fill">
-      <mat-label>Comments</mat-label>
-      <textarea matInput formControlName="comments"></textarea>
-    </mat-form-field>
-  </mat-dialog-content>
-
-  <mat-dialog-actions align="end">
-    <button mat-raised-button color="accent" mat-dialog-close>
-      <mat-icon>cancel</mat-icon>
-      Cancel
-    </button>
-    <button mat-raised-button color="primary" type="submit">
-      <mat-icon>save</mat-icon>
-      Save
-    </button>
-  </mat-dialog-actions>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="accent" mat-dialog-close>
+            <mat-icon>cancel</mat-icon>
+            Cancel
+        </button>
+        <button mat-raised-button color="primary" type="submit">
+            <mat-icon>save</mat-icon>
+            Save
+        </button>
+    </mat-dialog-actions>
 </form>
