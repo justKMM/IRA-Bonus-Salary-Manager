@@ -1,9 +1,14 @@
-.input-container {
+.score-label {
+    font-weight: 500;
+    margin-top: 16px;
+}
+
+.score-pair {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.score-max {
-    color: rgba(0, 0, 0, 0.6);
+.score-pair mat-form-field {
+    flex: 1;
 }

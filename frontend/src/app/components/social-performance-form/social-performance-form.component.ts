@@ -1,8 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { SocialPerformanceInterface } from '../../interfaces/social-performance-interface';
 import { SocialPerformanceService } from '../../services/social-performance.service';
+import {SocialPerformanceFormInterface} from '../../interfaces/social-performance-form-interface';
 
 @Component({
     selector: 'app-social-performance-form',
@@ -12,7 +12,7 @@ import { SocialPerformanceService } from '../../services/social-performance.serv
 export class SocialPerformanceFormComponent {
     form: FormGroup;
 
-    scores: number[] = [0, 1, 2, 3, 4]; // Score options
+    scores: number[] = [0, 1, 2, 3, 4, 5]; // Score options
     years: number[] = Array.from({ length: new Date().getFullYear() - 1950 + 1 }, (_, i): number => 1950 + i); // Year options
 
     constructor(
@@ -23,40 +23,67 @@ export class SocialPerformanceFormComponent {
     ) {
         this.form = this.fb.group({
             year: new Date().getFullYear(),
-            leadershipScore: 0,
-            opennessScore: 0,
-            socialBehaviorScore: 0,
-            communicationScore: 0,
-            integrityScore: 0,
-            targetValue: 20,
-            actualValue: [{ value: 0, disabled: true }],
+            // Actual values
+            actualLeadershipScore: 0,
+            actualOpennessScore: 0,
+            actualSocialBehaviorScore: 0,
+            actualCommunicationScore: 0,
+            actualIntegrityScore: 0,
+            // Target values
+            targetLeadershipScore: 5,
+            targetOpennessScore: 5,
+            targetSocialBehaviorScore: 5,
+            targetCommunicationScore: 5,
+            targetIntegrityScore: 5,
+            // Comments
             comments: ''
-        });
-
-        // Update actualValue when any score changes
-        const scoreControls = ['leadershipScore', 'opennessScore', 'socialBehaviorScore',
-            'communicationScore', 'integrityScore'];
-        scoreControls.forEach((controlName: string): void => {
-            this.form.get(controlName)?.valueChanges.subscribe((): void => {
-                const sum = scoreControls.reduce((total: number, score: string): number =>
-                    total + Number(this.form.get(score)?.value || 0), 0);
-                this.form.patchValue({ actualValue: sum }, { emitEvent: false });
-            });
         });
     }
 
     onSubmit(): void {
+        console.log('Form submitted');
         if (this.form.valid) {
-            const socialPerformanceData: SocialPerformanceInterface = {
+            const socialPerformanceData: SocialPerformanceFormInterface = {
                 salesmanId: this.data.salesmanId,
-                socialId: this.form.get('year'),
-                description: this.form.get('comments'),
-                targetValue: this.form.get('targetValue'),
-                actualValue: this.form.get('actualValue'),
-                year: this.form.get('year'),
+                socialId: this.form.get('year')?.value as number,
+                values: [
+                    // Leadership
+                    {
+                        description: 'leadership',
+                        actualValue: this.form.get('actualLeadershipScore')?.value as number,
+                        targetValue: this.form.get('targetLeadershipScore')?.value as number,
+                    },
+                    // Openness
+                    {
+                        description: 'openness',
+                        actualValue: this.form.get('actualOpennessScore')?.value as number,
+                        targetValue: this.form.get('targetOpennessScore')?.value as number,
+                    },
+                    // Social Behavior
+                    {
+                        description: 'social_behavior',
+                        actualValue: this.form.get('actualSocialBehaviorScore')?.value as number,
+                        targetValue: this.form.get('targetSocialBehaviorScore')?.value as number,
+                    },
+                    // Communication
+                    {
+                        description: 'communication',
+                        actualValue: this.form.get('actualCommunicationScore')?.value as number,
+                        targetValue: this.form.get('targetCommunicationScore')?.value as number,
+                    },
+                    // Integrity
+                    {
+                        description: 'integrity',
+                        actualValue: this.form.get('actualIntegrityScore')?.value as number,
+                        targetValue: this.form.get('targetIntegrityScore')?.value as number,
+                    },
+                ],
+                year: this.form.get('year')?.value as number,
+                comments: this.form.get('comments')?.value as string,
             };
             this.socialPerformanceService.createSocialPerformance(socialPerformanceData);
             this.dialogRef.close(this.form.value);
+            console.log('Form created');
         }
     }
 

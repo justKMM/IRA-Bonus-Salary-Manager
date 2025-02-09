@@ -1,28 +1,33 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {map} from 'rxjs/operators';
-import {SocialPerformanceInterface} from '../interfaces/social-performance-interface';
+import {IndividualSocialPerformanceInterface} from '../interfaces/individual-social-performance-interface';
+import {SocialPerformanceFormInterface} from '../interfaces/social-performance-form-interface';
 
 @Injectable({
     providedIn: 'root'
 })
 export class SocialPerformanceService {
 
-    constructor(private http: HttpClient) { }
-    private currentCounter = 0;
+    constructor(
+        private http: HttpClient,
+    ) { }
 
-    getSocialPerformanceBySalesmanId(salesmanId: number): Observable<HttpResponse<SocialPerformanceInterface[]>> {
-        return this.http.get<SocialPerformanceInterface[]>(
+    getSocialPerformanceBySalesmanId(salesmanId: number): Observable<HttpResponse<IndividualSocialPerformanceInterface[]>> {
+        return this.http.get<IndividualSocialPerformanceInterface[]>(
             environment.apiEndpoint + `/api/salesmen/performance/${salesmanId}`,
             {observe: 'response', withCredentials: true}
         )
             .pipe(
-                map((response: HttpResponse<SocialPerformanceInterface[]>): HttpResponse<SocialPerformanceInterface[]> => {
+                map
+                ((
+                    response: HttpResponse<IndividualSocialPerformanceInterface[]>
+                ): HttpResponse<IndividualSocialPerformanceInterface[]> => {
                     // Filter out any null or undefined entries before mapping
-                    const mappedData: SocialPerformanceInterface[] = response.body
-                        .filter((res: SocialPerformanceInterface): boolean => res !== null && res !== undefined);
+                    const mappedData: IndividualSocialPerformanceInterface[] = response.body
+                        .filter((res: IndividualSocialPerformanceInterface): boolean => res !== null && res !== undefined);
                     console.log('Raw response:', response.body);
 
                     return new HttpResponse({
@@ -36,30 +41,31 @@ export class SocialPerformanceService {
             );
     }
 
-    createSocialPerformance(socialPerformanceData: SocialPerformanceInterface): void {
-        const payload = {
-            salesmanId: Number(socialPerformanceData.salesmanId),
-            socialId: typeof socialPerformanceData.socialId === 'object' ?
-                Number(socialPerformanceData.socialId.value) + this.currentCounter++ :
-                Number(socialPerformanceData.socialId) + this.currentCounter++,
-            description: typeof socialPerformanceData.description === 'object' ?
-                String(socialPerformanceData.description.value) :
-                String(socialPerformanceData.description),
-            targetValue: typeof socialPerformanceData.targetValue === 'object' ?
-                Number(socialPerformanceData.targetValue.value) :
-                Number(socialPerformanceData.targetValue),
-            actualValue: typeof socialPerformanceData.actualValue === 'object' ?
-                Number(socialPerformanceData.actualValue.value) :
-                Number(socialPerformanceData.actualValue),
-            year: typeof socialPerformanceData.year === 'object' ?
-                Number(socialPerformanceData.year.value) :
-                Number(socialPerformanceData.year)
-        };
+    createSocialPerformance(socialPerformanceData: SocialPerformanceFormInterface): void {
+        let counter = 1;
+        for (const value of socialPerformanceData.values) {
+            const payload = {
+                salesmanId: socialPerformanceData.salesmanId.valueOf(),
+                socialId: counter++,
+                description: value.description,
+                targetValue: value.targetValue,
+                actualValue: value.actualValue,
+                year: socialPerformanceData.year
+            };
 
-        this.http.post(
-            environment.apiEndpoint + '/api/salesmen/performance/create',
-            payload,
-            {observe: 'response', withCredentials: true}
-        ).subscribe();
+            this.http.post(
+                environment.apiEndpoint + '/api/salesmen/performance/create',
+                payload,
+                {observe: 'response', withCredentials: true}
+            ).subscribe({
+                error: (error: HttpErrorResponse): void => {
+                    if (error.status === 500
+                        && typeof error.error === 'string'
+                        && error.error.includes('duplicate key error')) {
+
+                    }
+                }
+            });
+        }
     }
 }
