@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {SalesmanInterface} from '../../interfaces/salesman-interface';
-import {BonusSalaryRecordInterface} from '../../interfaces/bonus-salary-record-interface';
+import {Salesman} from '../../models/Salesman';
+import {BonusSalary} from '../../models/BonusSalary';
 import { SalesmenStateService } from '../../services/salesmen-state.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {MatTableDataSource} from '@angular/material/table';
@@ -19,10 +19,10 @@ import {MatTableDataSource} from '@angular/material/table';
     ]
 })
 export class SalesmanDetailsPageComponent implements OnInit{
-    salesman: SalesmanInterface | undefined;
-    dataSource!: MatTableDataSource<BonusSalaryRecordInterface>;
+    salesman: Salesman | undefined;
+    dataSource!: MatTableDataSource<BonusSalary>;
     columnsToDisplay = ['year', 'value', 'actions'];
-    expandedElement: BonusSalaryRecordInterface | null = null;
+    expandedElement: BonusSalary | null = null;
 
     constructor(
         private route: ActivatedRoute,
@@ -34,7 +34,7 @@ export class SalesmanDetailsPageComponent implements OnInit{
         const id = Number(this.route.snapshot.paramMap.get('id'));
 
         // First check if data exists in state management store
-        const salesman: SalesmanInterface = this.salesmenStateService.getSalesmanById(id);
+        const salesman: Salesman = this.salesmenStateService.getSalesmanById(id);
 
         if (salesman) {
             this.loadSalesman(salesman);
@@ -44,20 +44,20 @@ export class SalesmanDetailsPageComponent implements OnInit{
         }
     }
 
-    private loadSalesman(salesman: SalesmanInterface | undefined): void {
+    private loadSalesman(salesman: Salesman | undefined): void {
         this.salesman = salesman;
         if (this.salesman?.bonusSalary) {
             const sortedData = [...this.salesman.bonusSalary]
                 .sort((
-                    firstBonusSalaryRecord: BonusSalaryRecordInterface,
-                    secondBonusSalaryRecord: BonusSalaryRecordInterface
+                    firstBonusSalaryRecord: BonusSalary,
+                    secondBonusSalaryRecord: BonusSalary
                 ): number => secondBonusSalaryRecord.year - firstBonusSalaryRecord.year
                 );
             this.dataSource = new MatTableDataSource(sortedData);
         }
     }
 
-    editRecord(record: BonusSalaryRecordInterface): void {
+    editRecord(record: BonusSalary): void {
         console.log('Edit record:', record);
         // TODO: Implement edit logic
     }

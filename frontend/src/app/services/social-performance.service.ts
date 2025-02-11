@@ -3,8 +3,8 @@ import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http'
 import {Observable} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {map} from 'rxjs/operators';
-import {IndividualSocialPerformanceInterface} from '../interfaces/individual-social-performance-interface';
-import {SocialPerformanceFormInterface} from '../interfaces/social-performance-form-interface';
+import {SocialPerformance} from '../models/SocialPerformance';
+import {SocialPerformancesForm} from '../models/SocialPerformancesForm';
 
 @Injectable({
     providedIn: 'root'
@@ -15,19 +15,19 @@ export class SocialPerformanceService {
         private http: HttpClient,
     ) { }
 
-    getSocialPerformanceBySalesmanId(salesmanId: number): Observable<HttpResponse<IndividualSocialPerformanceInterface[]>> {
-        return this.http.get<IndividualSocialPerformanceInterface[]>(
+    getSocialPerformanceBySalesmanId(salesmanId: number): Observable<HttpResponse<SocialPerformance[]>> {
+        return this.http.get<SocialPerformance[]>(
             environment.apiEndpoint + `/api/salesmen/performance/${salesmanId}`,
             {observe: 'response', withCredentials: true}
         )
             .pipe(
                 map
                 ((
-                    response: HttpResponse<IndividualSocialPerformanceInterface[]>
-                ): HttpResponse<IndividualSocialPerformanceInterface[]> => {
+                    response: HttpResponse<SocialPerformance[]>
+                ): HttpResponse<SocialPerformance[]> => {
                     // Filter out any null or undefined entries before mapping
-                    const mappedData: IndividualSocialPerformanceInterface[] = response.body
-                        .filter((res: IndividualSocialPerformanceInterface): boolean => res !== null && res !== undefined);
+                    const mappedData: SocialPerformance[] = response.body
+                        .filter((res: SocialPerformance): boolean => res !== null && res !== undefined);
                     console.log('Raw response:', response.body);
 
                     return new HttpResponse({
@@ -41,7 +41,7 @@ export class SocialPerformanceService {
             );
     }
 
-    createSocialPerformance(socialPerformanceData: SocialPerformanceFormInterface): void {
+    createSocialPerformance(socialPerformanceData: SocialPerformancesForm): void {
         let counter = 1;
         for (const value of socialPerformanceData.values) {
             const payload = {
@@ -62,7 +62,7 @@ export class SocialPerformanceService {
                     if (error.status === 500
                         && typeof error.error === 'string'
                         && error.error.includes('duplicate key error')) {
-
+                        // TODO: Error handling for submission of duplicated records
                     }
                 }
             });

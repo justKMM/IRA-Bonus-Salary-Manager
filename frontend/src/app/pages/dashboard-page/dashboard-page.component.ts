@@ -5,8 +5,7 @@ import { SalesmenStateService } from '../../services/salesmen-state.service';
 import {
     SocialPerformanceFormComponent
 } from '../../components/social-performance-form/social-performance-form.component';
-import { SalesmanInterface } from '../../interfaces/salesman-interface';
-import { SalesmenService } from '../../services/salesmen.service';
+import { Salesman } from '../../models/Salesman';
 
 @Component({
     selector: 'app-dashboard-page',
@@ -15,11 +14,10 @@ import { SalesmenService } from '../../services/salesmen.service';
 })
 export class DashboardPageComponent implements OnInit {
     salesMenDisplayedColumns = ['id', 'code', 'fullName', 'jobTitle', 'socialPerformance', 'details'];
-    salesmen: SalesmanInterface[] = [];
+    salesmen: Salesman[] = [];
     isLoading = true;
 
     constructor(
-        private salesMenService: SalesmenService,
         private salesmenStateService: SalesmenStateService,
         private router: Router,
         private dialog: MatDialog
