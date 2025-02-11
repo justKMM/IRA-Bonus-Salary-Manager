@@ -1,4 +1,4 @@
-import {AfterContentInit, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { Salesman } from '../../models/Salesman';
 import { SalesmenStateService } from '../../services/salesmen-state.service';
 import { BonusSalary } from '../../models/BonusSalary';
@@ -8,8 +8,6 @@ import {User} from '../../models/User';
 import {EvaluationService} from '../../services/evaluation.service';
 import {Evaluation} from '../../models/Evaluation';
 import {HttpResponse} from '@angular/common/http';
-import {EMPTY, from, Observable, of} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
 import {SalesPerformance} from '../../models/SalesPerformance';
 import {SocialPerformance} from '../../models/SocialPerformance';
 class BonusSalaryRow {
@@ -39,8 +37,9 @@ class BonusSalaryRow {
     templateUrl: './bonus-salaries-verify-page.component.html',
     styleUrls: ['./bonus-salaries-verify-page.component.css']
 })
-export class BonusSalariesVerifyPageComponent implements OnInit, AfterContentInit {
+export class BonusSalariesVerifyPageComponent implements OnInit {
     displayedColumns: string[] = ['salesmanId', 'fullname', 'salesBonus', 'socialBonus', 'totalBonus', 'actions'];
+    // The dataset for the table
     bonusSalaryRows: BonusSalaryRow[] = [];
     evaluations: Evaluation[] = [];
     bonusSalaries: BonusSalary[] = [];
@@ -64,21 +63,22 @@ export class BonusSalariesVerifyPageComponent implements OnInit, AfterContentIni
         this.fetchUser();
     }
 
-    ngAfterContentInit(): void {
-        this.bonusSalaryRows = [];
-        this.isLoading = true;
+    fetchUser(): void {
+        this.userService.getOwnUser().subscribe((user): void => {
+            this.user = user;
+        });
     }
-
+    // Load the entire dataset (salesmen + bonuses)
     loadSalesmenByYear(): void {
         this.bonusSalaryRows = [];
         this.evaluations = [];
         const salesmen: Salesman[] = this.salesmenStateService.getSalesmen();
-
+        // Filter the salesmen (for when the logged in user is a salesman)
         const filteredSalesmen: Salesman[] = salesmen.filter((salesman: Salesman): boolean =>
             this.user?.role !== 'salesman' ||
             (this.user?.username && salesman.salesmanId === Number(this.user.username))
         );
-
+        // Getting the evaluation of the corresponding year for the salesmen
         filteredSalesmen.forEach((salesman: Salesman): void => {
             this.evaluationService.getEvaluationBySalesmanIdAndYear(
                 salesman.salesmanId,
@@ -96,7 +96,7 @@ export class BonusSalariesVerifyPageComponent implements OnInit, AfterContentIni
 
         this.isLoading = false;
     }
-
+    // load the bonuses (sales, social, total)
     loadBonusData(evaluation: Evaluation): void {
         const totalSalesBonus: number = evaluation.salesEvaluation
             .reduce((sum: number, perf: SalesPerformance): number => sum + (perf.bonus || 0), 0);
@@ -112,11 +112,11 @@ export class BonusSalariesVerifyPageComponent implements OnInit, AfterContentIni
             totalBonus: totalSalesBonus + totalSocialBonus
         });
     }
-
+    // Reacts on year change
     onYearChange(): void {
         this.loadSalesmenByYear();
     }
-
+    // Bonus accept action
     acceptBonus(salesmanId: number): void {
         const index = this.evaluations.findIndex((row): boolean => row.salesmanId === salesmanId);
         if (index !== -1) {
@@ -135,12 +135,6 @@ export class BonusSalariesVerifyPageComponent implements OnInit, AfterContentIni
                 break;
             }
         }
-    }
-
-    fetchUser(): void {
-        this.userService.getOwnUser().subscribe((user): void => {
-            this.user = user;
-        });
     }
 
     viewDetails(salesmanId: number): void {

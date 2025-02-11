@@ -14,7 +14,7 @@ export class MenuBarComponent implements OnInit {
     user: User;
 
     /*
-    This array holds the definition of the menu's buttons.
+    This array holds the definition of the menu's buttons. The "roles" are the ones allowed to see the buttons
    */
     buttons = [
         { title: 'Welcome', routerLink: '', roles: [USER_ROLES.ADMIN, USER_ROLES.CEO, USER_ROLES.HR, USER_ROLES.SALESMAN] },
