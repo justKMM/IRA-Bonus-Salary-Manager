@@ -25,7 +25,6 @@ import {USER_ROLES} from './models/User';
  */
 const routes: Routes = [
     { path: 'login', component: LoginPageComponent },
-    { path: 'example', component: ExamplePageComponent, canActivate: [AuthGuardService] },
     { path: 'dashboard', component: DashboardPageComponent, canActivate: [AuthGuardService] },
     {
         path: 'add-user',

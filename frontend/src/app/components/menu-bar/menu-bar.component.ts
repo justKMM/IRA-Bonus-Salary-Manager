@@ -18,7 +18,6 @@ export class MenuBarComponent implements OnInit {
    */
     buttons = [
         { title: 'Welcome', routerLink: '', roles: [USER_ROLES.ADMIN, USER_ROLES.CEO, USER_ROLES.HR, USER_ROLES.SALESMAN] },
-        { title: 'Example', routerLink: 'example', roles: [USER_ROLES.ADMIN, USER_ROLES.CEO, USER_ROLES.HR, USER_ROLES.SALESMAN] },
         { title: 'Dashboard', routerLink: 'dashboard', roles: [USER_ROLES.ADMIN, USER_ROLES.CEO, USER_ROLES.HR] },
         {
             title: 'Verify Bonuses',
