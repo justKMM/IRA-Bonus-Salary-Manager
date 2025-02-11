@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { SalesmanInterface } from '../interfaces/salesman-interface';
+import { Salesman } from '../models/Salesman';
 import { environment } from '../../../environments/environment';
 import {map} from 'rxjs/operators';
 
@@ -11,17 +11,17 @@ import {map} from 'rxjs/operators';
 export class SalesmenService {
     constructor(private http: HttpClient) { }
 
-    querySalesmenFromBackend(): Observable<HttpResponse<SalesmanInterface[]>> {
-        return this.http.get<SalesmanInterface[]>(
+    querySalesmenFromBackend(): Observable<HttpResponse<Salesman[]>> {
+        return this.http.get<Salesman[]>(
             environment.apiEndpoint + '/api/salesmen',
             {observe: 'response', withCredentials: true}
         )
             .pipe(
-                map((response: HttpResponse<SalesmanInterface[]>): HttpResponse<SalesmanInterface[]> => {
+                map((response: HttpResponse<Salesman[]>): HttpResponse<Salesman[]> => {
                     // Filter out any null or undefined entries before mapping
-                    const mappedData: SalesmanInterface[] = response.body
-                        .filter((res: SalesmanInterface): boolean => res !== null && res !== undefined);
-                        /* .map((res: SalesmanInterface): SalesmanInterface => ({
+                    const mappedData: Salesman[] = response.body
+                        .filter((res: Salesman): boolean => res !== null && res !== undefined);
+                        /* .map((res: Salesman): Salesman => ({
                             salesmanId: res.salesmanId,
                             uid: res.uid,
                             employeeId: res.employeeId,

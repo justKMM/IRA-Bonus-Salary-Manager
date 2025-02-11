@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { SalesmanInterface } from '../../interfaces/salesman-interface';
+import { Salesman } from '../../models/Salesman';
 import { SalesmenStateService } from '../../services/salesmen-state.service';
-import { BonusSalaryRecordInterface } from '../../interfaces/bonus-salary-record-interface';
+import { BonusSalary } from '../../models/BonusSalary';
 import { Router } from '@angular/router';
 import {UserService} from '../../services/user.service';
 import {User} from '../../models/User';
+import {BonusSalaryService} from '../../services/bonus-salary.service';
 
 interface BonusTableRow {
     salesmanId: number;
@@ -35,6 +36,7 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
 
     constructor(
         private userService: UserService,
+        private bonusSalaryService: BonusSalaryService,
         private router: Router,
         private salesmenStateService: SalesmenStateService, ) {
         // Default value for year picker is current year (2025)
@@ -53,16 +55,17 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
 
         this.dataSource = salesmen
             // Filter for salesmen if current user is salesman
-            .filter((salesman: SalesmanInterface): boolean =>
+            .filter((salesman: Salesman): boolean =>
                 this.user?.role !== 'salesman' ||
                 (
                     !isNaN(Number(this.user?.username)) &&
                     salesman.salesmanId === Number(this.user?.username)
                 )
             )
-            .map((salesman: SalesmanInterface): BonusTableRow => {
+            .map((salesman: Salesman): BonusTableRow => {
+                // Filter the records of the year
                 const yearBonuses = salesman.bonusSalary?.filter(
-                    (bonus: BonusSalaryRecordInterface): boolean => bonus.year === this.selectedYear
+                    (bonus: BonusSalary): boolean => bonus.year === this.selectedYear
                 ) || [];
 
                 const totalBonus = yearBonuses.reduce(
@@ -96,16 +99,16 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
 
         this.isLoading = false;
     }
-
+    // React upon year change
     onYearChange(): void {
         this.loadBonusData();
     }
-
+    // Viewing Details of the selected bonus salary record
     viewDetails(salesmanId: number): void {
         void this.router.navigate(['/bonus-details', salesmanId, this.selectedYear]);
     }
 
-    verify(salesmanId: number): void {
+    acceptBonus(salesmanId: number): void {
         const index = this.dataSource.findIndex((row): boolean => row.salesmanId === salesmanId);
         if (index !== -1) {
             switch (this.user?.role) {

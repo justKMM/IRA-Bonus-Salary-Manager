@@ -40,7 +40,11 @@ export class MenuBarComponent implements OnInit {
      * @param router
      * @param userService
      */
-    constructor(private authService: AuthService, private router: Router, private userService: UserService) { }
+    constructor(
+        private authService: AuthService,
+        private router: Router,
+        private userService: UserService
+    ) { }
 
     ngOnInit(): void {
         this.fetchUser();

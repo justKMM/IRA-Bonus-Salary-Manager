@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SocialPerformanceService } from '../../services/social-performance.service';
-import {SocialPerformanceFormInterface} from '../../interfaces/social-performance-form-interface';
+import {SocialPerformancesForm} from '../../models/SocialPerformancesForm';
 
 @Component({
     selector: 'app-social-performance-form',
@@ -43,7 +43,7 @@ export class SocialPerformanceFormComponent {
     onSubmit(): void {
         console.log('Form submitted');
         if (this.form.valid) {
-            const socialPerformanceData: SocialPerformanceFormInterface = {
+            const socialPerformanceData: SocialPerformancesForm = {
                 salesmanId: this.data.salesmanId,
                 socialId: this.form.get('year')?.value as number,
                 values: [

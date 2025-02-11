@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SalesmanInterface } from '../interfaces/salesman-interface';
+import { Salesman } from '../models/Salesman';
 import { SalesmenService } from './salesmen.service';
 import {HttpResponse} from '@angular/common/http';
 
@@ -7,28 +7,28 @@ import {HttpResponse} from '@angular/common/http';
     providedIn: 'root'
 })
 export class SalesmenStateService {
-    private seniorSalesMen: SalesmanInterface[] = [];
+    private seniorSalesMen: Salesman[] = [];
 
     constructor(private salesmenService: SalesmenService) {}
 
-    getSalesmen(): SalesmanInterface[] {
+    getSalesmen(): Salesman[] {
         return this.seniorSalesMen;
     }
 
-    getSalesmanById(salesmanId: number): SalesmanInterface | undefined {
+    getSalesmanById(salesmanId: number): Salesman | undefined {
         return this.seniorSalesMen.find(
-            (salesman: SalesmanInterface): boolean =>
+            (salesman: Salesman): boolean =>
                 salesman.salesmanId === salesmanId
         );
     }
 
-    setSalesmen(updatedSeniorSalesMen: SalesmanInterface[]): void {
+    setSalesmen(updatedSeniorSalesMen: Salesman[]): void {
         this.seniorSalesMen = updatedSeniorSalesMen;
     }
 
     fetchSalesmen(): void {
         this.salesmenService.querySalesmenFromBackend().subscribe({
-            next: (response: HttpResponse<SalesmanInterface[]>): void => {
+            next: (response: HttpResponse<Salesman[]>): void => {
                 if (response.status === 200 && response.body) {
                     this.setSalesmen(response.body);
                 }
