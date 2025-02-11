@@ -1,0 +1,77 @@
+<div class="popup-overlay" *ngIf="isVisible">
+    <div class="popup-content">
+        <h2 class="text-xl font-bold mb-4">Bonus Evaluation Details</h2>
+
+        <!-- General Information -->
+        <div class="section mb-6">
+            <h3 class="text-lg font-semibold mb-2">General Information</h3>
+            <div *ngIf="evaluation">
+                <p>Employee: {{evaluation.fullname}}</p>
+                <p>Department: {{evaluation.department}}</p>
+                <p>Year: {{evaluation.year}}</p>
+                <p>Total Bonus: {{evaluation.bonus | currency}}</p>
+            </div>
+        </div>
+
+        <!-- Sales Performances -->
+        <div class="section mb-6">
+            <h3 class="text-lg font-semibold mb-2">Sales Performance</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Customer</th>
+                        <th>Rating</th>
+                        <th>Items</th>
+                        <th>Bonus</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let sale of evaluation?.salesEvaluation">
+                        <td>{{sale.productName}}</td>
+                        <td>{{sale.customer}}</td>
+                        <td>{{sale.customerRating}}</td>
+                        <td>{{sale.items}}</td>
+                        <td>{{sale.bonus | currency}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Social Performances -->
+        <div class="section mb-6">
+            <h3 class="text-lg font-semibold mb-2">Social Performance</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Target</th>
+                        <th>Actual</th>
+                        <th>Bonus</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let social of evaluation?.socialEvaluation">
+                        <td>{{social.description}}</td>
+                        <td>{{social.targetValue}}</td>
+                        <td>{{social.actualValue}}</td>
+                        <td>{{social.bonus | currency}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Close Button -->
+        <div class="text-right">
+            <button
+                class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                (click)="closeForm()">
+                Close
+            </button>
+        </div>
+    </div>
+</div>

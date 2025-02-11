@@ -8,7 +8,7 @@
         </mat-select>
     </mat-form-field>
 
-    <table mat-table [dataSource]="bonusSalaryRows" class="mat-elevation-z8">
+    <table mat-table [dataSource]="bonusSalaryRows" *ngIf="!isLoading" class="mat-elevation-z8">
         <ng-container matColumnDef="employeeId">
             <th mat-header-cell *matHeaderCellDef>Salesman ID</th>
             <td mat-cell *matCellDef="let row">{{row.salesmanId}}</td>

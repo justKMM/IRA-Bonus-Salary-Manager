@@ -51,7 +51,6 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
     constructor(
         private userService: UserService,
         private evaluationService: EvaluationService,
-        private router: Router,
         private salesmenStateService: SalesmenStateService
     ) {
         const currentYear = new Date().getFullYear();
@@ -60,14 +59,12 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.fetchUser();
-    }
-
-    fetchUser(): void {
         this.userService.getOwnUser().subscribe((user): void => {
             this.user = user;
+            this.loadSalesmenByYear();
         });
     }
+
     // Load the entire dataset (salesmen + bonuses)
     loadSalesmenByYear(): void {
         this.bonusSalaryRows = [];
@@ -138,6 +135,6 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
     }
 
     viewDetails(salesmanId: number): void {
-        void this.router.navigate(['/bonus-details', salesmanId, this.selectedYear]);
+        this.evaluationService.openBonusDetailsDialog(salesmanId, this.selectedYear);
     }
 }
