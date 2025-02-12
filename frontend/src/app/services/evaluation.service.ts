@@ -7,7 +7,7 @@ import {environment} from '../../../environments/environment';
 import {Evaluation} from '../models/Evaluation';
 import {MatDialog} from '@angular/material/dialog';
 import {BonusDetailsFormComponent} from '../components/bonus-details-form/bonus-details-form.component';
-import {catchError, tap} from "rxjs/operators";
+import {catchError, tap} from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'

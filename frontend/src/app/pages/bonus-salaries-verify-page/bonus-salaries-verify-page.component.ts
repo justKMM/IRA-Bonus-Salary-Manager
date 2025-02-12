@@ -57,9 +57,11 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.userService.getOwnUser().subscribe(async (user): Promise<void> => {
+        this.userService.getOwnUser().subscribe((user): void => {
             this.user = user;
-            await this.loadSalesmenByYear();
+            this.loadSalesmenByYear().catch((error): void => {
+                console.error('Error loading salesmen:', error);
+            });
         });
     }
 
