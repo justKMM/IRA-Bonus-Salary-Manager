@@ -527,11 +527,11 @@ exports.getAllSalesmenFromOdoo = async () => {
                     lastName,
                     new BonusSalary(),
                     jobTitle,
-                    employee.unit || '',
+                    department,
                     normalizedGender
                 ).toJSON();
             } catch (error) {
-                console.warn(`Skipping invalid salesman ${employee.fullName}: ${error.message} while fetching from OrangeHRM`);
+                console.warn(`Skipping invalid salesman ${employee.fullName}: ${error.message} while fetching from Odoo`);
                 return null;
             }
         }));
