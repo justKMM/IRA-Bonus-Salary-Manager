@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import {User} from '../models/User';
-import {HttpClient, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {UserService} from './user.service';
-import {Observable} from 'rxjs';
+import {Observable, throwError} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {Evaluation} from '../models/Evaluation';
 import {MatDialog} from '@angular/material/dialog';
 import {BonusDetailsFormComponent} from '../components/bonus-details-form/bonus-details-form.component';
+import {catchError, tap} from "rxjs/operators";
 
 @Injectable({
     providedIn: 'root'
@@ -20,8 +21,8 @@ export class EvaluationService {
     ) {
         this.userService.getOwnUser().subscribe((user): void => {
             this.user = user;
-            if (!this.user.role) {
-                console.error('Bonus Salary Service: User init failed');
+            if (!this.user.role && !this.user.isAdmin) {
+                console.error('Evaluation Service: User init failed');
             }
         });
     }
@@ -30,6 +31,12 @@ export class EvaluationService {
         return this.http.get<Evaluation>(
             environment.apiEndpoint + `/api/evaluation/${salesmanId}/${year}`,
             {observe: 'response', withCredentials: true}
+        ).pipe(
+            tap((response): void => console.log('Evaluation Service: Response from Backend:', response)),
+            catchError((error: HttpErrorResponse): Observable<never> => {
+                console.error('Evaluation Service: Response from Backend:', error);
+                return throwError((): HttpErrorResponse => error);
+            })
         );
     }
 

@@ -11,9 +11,14 @@ import {SocialPerformancesForm} from '../../models/SocialPerformancesForm';
 })
 export class SocialPerformanceFormComponent {
     form: FormGroup;
-
     scores: number[] = [0, 1, 2, 3, 4, 5]; // Score options
-    years: number[] = Array.from({ length: new Date().getFullYear() - 1950 + 1 }, (_, i): number => 1950 + i); // Year options
+    startYear = 2000;
+    years: number[] = Array.from(
+        {
+            length: new Date().getFullYear() - this.startYear + 1
+        },
+        (_, i): number => this.startYear + i
+    ); // Year options
 
     constructor(
         private fb: FormBuilder,

@@ -4,12 +4,14 @@ import { SalesmenStateService } from '../../services/salesmen-state.service';
 import { BonusSalary } from '../../models/BonusSalary';
 import { Router } from '@angular/router';
 import {UserService} from '../../services/user.service';
-import {User} from '../../models/User';
+import {User, USER_ROLES} from '../../models/User';
 import {EvaluationService} from '../../services/evaluation.service';
 import {Evaluation} from '../../models/Evaluation';
 import {HttpResponse} from '@angular/common/http';
 import {SalesPerformance} from '../../models/SalesPerformance';
 import {SocialPerformance} from '../../models/SocialPerformance';
+import {forkJoin, Observable} from 'rxjs';
+import {MatTableDataSource} from "@angular/material/table";
 class BonusSalaryRow {
     salesmanId: number;
     fullname: string;
@@ -40,11 +42,10 @@ class BonusSalaryRow {
 export class BonusSalariesVerifyPageComponent implements OnInit {
     displayedColumns: string[] = ['salesmanId', 'fullname', 'salesBonus', 'socialBonus', 'totalBonus', 'actions'];
     // The dataset for the table
-    bonusSalaryRows: BonusSalaryRow[] = [];
+    bonusSalaryRows = new MatTableDataSource<BonusSalaryRow>([]);
     evaluations: Evaluation[] = [];
-    bonusSalaries: BonusSalary[] = [];
     years: number[] = [];
-    selectedYear: number;
+    selectedYear = 2025;
     isLoading = true;
     user: User;
 
@@ -59,39 +60,44 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.userService.getOwnUser().subscribe((user): void => {
+        this.userService.getOwnUser().subscribe(async (user): Promise<void> => {
             this.user = user;
-            this.loadSalesmenByYear();
+            await this.loadSalesmenByYear();
         });
     }
 
     // Load the entire dataset (salesmen + bonuses)
-    loadSalesmenByYear(): void {
-        this.bonusSalaryRows = [];
+    async loadSalesmenByYear(): Promise<void> {
+        this.bonusSalaryRows.data = [];
         this.evaluations = [];
-        const salesmen: Salesman[] = this.salesmenStateService.getSalesmen();
-        // Filter the salesmen (for when the logged in user is a salesman)
-        const filteredSalesmen: Salesman[] = salesmen.filter((salesman: Salesman): boolean =>
-            this.user?.role !== 'salesman' ||
-            (this.user?.username && salesman.salesmanId === Number(this.user.username))
-        );
+        let salesmen: Salesman[] = this.salesmenStateService.getSalesmen();
+        // Filter the salesmen (for when the logged-in user is a salesman)
+        if (this.user?.role === USER_ROLES.SALESMAN) {
+            salesmen = salesmen.filter((salesman: Salesman): boolean =>
+                (this.user?.username && salesman.salesmanId === Number(this.user.username))
+            );
+        }
         // Getting the evaluation of the corresponding year for the salesmen
-        filteredSalesmen.forEach((salesman: Salesman): void => {
+        const promises = salesmen.map((salesman): Promise<HttpResponse<Evaluation>> =>
             this.evaluationService.getEvaluationBySalesmanIdAndYear(
                 salesman.salesmanId,
                 this.selectedYear
-            ).subscribe({
-                next: (response: HttpResponse<Evaluation>): void => {
-                    if (response?.body) {
-                        this.evaluations.push(response.body);
-                        this.loadBonusData(response.body);
-                    }
-                },
-                error: (error: Error): void => console.error('Error loading evaluation:', error)
-            });
-        });
+            ).toPromise()
+        );
 
-        this.isLoading = false;
+        try {
+            const responses = await Promise.all(promises);
+            responses.forEach((response): void => {
+                if (response?.body) {
+                    this.evaluations.push(response.body);
+                    this.loadBonusData(response.body);
+                }
+            });
+        } catch (error) {
+            console.error(error);
+        } finally {
+            this.isLoading = false;
+        }
     }
     // load the bonuses (sales, social, total)
     loadBonusData(evaluation: Evaluation): void {
@@ -101,17 +107,19 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
         const totalSocialBonus: number = evaluation.socialEvaluation
             .reduce((sum: number, perf: SocialPerformance): number => sum + (perf.bonus || 0), 0);
 
-        this.bonusSalaryRows.push({
+        this.bonusSalaryRows.data = [...this.bonusSalaryRows.data, {
             salesmanId: evaluation.salesmanId,
             fullname: evaluation.fullname,
             salesBonus: totalSalesBonus,
             socialBonus: totalSocialBonus,
             totalBonus: totalSalesBonus + totalSocialBonus
-        });
+        }];
     }
     // Reacts on year change
-    onYearChange(): void {
-        this.loadSalesmenByYear();
+    async onYearChange(): Promise<void> {
+        await this.loadSalesmenByYear();
+        console.log(`Evaluations: ${this.evaluations.length}`);
+        console.log(`Bonus Salary Rows: ${this.bonusSalaryRows.data.length}`);
     }
     // Bonus accept action
     acceptBonus(salesmanId: number): void {
