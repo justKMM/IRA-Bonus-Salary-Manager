@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AddUserPageComponent } from './pages/add-user-page/add-user-page.component';
 import { DashboardPageComponent } from './pages/dashboard-page/dashboard-page.component';
-import { ExamplePageComponent } from './pages/example-page/example-page.component';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
@@ -25,7 +24,6 @@ import {USER_ROLES} from './models/User';
  */
 const routes: Routes = [
     { path: 'login', component: LoginPageComponent },
-    { path: 'example', component: ExamplePageComponent, canActivate: [AuthGuardService] },
     { path: 'dashboard', component: DashboardPageComponent, canActivate: [AuthGuardService] },
     {
         path: 'add-user',

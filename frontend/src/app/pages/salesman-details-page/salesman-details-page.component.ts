@@ -20,7 +20,7 @@ import {MatTableDataSource} from '@angular/material/table';
 })
 export class SalesmanDetailsPageComponent implements OnInit{
     salesman: Salesman | undefined;
-    dataSource!: MatTableDataSource<BonusSalary>;
+    bonusSalaries!: MatTableDataSource<BonusSalary>;
     columnsToDisplay = ['year', 'value', 'actions'];
     expandedElement: BonusSalary | null = null;
 
@@ -53,7 +53,7 @@ export class SalesmanDetailsPageComponent implements OnInit{
                     secondBonusSalaryRecord: BonusSalary
                 ): number => secondBonusSalaryRecord.year - firstBonusSalaryRecord.year
                 );
-            this.dataSource = new MatTableDataSource(sortedData);
+            this.bonusSalaries = new MatTableDataSource(sortedData);
         }
     }
 

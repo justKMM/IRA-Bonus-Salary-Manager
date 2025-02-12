@@ -15,4 +15,5 @@ export interface SocialPerformance {
     targetValue: number;
     actualValue: number;
     year?: number;
+    bonus?: number;
 }

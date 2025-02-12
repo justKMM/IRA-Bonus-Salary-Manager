@@ -12,7 +12,6 @@ import {UserInterface} from '../interfaces/user-interface';
     providedIn: 'root'
 })
 export class UserService {
-
     constructor(private http: HttpClient) { }
 
     /**

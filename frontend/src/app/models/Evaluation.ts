@@ -1,7 +1,7 @@
 import {SalesPerformance} from './SalesPerformance';
 import {SocialPerformance} from './SocialPerformance';
 
-export interface Evaluation extends Iterable<Evaluation> {
+export interface Evaluation {
     salesmanId: number;
     fullname?: string;
     department?: string;
@@ -10,7 +10,7 @@ export interface Evaluation extends Iterable<Evaluation> {
     salesEvaluation: SalesPerformance[];
     socialEvaluation: SocialPerformance[];
     remark?: string;
-    acceptedHR: false;
-    acceptedCEO: false;
-    acceptedSalesman: false;
+    acceptedHR: boolean;
+    acceptedCEO: boolean;
+    acceptedSalesman: boolean;
 }
