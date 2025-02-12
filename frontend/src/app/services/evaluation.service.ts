@@ -61,11 +61,11 @@ export class EvaluationService {
         );
     }
 
-    openBonusDetailsDialog(salesmanId: number, year: number): void {
+    openBonusDetailsDialog(salesmanId: number, year: number, totalBonus: number): void {
         this.dialog.open(BonusDetailsFormComponent, {
             width: '90%',
             maxWidth: '800px',
-            data: { salesmanId, year }
+            data: { salesmanId, year, totalBonus }
         });
     }
 }

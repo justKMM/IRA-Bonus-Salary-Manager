@@ -1,6 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {Evaluation} from '../../models/Evaluation';
 import {EvaluationService} from '../../services/evaluation.service';
+import {HttpResponse} from '@angular/common/http';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
     selector: 'app-bonus-details-form',
@@ -8,34 +10,43 @@ import {EvaluationService} from '../../services/evaluation.service';
     styleUrls: ['./bonus-details-form.component.css']
 })
 export class BonusDetailsFormComponent implements OnInit {
-    @Input() salesmanId!: number;
-    @Input() year!: number;
-
+    salesmanId!: number;
+    year!: number;
+    totalBonus!: number;
     isVisible = true;
-    evaluation: Evaluation | null = null;
+    evaluation: Evaluation;
 
     constructor(
         private evaluationService: EvaluationService,
-    ) {}
-
-    ngOnInit(): void {
-        this.fetchEvaluation();
+        @Inject(MAT_DIALOG_DATA) public data: {salesmanId: number; year: number; totalBonus: number},
+        private dialogRef: MatDialogRef<BonusDetailsFormComponent>
+    ) {
+        this.salesmanId = data.salesmanId;
+        this.year = data.year;
+        this.totalBonus = data.totalBonus;
     }
 
-    fetchEvaluation(): void {
-        this.evaluationService.getEvaluationBySalesmanIdAndYear(this.salesmanId, this.year).subscribe(
-            {
-                next: (data): void => {
-                    this.evaluation = data.body;
-                },
-                error: (error): void => {
-                    console.error('Error fetching evaluation:', error);
-                }
+    async ngOnInit(): Promise<void> {
+        await this.fetchEvaluation();
+    }
+
+    async fetchEvaluation(): Promise<void> {
+        const promise: Promise<HttpResponse<Evaluation>> = this.evaluationService.getEvaluationBySalesmanIdAndYear(
+            this.salesmanId,
+            this.year
+        ).toPromise();
+
+        try {
+            const response: HttpResponse<Evaluation> = await promise;
+            if (response?.body) {
+                this.evaluation = response.body;
             }
-        );
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     closeForm(): void {
-        this.isVisible = false;
+        this.dialogRef.close();
     }
 }

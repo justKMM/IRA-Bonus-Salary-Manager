@@ -1,8 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { Salesman } from '../../models/Salesman';
 import { SalesmenStateService } from '../../services/salesmen-state.service';
-import { BonusSalary } from '../../models/BonusSalary';
-import { Router } from '@angular/router';
 import {UserService} from '../../services/user.service';
 import {User, USER_ROLES} from '../../models/User';
 import {EvaluationService} from '../../services/evaluation.service';
@@ -10,8 +8,7 @@ import {Evaluation} from '../../models/Evaluation';
 import {HttpResponse} from '@angular/common/http';
 import {SalesPerformance} from '../../models/SalesPerformance';
 import {SocialPerformance} from '../../models/SocialPerformance';
-import {forkJoin, Observable} from 'rxjs';
-import {MatTableDataSource} from "@angular/material/table";
+import {MatTableDataSource} from '@angular/material/table';
 class BonusSalaryRow {
     salesmanId: number;
     fullname: string;
@@ -138,11 +135,14 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
                 this.evaluations[index].acceptedSalesman = true;
                 this.evaluationService.salesmanAcceptEvaluation(salesmanId, this.selectedYear);
                 break;
+            default:
+                console.log('User is not allowed to accept Bonuses.');
+                break;
             }
         }
     }
 
-    viewDetails(salesmanId: number): void {
-        this.evaluationService.openBonusDetailsDialog(salesmanId, this.selectedYear);
+    viewDetails(salesmanId: number, totalBonus: number): void {
+        this.evaluationService.openBonusDetailsDialog(salesmanId, this.selectedYear, totalBonus);
     }
 }
