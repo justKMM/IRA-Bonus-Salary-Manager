@@ -40,6 +40,20 @@ export class EvaluationService {
         );
     }
 
+    deleteEvaluationBySalesmanIdAndYear(salesmanId: number, year: number): Observable<any> {
+        console.log(`Deleting old evaluation of salesman ${salesmanId}, year: ${year}`);
+        return this.http.delete(
+            environment.apiEndpoint + `/api/evaluation/${salesmanId}/${year}`,
+            {observe: 'response', withCredentials: true}
+        ).pipe(
+            tap((response): void => console.log('Evaluation Service: Response from Backend:', response)),
+            catchError((error: HttpErrorResponse): Observable<never> => {
+                console.error('Evaluation Service: Response from Backend:', error);
+                return throwError((): HttpErrorResponse => error);
+            })
+        );
+    }
+
     salesmanAcceptEvaluation(salesmanId: number, year: number): Observable<any> {
         return this.http.put(
             environment.apiEndpoint + `/api/evaluation/acceptSalesman/${salesmanId}/${year}`,

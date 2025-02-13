@@ -446,6 +446,26 @@ router.delete('/salesmen/performance/delete/:salesmanId/social/:socialId', sales
  *                 acceptedHR: { type: boolean }
  *                 acceptedCEO: { type: boolean }
  *                 acceptedSalesman: { type: boolean }
+ *   delete:
+ *      summary: Deletes evaluation
+ *      description: Deletes the evaluation for a specific salesman and year.
+ *      tags: [Evaluation]
+ *      parameters:
+ *       - in: path
+ *         name: salesmanId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the salesman
+ *       - in: path
+ *         name: year
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The year of the evaluation
+ *      responses:
+ *       200:
+ *         description: Evaluation updated successfully
  * /api/evaluation/update/{salesmanId}/{year}:
  *   put:
  *     summary: Update evaluation
@@ -574,6 +594,7 @@ router.delete('/salesmen/performance/delete/:salesmanId/social/:socialId', sales
  */
 // Evaluations
 router.get('/evaluation/:salesmanId/:year', evaluationApi.getEvaluation);
+router.delete('/evaluation/:salesmanId/:year', evaluationApi.deleteEvaluation);
 router.put('/evaluation/update/:salesmanId/:year', evaluationApi.updateEvaluation);
 router.put('/evaluation/acceptHR/:salesmanId/:year', evaluationApi.acceptHR);
 router.put('/evaluation/acceptCEO/:salesmanId/:year', evaluationApi.acceptCEO);
