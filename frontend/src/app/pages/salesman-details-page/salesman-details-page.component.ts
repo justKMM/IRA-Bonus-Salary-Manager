@@ -5,6 +5,8 @@ import {BonusSalary} from '../../models/BonusSalary';
 import { SalesmenStateService } from '../../services/salesmen-state.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {MatTableDataSource} from '@angular/material/table';
+import {EvaluationService} from '../../services/evaluation.service';
+import {BonusSalaryService} from "../../services/bonus-salary.service";
 
 @Component({
     selector: 'app-salesman-details-page',
@@ -23,11 +25,13 @@ export class SalesmanDetailsPageComponent implements OnInit{
     bonusSalaries!: MatTableDataSource<BonusSalary>;
     columnsToDisplay = ['year', 'value', 'actions'];
     expandedElement: BonusSalary | null = null;
+    loading = true;
 
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private salesmenStateService: SalesmenStateService
+        private salesmenStateService: SalesmenStateService,
+        private bonusSalaryService: BonusSalaryService
     ) {}
 
     ngOnInit(): void {
@@ -57,9 +61,20 @@ export class SalesmanDetailsPageComponent implements OnInit{
         }
     }
 
-    editRecord(record: BonusSalary): void {
-        console.log('Edit record:', record);
-        // TODO: Implement edit logic
+    postBonusSalariesToHrm(): void {
+        if (this.salesman?.salesmanId) {
+            this.bonusSalaryService.postBonusSalaryToHrmBySalesmanId(this.salesman.salesmanId)
+                .subscribe({
+                    next: (): void => {
+                        console.log('Successfully posted bonus salaries to HRM');
+                        // TODO: Add success notification
+                    },
+                    error: (error): void => {
+                        console.error('Error posting bonus salaries to HRM:', error);
+                        // TODO: Add error notification
+                    }
+                });
+        }
     }
 
     navigateToDashboard(): void {

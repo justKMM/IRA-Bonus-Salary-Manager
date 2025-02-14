@@ -670,7 +670,7 @@ exports.updateAllBonusSalarieToOrangeHRM = async (db) => {
 /**
  * Updates the bonus salary for a specific salesman in the MongoDB collection to OrangeHRM.
  * @param {Object} db - MongoDB database connection
- * @param {string} salesmanId - The ID of the salesman to update
+ * @param {number} salesmanId - The ID of the salesman to update
  * @throws {Error} If database operations or HRM post request fail
  */
 exports.updateBonusSalarieToOrangeHRM = async (db, salesmanId) => {

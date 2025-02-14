@@ -7,23 +7,23 @@ import {HttpResponse} from '@angular/common/http';
     providedIn: 'root'
 })
 export class SalesmenStateService {
-    private seniorSalesMen: Salesman[] = [];
+    private salesmen: Salesman[] = [];
 
     constructor(private salesmenService: SalesmenService) {}
 
     getSalesmen(): Salesman[] {
-        return this.seniorSalesMen;
+        return this.salesmen;
     }
 
     getSalesmanById(salesmanId: number): Salesman | undefined {
-        return this.seniorSalesMen.find(
+        return this.salesmen.find(
             (salesman: Salesman): boolean =>
                 salesman.salesmanId === salesmanId
         );
     }
 
-    setSalesmen(updatedSeniorSalesMen: Salesman[]): void {
-        this.seniorSalesMen = updatedSeniorSalesMen;
+    setSalesmen(updatedSalesmen: Salesman[]): void {
+        this.salesmen = updatedSalesmen;
     }
 
     fetchSalesmen(): void {

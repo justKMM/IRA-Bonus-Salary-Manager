@@ -203,7 +203,7 @@ exports.updateAllBonusSalarieToOrangeHRM = async function (req, res){
 exports.updateBonusSalarieToOrangeHRM = async function (req, res){
     try {
         const salesmanId = req.params.salesmanId;
-        const result = await SalesMenService.updateBonusSalarieToOrangeHRM(req.app.get('db'), salesmanId, req.body);
+        const result = await SalesMenService.updateBonusSalarieToOrangeHRM(req.app.get('db'), salesmanId);
         res.status(201).json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
