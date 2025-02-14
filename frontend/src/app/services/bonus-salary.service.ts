@@ -37,7 +37,7 @@ export class BonusSalaryService {
         );
     }
 
-    postAllBonusSalaryToHrmBySalesmanId(): Observable<any> {
+    postAllBonusSalaryToHrm(): Observable<any> {
         return this.http.post(
             environment.apiEndpoint + '/api/bonus',
             {},

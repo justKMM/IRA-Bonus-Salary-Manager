@@ -6,6 +6,7 @@ import {
     SocialPerformanceFormComponent
 } from '../../components/social-performance-form/social-performance-form.component';
 import { Salesman } from '../../models/Salesman';
+import {BonusSalaryService} from '../../services/bonus-salary.service';
 
 @Component({
     selector: 'app-dashboard-page',
@@ -19,6 +20,7 @@ export class DashboardPageComponent implements OnInit {
 
     constructor(
         private salesmenStateService: SalesmenStateService,
+        private bonusSalaryService: BonusSalaryService,
         private router: Router,
         private dialog: MatDialog
     ) { }
@@ -46,7 +48,23 @@ export class DashboardPageComponent implements OnInit {
         });
     }
 
-    editSalesman(salesmanId: number): void {
+    infoSalesman(salesmanId: number): void {
         void this.router.navigate(['/salesmen', salesmanId]);
+    }
+
+    postAllBonusSalariesToHrm(): void {
+        if (this.salesmen) {
+            this.bonusSalaryService.postAllBonusSalaryToHrm()
+                .subscribe({
+                    next: (): void => {
+                        console.log('Successfully posted bonus salaries to HRM');
+                        // TODO: Add success notification
+                    },
+                    error: (error): void => {
+                        console.error('Error posting bonus salaries to HRM:', error);
+                        // TODO: Add error notification
+                    }
+                });
+        }
     }
 }

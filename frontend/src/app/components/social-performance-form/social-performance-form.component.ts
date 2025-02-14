@@ -36,6 +36,7 @@ export class SocialPerformanceFormComponent {
         },
         (_, i): number => this.startYear + i
     ); // Year options
+    submitError = false;
 
     constructor(
         private fb: FormBuilder,

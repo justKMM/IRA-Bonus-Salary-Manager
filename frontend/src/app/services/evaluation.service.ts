@@ -73,6 +73,17 @@ export class EvaluationService {
     ceoAcceptEvaluation(salesmanId: number, year: number): Observable<any> {
         return this.http.put(
             environment.apiEndpoint + `/api/evaluation/acceptCEO/${salesmanId}/${year}`,
+            {},
+            {observe: 'response', withCredentials: true}
+        );
+    }
+
+    updateRemarkOfEvaluationBySalesmanIdAndYear(salesmanId: number, year: number, remark: string): Observable<any> {
+        return this.http.put(
+            environment.apiEndpoint + `/api/evaluation/update/${salesmanId}/${year}`,
+            {
+                remark,
+            },
             {observe: 'response', withCredentials: true}
         );
     }

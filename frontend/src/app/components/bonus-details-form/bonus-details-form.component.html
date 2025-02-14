@@ -69,6 +69,26 @@
             </div>
         </div>
 
+        <!-- Remarks Section -->
+        <div class="section">
+            <h3 class="section-title">Remarks</h3>
+            <div class="remarks-container">
+                <div *ngIf="!isEditing" class="remark-display">
+                    <p>{{evaluation?.remark || 'No remarks'}}</p>
+                    <button *ngIf="userIsCeo" class="edit-button" (click)="startEditing()">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                </div>
+                <div *ngIf="isEditing" class="remark-edit">
+                    <textarea [(ngModel)]="editedRemark" rows="4"></textarea>
+                    <div class="edit-buttons">
+                        <button class="save-button" (click)="saveRemark()">Save</button>
+                        <button class="cancel-button" (click)="cancelEdit()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Acceptance Status -->
         <div class="section">
             <h3 class="section-title">Acceptance Status</h3>

@@ -1,3 +1,8 @@
+<button mat-raised-button color="primary" (click)="postAllBonusSalariesToHrm()">
+    <mat-icon>cloud_upload</mat-icon>
+    Post all Bonuses to HRM
+</button>
+<br>
 <table mat-table [dataSource]="salesmen" class="mat-elevation-z8">
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef>ID</th>
@@ -32,7 +37,7 @@
   <ng-container matColumnDef="details">
     <th mat-header-cell *matHeaderCellDef>Details</th>
     <td mat-cell *matCellDef="let salesman">
-      <button mat-raised-button color="accent" (click)="editSalesman(salesman.salesmanId)">
+      <button mat-raised-button color="accent" (click)="infoSalesman(salesman.salesmanId)">
         <mat-icon>perm_identity</mat-icon>
         Details
       </button>
