@@ -126,16 +126,37 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
         if (index !== -1) {
             switch (this.user?.role) {
             case 'hr':
-                this.evaluations[index].acceptedHR = true;
-                this.evaluationService.hrAcceptEvaluation(salesmanId, this.selectedYear);
+                this.evaluationService.hrAcceptEvaluation(salesmanId, this.selectedYear)
+                    .subscribe({
+                        next: (): void => {
+                            this.evaluations[index].acceptedHR = true;
+                        },
+                        error: (error): void => {
+                            console.error('Error accepting HR evaluation:', error);
+                        }
+                    });
                 break;
             case 'ceo':
-                this.evaluations[index].acceptedCEO = true;
-                this.evaluationService.ceoAcceptEvaluation(salesmanId, this.selectedYear);
+                this.evaluationService.ceoAcceptEvaluation(salesmanId, this.selectedYear)
+                    .subscribe({
+                        next: (): void => {
+                            this.evaluations[index].acceptedCEO = true;
+                        },
+                        error: (error): void => {
+                            console.error('Error accepting CEO evaluation:', error);
+                        }
+                    });
                 break;
             case 'salesman':
-                this.evaluations[index].acceptedSalesman = true;
-                this.evaluationService.salesmanAcceptEvaluation(salesmanId, this.selectedYear);
+                this.evaluationService.salesmanAcceptEvaluation(salesmanId, this.selectedYear)
+                    .subscribe({
+                        next: (): void => {
+                            this.evaluations[index].acceptedSalesman = true;
+                        },
+                        error: (error): void => {
+                            console.error('Error accepting salesman evaluation:', error);
+                        }
+                    });
                 break;
             default:
                 console.log('User is not allowed to accept Bonuses.');

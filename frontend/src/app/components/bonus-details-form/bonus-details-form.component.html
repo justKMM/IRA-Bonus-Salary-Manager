@@ -1,24 +1,27 @@
 <div class="popup-overlay" *ngIf="isVisible">
     <div class="popup-content">
-        <h2 class="text-xl font-bold mb-4">Bonus Evaluation Details</h2>
+        <!-- Header -->
+        <div class="header">
+            <h2 class="title">Bonus Evaluation Details</h2>
+        </div>
 
         <!-- General Information -->
-        <div class="section mb-6">
-            <h3 class="text-lg font-semibold mb-2">General Information</h3>
-            <div *ngIf="evaluation">
-                <p>Employee: {{evaluation.fullname}}</p>
-                <p>ID: {{evaluation.salesmanId}}</p>
-                <p>Department: {{evaluation.department}}</p>
-                <p>Year: {{evaluation.year}}</p>
-                <p>Total Bonus: {{totalBonus | currency}}</p>
+        <div class="section">
+            <h3 class="section-title">General Information</h3>
+            <div *ngIf="evaluation" class="info-grid">
+                <p class="info-item">Employee: <span class="info-value">{{evaluation.fullname}}</span></p>
+                <p class="info-item">ID: <span class="info-value">{{evaluation.salesmanId}}</span></p>
+                <p class="info-item">Department: <span class="info-value">{{evaluation.department}}</span></p>
+                <p class="info-item">Year: <span class="info-value">{{evaluation.year}}</span></p>
+                <p class="info-item full-width">Total Bonus: <span class="info-value">{{totalBonus | currency}}</span></p>
             </div>
         </div>
 
         <!-- Sales Performances -->
-        <div class="section mb-6">
-            <h3 class="text-lg font-semibold mb-2">Sales Performance</h3>
-            <div class="overflow-x-auto">
-                <table class="min-w-full">
+        <div class="section">
+            <h3 class="section-title">Sales Performance</h3>
+            <div class="table-container">
+                <table>
                     <thead>
                     <tr>
                         <th>Product</th>
@@ -42,10 +45,10 @@
         </div>
 
         <!-- Social Performances -->
-        <div class="section mb-6">
-            <h3 class="text-lg font-semibold mb-2">Social Performance</h3>
-            <div class="overflow-x-auto">
-                <table class="min-w-full">
+        <div class="section">
+            <h3 class="section-title">Social Performance</h3>
+            <div class="table-container">
+                <table>
                     <thead>
                     <tr>
                         <th>Description</th>
@@ -66,13 +69,39 @@
             </div>
         </div>
 
+        <!-- Acceptance Status -->
+        <div class="section">
+            <h3 class="section-title">Acceptance Status</h3>
+            <div class="acceptance-container">
+                <!-- HR Status -->
+                <div class="acceptance-status" [ngClass]="{'accepted': evaluation?.acceptedHR}">
+                    <i class="status-icon" [innerHTML]="evaluation?.acceptedHR ? '✔' : '✗'"></i>
+                    <span class="status-text">
+                        {{evaluation?.acceptedHR ? 'Evaluation accepted by HR' : 'Pending HR acceptance'}}
+                    </span>
+                </div>
+
+                <!-- CEO Status -->
+                <div class="acceptance-status" [ngClass]="{'accepted': evaluation?.acceptedCEO}">
+                    <i class="status-icon" [innerHTML]="evaluation?.acceptedCEO ? '✔' : '✗'"></i>
+                    <span class="status-text">
+                        {{evaluation?.acceptedCEO ? 'Evaluation accepted by CEO' : 'Pending CEO acceptance'}}
+                    </span>
+                </div>
+
+                <!-- Salesman Status -->
+                <div class="acceptance-status" [ngClass]="{'accepted': evaluation?.acceptedSalesman}">
+                    <i class="status-icon" [innerHTML]="evaluation?.acceptedSalesman ? '✔' : '✗'"></i>
+                    <span class="status-text">
+                        {{evaluation?.acceptedSalesman ? 'Evaluation accepted by Salesman' : 'Pending Salesman acceptance'}}
+                    </span>
+                </div>
+            </div>
+        </div>
+
         <!-- Close Button -->
-        <div class="text-right">
-            <button
-                class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-                (click)="closeForm()">
-                Close
-            </button>
+        <div class="button-container">
+            <button class="close-button" (click)="closeForm()">Close</button>
         </div>
     </div>
 </div>
