@@ -5,8 +5,7 @@ import {BonusSalary} from '../../models/BonusSalary';
 import { SalesmenStateService } from '../../services/salesmen-state.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {MatTableDataSource} from '@angular/material/table';
-import {EvaluationService} from '../../services/evaluation.service';
-import {BonusSalaryService} from "../../services/bonus-salary.service";
+import {BonusSalaryService} from '../../services/bonus-salary.service';
 
 @Component({
     selector: 'app-salesman-details-page',
@@ -31,7 +30,7 @@ export class SalesmanDetailsPageComponent implements OnInit{
         private route: ActivatedRoute,
         private router: Router,
         private salesmenStateService: SalesmenStateService,
-        private bonusSalaryService: BonusSalaryService
+        private bonusSalaryService: BonusSalaryService,
     ) {}
 
     ngOnInit(): void {
