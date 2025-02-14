@@ -272,7 +272,7 @@ exports.updateEvaluation = async function (db, salesmanId, year, evaluationData)
 
         // Create new Evaluation instance with existing data merged with updates
         const evaluation = new Evaluation(
-            evaluationData.hasOwnProperty('fullname') ? evaluationData.fullname : existingEvaluation.fullname,
+            (evaluationData.hasOwnProperty('fullname') && evaluationData.fullname != null) ? evaluationData.fullname : existingEvaluation.fullname,
             salesmanId,
             evaluationData.hasOwnProperty('department') ? evaluationData.department : existingEvaluation.department,
             year,

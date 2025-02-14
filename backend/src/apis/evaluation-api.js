@@ -23,7 +23,7 @@ exports.updateEvaluation = async function (req, res) {
         const salesmanId = parseInt(req.params.salesmanId);
         const year = parseInt(req.params.year);
         const evaluationData = req.body;
-        await EvaluationService.updateEvaluation(req.app.get('db'), salesmanId, year, evaluationData);
+        await EvaluationService.updateEvaluation(req.app.get('db'), salesmanId, year.toString(), evaluationData);
         res.status(200).json({ message: 'Evaluation updated successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });
