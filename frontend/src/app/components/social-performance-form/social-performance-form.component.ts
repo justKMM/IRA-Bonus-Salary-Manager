@@ -1,9 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { SocialPerformancesForm } from '../../models/SocialPerformancesForm';
+import { EvaluationService } from '../../services/evaluation.service';
 import { SocialPerformanceService } from '../../services/social-performance.service';
-import {SocialPerformancesForm} from '../../models/SocialPerformancesForm';
-import {EvaluationService} from '../../services/evaluation.service';
 
 @Component({
     selector: 'app-social-performance-form',
@@ -11,7 +11,23 @@ import {EvaluationService} from '../../services/evaluation.service';
     styleUrls: ['./social-performance-form.component.css']
 })
 export class SocialPerformanceFormComponent {
-    form: FormGroup;
+    form: FormGroup = this.fb.group({
+        year: new Date().getFullYear(),
+        // Actual values
+        actualLeadershipScore: 0,
+        actualOpennessScore: 0,
+        actualSocialBehaviorScore: 0,
+        actualCommunicationScore: 0,
+        actualIntegrityScore: 0,
+        // Target values
+        targetLeadershipScore: 5,
+        targetOpennessScore: 5,
+        targetSocialBehaviorScore: 5,
+        targetCommunicationScore: 5,
+        targetIntegrityScore: 5,
+        // Comments
+        comments: ''
+    });
     scores: number[] = [0, 1, 2, 3, 4, 5]; // Score options
     startYear = 2000;
     years: number[] = Array.from(
@@ -27,25 +43,7 @@ export class SocialPerformanceFormComponent {
         private socialPerformanceService: SocialPerformanceService,
         private evaluationService: EvaluationService,
         @Inject(MAT_DIALOG_DATA) public data: { salesmanId: number }
-    ) {
-        this.form = this.fb.group({
-            year: new Date().getFullYear(),
-            // Actual values
-            actualLeadershipScore: 0,
-            actualOpennessScore: 0,
-            actualSocialBehaviorScore: 0,
-            actualCommunicationScore: 0,
-            actualIntegrityScore: 0,
-            // Target values
-            targetLeadershipScore: 5,
-            targetOpennessScore: 5,
-            targetSocialBehaviorScore: 5,
-            targetCommunicationScore: 5,
-            targetIntegrityScore: 5,
-            // Comments
-            comments: ''
-        });
-    }
+    ) { }
 
     onSubmit(): void {
         console.log('Form submitted');

@@ -2,6 +2,7 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <mat-dialog-content>
         <!-- Year -->
+        <div class="score-label">Year</div>
         <mat-form-field appearance="fill">
             <mat-label>Year</mat-label>
             <mat-select formControlName="year">
@@ -100,9 +101,10 @@
         </div>
 
         <!-- Comments -->
-        <mat-form-field appearance="fill">
+        <div class="score-label">Comments</div>
+        <mat-form-field appearance="fill" style="width: 100%;">
             <mat-label>Comments</mat-label>
-            <textarea matInput formControlName="comments"></textarea>
+            <textarea matInput formControlName="comments" rows="4" style="resize: vertical"></textarea>
         </mat-form-field>
     </mat-dialog-content>
 
