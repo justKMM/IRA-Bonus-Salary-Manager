@@ -12,10 +12,12 @@ export class SalesmenStateService {
     constructor(private salesmenService: SalesmenService) {}
 
     getSalesmen(): Salesman[] {
+        this.fetchSalesmen();
         return this.salesmen;
     }
 
     getSalesmanById(salesmanId: number): Salesman | undefined {
+        this.fetchSalesmen();
         return this.salesmen.find(
             (salesman: Salesman): boolean =>
                 salesman.salesmanId === salesmanId
