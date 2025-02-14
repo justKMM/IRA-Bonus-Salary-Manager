@@ -15,19 +15,22 @@ class BonusSalaryRow {
     salesBonus: number;
     socialBonus: number;
     totalBonus: number;
+    accepted: boolean;
 
     constructor(
         salesmanId: number,
         fullname: string,
         salesBonus: number,
         socialBonus: number,
-        totalBonus: number
+        totalBonus: number,
+        accepted: boolean,
     ) {
         this.salesmanId = salesmanId;
         this.fullname = fullname;
         this.salesBonus = salesBonus;
         this.socialBonus = socialBonus;
         this.totalBonus = totalBonus;
+        this.accepted = accepted;
     }
 }
 
@@ -106,12 +109,23 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
         const totalSocialBonus: number = evaluation.socialEvaluation
             .reduce((sum: number, perf: SocialPerformance): number => sum + (perf.bonus || 0), 0);
 
+        // State of accept button
+        let accepted = true;
+        if (this.user?.role === USER_ROLES.SALESMAN) {
+            accepted = evaluation.acceptedSalesman;
+        } else if (this.user?.role === USER_ROLES.HR) {
+            accepted = evaluation.acceptedHR;
+        } else if (this.user?.role === USER_ROLES.CEO) {
+            accepted = evaluation.acceptedCEO;
+        }
+
         this.bonusSalaryRows.data = [...this.bonusSalaryRows.data, {
             salesmanId: evaluation.salesmanId,
             fullname: evaluation.fullname,
             salesBonus: totalSalesBonus,
             socialBonus: totalSocialBonus,
-            totalBonus: totalSalesBonus + totalSocialBonus
+            totalBonus: totalSalesBonus + totalSocialBonus,
+            accepted
         }];
     }
     // Reacts on year change
@@ -121,21 +135,48 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
         console.log(`Bonus Salary Rows: ${this.bonusSalaryRows.data.length}`);
     }
     // Bonus accept action
-    acceptBonus(salesmanId: number): void {
+    acceptBonus(event: MouseEvent, salesmanId: number): void {
+        // Disabling the button on click
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') ;
+        if (button) {
+            button.disabled = true;
+        }
         const index = this.evaluations.findIndex((row): boolean => row.salesmanId === salesmanId);
         if (index !== -1) {
             switch (this.user?.role) {
             case 'hr':
-                this.evaluations[index].acceptedHR = true;
-                this.evaluationService.hrAcceptEvaluation(salesmanId, this.selectedYear);
+                this.evaluationService.hrAcceptEvaluation(salesmanId, this.selectedYear)
+                    .subscribe({
+                        next: (): void => {
+                            this.evaluations[index].acceptedHR = true;
+                        },
+                        error: (error): void => {
+                            console.error('Error accepting HR evaluation:', error);
+                        }
+                    });
                 break;
             case 'ceo':
-                this.evaluations[index].acceptedCEO = true;
-                this.evaluationService.ceoAcceptEvaluation(salesmanId, this.selectedYear);
+                this.evaluationService.ceoAcceptEvaluation(salesmanId, this.selectedYear)
+                    .subscribe({
+                        next: (): void => {
+                            this.evaluations[index].acceptedCEO = true;
+                        },
+                        error: (error): void => {
+                            console.error('Error accepting CEO evaluation:', error);
+                        }
+                    });
                 break;
             case 'salesman':
-                this.evaluations[index].acceptedSalesman = true;
-                this.evaluationService.salesmanAcceptEvaluation(salesmanId, this.selectedYear);
+                this.evaluationService.salesmanAcceptEvaluation(salesmanId, this.selectedYear)
+                    .subscribe({
+                        next: (): void => {
+                            this.evaluations[index].acceptedSalesman = true;
+                        },
+                        error: (error): void => {
+                            console.error('Error accepting salesman evaluation:', error);
+                        }
+                    });
                 break;
             default:
                 console.log('User is not allowed to accept Bonuses.');
@@ -143,7 +184,20 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
             }
         }
     }
-
+    // For an accepted evaluation
+    getSuccessMessage(role?: string): string {
+        switch (role) {
+        case USER_ROLES.HR:
+            return 'HR';
+        case USER_ROLES.CEO:
+            return 'CEO';
+        case USER_ROLES.SALESMAN:
+            return 'Accepted';
+        default:
+            return 'Unavailable';
+        }
+    }
+    // Open pop up bonus details form
     viewDetails(salesmanId: number, totalBonus: number): void {
         this.evaluationService.openBonusDetailsDialog(salesmanId, this.selectedYear, totalBonus);
     }

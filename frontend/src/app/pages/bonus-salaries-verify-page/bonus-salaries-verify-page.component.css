@@ -43,3 +43,27 @@ button {
 .no-data-message mat-icon {
     color: #ff4081;
 }
+/* Accept action */
+.accept-button {
+    position: relative;
+    min-width: 120px;  /* Ensure consistent width during transition */
+    transition: all 0.3s ease;
+}
+
+/* Animation for the content swap */
+.button-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.success-content {
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+}

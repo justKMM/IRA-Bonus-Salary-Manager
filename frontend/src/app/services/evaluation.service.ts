@@ -57,6 +57,7 @@ export class EvaluationService {
     salesmanAcceptEvaluation(salesmanId: number, year: number): Observable<any> {
         return this.http.put(
             environment.apiEndpoint + `/api/evaluation/acceptSalesman/${salesmanId}/${year}`,
+            {},
             {observe: 'response', withCredentials: true}
         );
     }
@@ -64,6 +65,7 @@ export class EvaluationService {
     hrAcceptEvaluation(salesmanId: number, year: number): Observable<any> {
         return this.http.put(
             environment.apiEndpoint + `/api/evaluation/acceptHR/${salesmanId}/${year}`,
+            {},
             {observe: 'response', withCredentials: true}
         );
     }
