@@ -30,11 +30,21 @@ exports.updateEvaluation = async function (req, res) {
     }
 };
 
+exports.deleteEvaluation = async function (req, res) {
+    try {
+        const salesmanId = parseInt(req.params.salesmanId);
+        const year = parseInt(req.params.year);
+        await EvaluationService.deleteEvaluation(req.app.get('db'), salesmanId, year.toString());
+        res.status(200).json({ message: `Evaluation of salesman ${salesmanId}, year ${year} deleted successfully` });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 exports.acceptHR = async function (req, res) {
     try {
         const salesmanId = parseInt(req.params.salesmanId);
         const year = parseInt(req.params.year);
-        const evaluationData = req.body;
         await EvaluationService.acceptHR(req.app.get('db'), salesmanId, year.toString());
         res.status(200).json({ message: 'Evaluation successfully accepted by HR' });
     } catch (error) {

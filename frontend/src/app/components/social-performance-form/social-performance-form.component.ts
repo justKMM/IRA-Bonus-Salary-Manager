@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SocialPerformanceService } from '../../services/social-performance.service';
 import {SocialPerformancesForm} from '../../models/SocialPerformancesForm';
+import {EvaluationService} from '../../services/evaluation.service';
 
 @Component({
     selector: 'app-social-performance-form',
@@ -24,6 +25,7 @@ export class SocialPerformanceFormComponent {
         private fb: FormBuilder,
         private dialogRef: MatDialogRef<SocialPerformanceFormComponent>,
         private socialPerformanceService: SocialPerformanceService,
+        private evaluationService: EvaluationService,
         @Inject(MAT_DIALOG_DATA) public data: { salesmanId: number }
     ) {
         this.form = this.fb.group({
@@ -86,9 +88,22 @@ export class SocialPerformanceFormComponent {
                 year: this.form.get('year')?.value as number,
                 comments: this.form.get('comments')?.value as string,
             };
-            this.socialPerformanceService.createSocialPerformance(socialPerformanceData);
-            this.dialogRef.close(this.form.value);
-            console.log('Form created');
+            this.evaluationService.deleteEvaluationBySalesmanIdAndYear(
+                socialPerformanceData.salesmanId,
+                socialPerformanceData.year
+            ).subscribe({
+                next: (): void => {
+                    console.log('Delete successful');
+                    this.socialPerformanceService.createSocialPerformance(socialPerformanceData);
+                    this.dialogRef.close(this.form.value);
+                },
+                error: (error): void => {
+                    console.error('Delete failed:', error);
+                    // Still proceed with create
+                    this.socialPerformanceService.createSocialPerformance(socialPerformanceData);
+                    this.dialogRef.close(this.form.value);
+                }
+            });
         }
     }
 

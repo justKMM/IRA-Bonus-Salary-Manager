@@ -314,6 +314,26 @@ exports.updateEvaluation = async function (db, salesmanId, year, evaluationData)
 }
 
 /**
+ * Delete an evaluation record for a specific salesman and year from the database.
+ * @param {Object} db - MongoDB database connection.
+ * @param {number} salesmanId - The ID of the salesman.
+ * @param {number} year - The year of the evaluation.
+ * @returns {Promise<Evaluation|null>} - The evaluation instance, or null if no evaluation is found.
+ * @throws {Error} - If an error occurs during the process.
+ */
+exports.deleteEvaluation = async function (db, salesmanId, year) {
+    try {
+        await db.collection('evaluation').deleteOne({
+            salesmanId: salesmanId,
+            year: year
+        });
+    } catch (error) {
+        console.error('Error deleting evaluation:', error);
+        throw new Error(`Failed to delete evaluation: ${error.message}`);
+    }
+}
+
+/**
  * Marks the evaluation as accepted by HR for a specific salesman and year.
  * If all evaluation acceptance flags are true, adds a bonus salary for the salesman.
  * @param {Object} db - MongoDB database connection.
