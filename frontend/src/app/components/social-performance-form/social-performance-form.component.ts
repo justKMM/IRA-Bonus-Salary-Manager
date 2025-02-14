@@ -91,9 +91,18 @@ export class SocialPerformanceFormComponent {
             this.evaluationService.deleteEvaluationBySalesmanIdAndYear(
                 socialPerformanceData.salesmanId,
                 socialPerformanceData.year
-            ).subscribe((): void => {
-                this.socialPerformanceService.createSocialPerformance(socialPerformanceData);
-                this.dialogRef.close(this.form.value);
+            ).subscribe({
+                next: (): void => {
+                    console.log('Delete successful');
+                    this.socialPerformanceService.createSocialPerformance(socialPerformanceData);
+                    this.dialogRef.close(this.form.value);
+                },
+                error: (error): void => {
+                    console.error('Delete failed:', error);
+                    // Still proceed with create
+                    this.socialPerformanceService.createSocialPerformance(socialPerformanceData);
+                    this.dialogRef.close(this.form.value);
+                }
             });
         }
     }

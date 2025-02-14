@@ -34,8 +34,8 @@ exports.deleteEvaluation = async function (req, res) {
     try {
         const salesmanId = parseInt(req.params.salesmanId);
         const year = parseInt(req.params.year);
-        await EvaluationService.deleteEvaluation(req.app.get('db'), salesmanId, year);
-        res.status(200).json({ message: 'Evaluation deleted successfully' });
+        await EvaluationService.deleteEvaluation(req.app.get('db'), salesmanId, year.toString());
+        res.status(200).json({ message: `Evaluation of salesman ${salesmanId}, year ${year} deleted successfully` });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

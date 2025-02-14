@@ -535,6 +535,27 @@ paths:
                     type: boolean
                   acceptedSalesman:
                     type: boolean
+    delete:
+      summary: Deletes evaluation
+      description: Deletes the evaluation for a specific salesman and year.
+      tags:
+        - Evaluation
+      parameters:
+        - in: path
+          name: salesmanId
+          required: true
+          schema:
+            type: string
+          description: The ID of the salesman
+        - in: path
+          name: year
+          required: true
+          schema:
+            type: integer
+          description: The year of the evaluation
+      responses:
+        "200":
+          description: Evaluation updated successfully
   /api/evaluation/update/{salesmanId}/{year}:
     put:
       summary: Update evaluation
