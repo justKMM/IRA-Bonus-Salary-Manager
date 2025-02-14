@@ -18,7 +18,11 @@ export class BonusDetailsFormComponent implements OnInit {
 
     constructor(
         private evaluationService: EvaluationService,
-        @Inject(MAT_DIALOG_DATA) public data: {salesmanId: number; year: number; totalBonus: number},
+        @Inject(MAT_DIALOG_DATA) public data: {
+            salesmanId: number;
+            year: number;
+            totalBonus: number;
+        },
         private dialogRef: MatDialogRef<BonusDetailsFormComponent>
     ) {
         this.salesmanId = data.salesmanId;

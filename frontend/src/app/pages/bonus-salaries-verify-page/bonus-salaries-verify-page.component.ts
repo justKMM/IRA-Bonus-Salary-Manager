@@ -15,19 +15,22 @@ class BonusSalaryRow {
     salesBonus: number;
     socialBonus: number;
     totalBonus: number;
+    accepted: boolean;
 
     constructor(
         salesmanId: number,
         fullname: string,
         salesBonus: number,
         socialBonus: number,
-        totalBonus: number
+        totalBonus: number,
+        accepted: boolean,
     ) {
         this.salesmanId = salesmanId;
         this.fullname = fullname;
         this.salesBonus = salesBonus;
         this.socialBonus = socialBonus;
         this.totalBonus = totalBonus;
+        this.accepted = accepted;
     }
 }
 
@@ -106,12 +109,23 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
         const totalSocialBonus: number = evaluation.socialEvaluation
             .reduce((sum: number, perf: SocialPerformance): number => sum + (perf.bonus || 0), 0);
 
+        // State of accept button
+        let accepted = true;
+        if (this.user?.role === USER_ROLES.SALESMAN) {
+            accepted = evaluation.acceptedSalesman;
+        } else if (this.user?.role === USER_ROLES.HR) {
+            accepted = evaluation.acceptedHR;
+        } else if (this.user?.role === USER_ROLES.CEO) {
+            accepted = evaluation.acceptedCEO;
+        }
+
         this.bonusSalaryRows.data = [...this.bonusSalaryRows.data, {
             salesmanId: evaluation.salesmanId,
             fullname: evaluation.fullname,
             salesBonus: totalSalesBonus,
             socialBonus: totalSocialBonus,
-            totalBonus: totalSalesBonus + totalSocialBonus
+            totalBonus: totalSalesBonus + totalSocialBonus,
+            accepted
         }];
     }
     // Reacts on year change
@@ -121,7 +135,13 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
         console.log(`Bonus Salary Rows: ${this.bonusSalaryRows.data.length}`);
     }
     // Bonus accept action
-    acceptBonus(salesmanId: number): void {
+    acceptBonus(event: MouseEvent, salesmanId: number): void {
+        // Type cast event.target to HTMLElement first
+        const target = event.target as HTMLElement;
+        const button = target.closest('button') ;
+        if (button) {
+            button.disabled = true;
+        }
         const index = this.evaluations.findIndex((row): boolean => row.salesmanId === salesmanId);
         if (index !== -1) {
             switch (this.user?.role) {
