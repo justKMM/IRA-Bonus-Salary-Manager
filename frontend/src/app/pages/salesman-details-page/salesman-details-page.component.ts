@@ -5,6 +5,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BonusSalary } from '../../models/BonusSalary';
 import { Salesman } from '../../models/Salesman';
 import { SalesmenStateService } from '../../services/salesmen-state.service';
+import {animate, state, style, transition, trigger} from '@angular/animations';
+import {MatTableDataSource} from '@angular/material/table';
+import {BonusSalaryService} from '../../services/bonus-salary.service';
 
 @Component({
     selector: 'app-salesman-details-page',
@@ -23,12 +26,14 @@ export class SalesmanDetailsPageComponent implements OnInit {
     bonusSalaries!: MatTableDataSource<BonusSalary>;
     columnsToDisplay = ['year', 'value', 'actions'];
     expandedElement: BonusSalary | null = null;
+    loading = true;
 
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private salesmenStateService: SalesmenStateService
-    ) { }
+        private salesmenStateService: SalesmenStateService,
+        private bonusSalaryService: BonusSalaryService,
+    ) {}
 
     ngOnInit(): void {
         const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -54,6 +59,22 @@ export class SalesmanDetailsPageComponent implements OnInit {
                 ): number => secondBonusSalaryRecord.year - firstBonusSalaryRecord.year
                 );
             this.bonusSalaries = new MatTableDataSource(sortedData);
+        }
+    }
+
+    postBonusSalariesToHrm(): void {
+        if (this.salesman?.salesmanId) {
+            this.bonusSalaryService.postBonusSalaryToHrmBySalesmanId(this.salesman.salesmanId)
+                .subscribe({
+                    next: (): void => {
+                        console.log('Successfully posted bonus salaries to HRM');
+                        // TODO: Add success notification
+                    },
+                    error: (error): void => {
+                        console.error('Error posting bonus salaries to HRM:', error);
+                        // TODO: Add error notification
+                    }
+                });
         }
     }
 
