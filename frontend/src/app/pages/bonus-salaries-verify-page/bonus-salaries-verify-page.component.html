@@ -50,8 +50,14 @@
                         color="primary"
                         (click)="acceptBonus($event, row.salesmanId)"
                         [disabled]="row.accepted">
-                    <mat-icon>check</mat-icon>
-                    Accept
+                    <div class="button-content" *ngIf="!row.accepted">
+                        <mat-icon>check</mat-icon>
+                        Accept
+                    </div>
+                    <div class="success-content" *ngIf="row.accepted">
+                        <mat-icon>done_all</mat-icon>
+                        {{ getSuccessMessage(user?.role) }}
+                    </div>
                 </button>
                 <button mat-raised-button
                         color="accent"

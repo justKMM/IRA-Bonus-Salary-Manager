@@ -136,7 +136,7 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
     }
     // Bonus accept action
     acceptBonus(event: MouseEvent, salesmanId: number): void {
-        // Type cast event.target to HTMLElement first
+        // Disabling the button on click
         const target = event.target as HTMLElement;
         const button = target.closest('button') ;
         if (button) {
@@ -184,7 +184,20 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
             }
         }
     }
-
+    // For an accepted evaluation
+    getSuccessMessage(role?: string): string {
+        switch (role) {
+        case 'hr':
+            return 'HR';
+        case 'ceo':
+            return 'CEO';
+        case 'salesman':
+            return 'Accepted';
+        default:
+            return 'Unavailable';
+        }
+    }
+    // Open pop up bonus details form
     viewDetails(salesmanId: number, totalBonus: number): void {
         this.evaluationService.openBonusDetailsDialog(salesmanId, this.selectedYear, totalBonus);
     }
