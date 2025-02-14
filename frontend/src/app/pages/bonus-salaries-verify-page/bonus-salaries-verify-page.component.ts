@@ -187,11 +187,11 @@ export class BonusSalariesVerifyPageComponent implements OnInit {
     // For an accepted evaluation
     getSuccessMessage(role?: string): string {
         switch (role) {
-        case 'hr':
+        case USER_ROLES.HR:
             return 'HR';
-        case 'ceo':
+        case USER_ROLES.CEO:
             return 'CEO';
-        case 'salesman':
+        case USER_ROLES.SALESMAN:
             return 'Accepted';
         default:
             return 'Unavailable';
