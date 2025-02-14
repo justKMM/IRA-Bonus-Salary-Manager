@@ -12,3 +12,16 @@ app-menu-bar {
     width: 100%;
     z-index: 1000;
 }
+/* Error messages */
+.error-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: white;
+    gap: 1rem;
+}
+
+.error-message mat-icon {
+    color: #ff4081;
+}

@@ -99,14 +99,13 @@
                 </mat-select>
             </mat-form-field>
         </div>
-
-        <!-- Comments -->
-        <div class="score-label">Comments</div>
-        <mat-form-field appearance="fill" style="width: 100%;">
-            <mat-label>Comments</mat-label>
-            <textarea matInput formControlName="comments" rows="4" style="resize: vertical"></textarea>
-        </mat-form-field>
     </mat-dialog-content>
+    <!-- Submission error handling -->
+    <div *ngIf="submitError"
+         class="error-message mat-elevation-z8">
+        <mat-icon>warning</mat-icon>
+        <p>Submission error</p>
+    </div>
 
     <mat-dialog-actions align="end">
         <button mat-raised-button color="accent" mat-dialog-close>

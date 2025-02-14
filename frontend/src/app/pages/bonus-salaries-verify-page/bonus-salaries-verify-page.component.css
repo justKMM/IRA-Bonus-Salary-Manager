@@ -30,19 +30,7 @@ mat-form-field {
 button {
     min-width: 100px;
 }
-/* Data source empty handling */
-.no-data-message {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    background: white;
-    gap: 1rem;
-}
 
-.no-data-message mat-icon {
-    color: #ff4081;
-}
 /* Accept action */
 .accept-button {
     position: relative;

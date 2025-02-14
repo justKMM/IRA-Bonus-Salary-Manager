@@ -11,7 +11,7 @@
 
     <!-- Data source empty handling -->
     <div *ngIf="!isLoading && !bonusSalaryRows.data && evaluations.length === 0"
-         class="no-data-message mat-elevation-z8">
+         class="error-message mat-elevation-z8">
         <mat-icon>warning</mat-icon>
         <p>No Evaluation available for this year</p>
     </div>
