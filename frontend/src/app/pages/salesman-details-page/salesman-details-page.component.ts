@@ -5,8 +5,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BonusSalary } from '../../models/BonusSalary';
 import { Salesman } from '../../models/Salesman';
 import { SalesmenStateService } from '../../services/salesmen-state.service';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import {MatTableDataSource} from '@angular/material/table';
 import {BonusSalaryService} from '../../services/bonus-salary.service';
 
 @Component({
