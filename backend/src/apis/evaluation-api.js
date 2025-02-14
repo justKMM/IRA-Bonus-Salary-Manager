@@ -45,7 +45,6 @@ exports.acceptHR = async function (req, res) {
     try {
         const salesmanId = parseInt(req.params.salesmanId);
         const year = parseInt(req.params.year);
-        const evaluationData = req.body;
         await EvaluationService.acceptHR(req.app.get('db'), salesmanId, year.toString());
         res.status(200).json({ message: 'Evaluation successfully accepted by HR' });
     } catch (error) {
