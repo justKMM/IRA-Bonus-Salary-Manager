@@ -13,7 +13,8 @@
                 <p class="info-item">ID: <span class="info-value">{{evaluation.salesmanId}}</span></p>
                 <p class="info-item">Department: <span class="info-value">{{evaluation.department}}</span></p>
                 <p class="info-item">Year: <span class="info-value">{{evaluation.year}}</span></p>
-                <p class="info-item full-width">Total Bonus: <span class="info-value">{{totalBonus | currency}}</span></p>
+                <p class="info-item full-width">Total Bonus: <span class="info-value">{{totalBonus | currency}}</span>
+                </p>
             </div>
         </div>
 
@@ -23,22 +24,22 @@
             <div class="table-container">
                 <table>
                     <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Customer</th>
-                        <th>Rating</th>
-                        <th>Items</th>
-                        <th>Bonus</th>
-                    </tr>
+                        <tr>
+                            <th>Product</th>
+                            <th>Customer</th>
+                            <th>Rating</th>
+                            <th>Items</th>
+                            <th>Bonus</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr *ngFor="let sale of evaluation?.salesEvaluation">
-                        <td>{{sale.productName}}</td>
-                        <td>{{sale.customer}}</td>
-                        <td>{{sale.customerRating}}</td>
-                        <td>{{sale.items}}</td>
-                        <td>{{sale.bonus | currency}}</td>
-                    </tr>
+                        <tr *ngFor="let sale of evaluation?.salesEvaluation">
+                            <td>{{sale.productName}}</td>
+                            <td>{{sale.customer}}</td>
+                            <td>{{sale.customerRating}}</td>
+                            <td>{{sale.items}}</td>
+                            <td>{{sale.bonus | currency}}</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -50,20 +51,20 @@
             <div class="table-container">
                 <table>
                     <thead>
-                    <tr>
-                        <th>Description</th>
-                        <th>Target</th>
-                        <th>Actual</th>
-                        <th>Bonus</th>
-                    </tr>
+                        <tr>
+                            <th>Description</th>
+                            <th>Target</th>
+                            <th>Actual</th>
+                            <th>Bonus</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr *ngFor="let social of evaluation?.socialEvaluation">
-                        <td>{{social.description}}</td>
-                        <td>{{social.targetValue}}</td>
-                        <td>{{social.actualValue}}</td>
-                        <td>{{social.bonus | currency}}</td>
-                    </tr>
+                        <tr *ngFor="let social of evaluation?.socialEvaluation">
+                            <td>{{social.description}}</td>
+                            <td>{{social.targetValue}}</td>
+                            <td>{{social.actualValue}}</td>
+                            <td>{{social.bonus | currency}}</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -113,7 +114,9 @@
                 <div class="acceptance-status" [ngClass]="{'accepted': evaluation?.acceptedSalesman}">
                     <i class="status-icon" [innerHTML]="evaluation?.acceptedSalesman ? '✔' : '✗'"></i>
                     <span class="status-text">
-                        {{evaluation?.acceptedSalesman ? 'Evaluation accepted by Salesman' : 'Pending Salesman acceptance'}}
+                        {{ evaluation?.acceptedSalesman
+                        ? 'Evaluation accepted by Salesman'
+                        : 'Pending Salesman acceptance' }}
                     </span>
                 </div>
             </div>
@@ -121,7 +124,10 @@
 
         <!-- Close Button -->
         <div class="button-container">
-            <button class="close-button" (click)="closeForm()">Close</button>
+            <button mat-raised-button color="accent" (click)="closeForm()">
+                <mat-icon>close</mat-icon>
+                Close
+            </button>
         </div>
     </div>
 </div>
