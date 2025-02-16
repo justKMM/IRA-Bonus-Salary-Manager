@@ -32,6 +32,8 @@ import { SalesmanDetailsPageComponent } from './pages/salesman-details-page/sale
 import { BonusSalariesVerifyPageComponent } from './pages/bonus-salaries-verify-page/bonus-salaries-verify-page.component';
 import { RoleAccessDirective } from './directives/role-access.directive';
 import { BonusDetailsFormComponent } from './components/bonus-details-form/bonus-details-form.component';
+import { NgChartsModule } from 'ng2-charts';
+import { BonusChartComponent } from './components/bonus-chart/bonus-chart.component';
 
 @NgModule({
     declarations: [
@@ -49,6 +51,7 @@ import { BonusDetailsFormComponent } from './components/bonus-details-form/bonus
         BonusSalariesVerifyPageComponent,
         RoleAccessDirective,
         BonusDetailsFormComponent,
+        BonusChartComponent,
     ],
     imports: [
         BrowserModule,
@@ -70,7 +73,8 @@ import { BonusDetailsFormComponent } from './components/bonus-details-form/bonus
         MatDialogModule,
         ReactiveFormsModule,
         MatSelectModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        NgChartsModule
     ],
     providers: [
         {
