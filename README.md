@@ -1,77 +1,83 @@
-# *Integration Architectures* MEAN-Template
+# *Integration Architectures* MEAN-Stack Semester Project
 
-This template is meant to support students getting started with the Integration Architectures project.
+## Tech Stack
+1. **MongoDB**: A NoSQL database that stores data in flexible, JSON-like documents, allowing for easy scalability and data retrieval.
+2. **Express.js**: A web application framework for Node.js that simplifies the process of building robust APIs and web applications.
+3. **Angular**: A platform and framework for building single-page client applications using HTML and TypeScript, providing a rich user experience.
+4. **Node.js**: A JavaScript runtime built on Chrome's V8 engine that allows for server-side scripting and building scalable network applications.
 
-## Prerequisites
- 1. You need a **Node.js** runtime. It is available at: https://nodejs.org/ .
-    
-    [![NodeJs Website](readme_resources/node.png)](https://nodejs.org/)
-    Please download a version >16.x.x (The current LTS version 18.16.x works, but also the newest version 20.2.0 should
-    be fine).
- 
-    __!!! Important: On Windows (and maybe also other operating systems) it is necessary to reboot the device after this
-    step, to refresh the PATH and make `node` commands available in shell.__
+## Context
 
+A fictional company uses multiple systems for managing its Salesmen: OrangeHRM, OpenCRX, Odoo. The Head of HR Department dislikes the fact that she has to manually jump between multiple systems just to complete the simple task of creating Performance Evaluations and Bonus Salary Records for the individual Salesmen, then having the CEO and the Salesmen accept these Bonuses. Our task was to create a Fullstack Web Application, which acts as an Integration Platform between these Systems to help centralize the process using the MEAN-Stack. The project is a great display of the knowledge and skills we have accumulated during our study at Hochschule Bonn-Rhein-Sieg, especially during the Module Integration Architecture.
 
- 2. Access to a **MongoDB** server is necessary. If you don't have one already, you should download the community server at:
-    https://www.mongodb.com/try/download/community .
-    [![MongoDB Website](readme_resources/mongodb.png)](https://www.mongodb.com/try/download/community)
-    Upon installation, I would recommend you to select, that MongoDB
-    Compass should also be installed. It's a nice GUI-application for managing MongoDB Servers and Databases.
+## Development Process
 
-## Setup
-You can use your favourite IDE to work on your applications. But please note, that our examples mostly cover the IDEs from 
-Jetbrains (IntelliJ, WebStorm etc.).
-
- 1. **Cloning this git repository**
-
-    You need to clone this repository. It can simply be done through your IDE or using git bash.
-    
-    ![IntelliJ git clone](readme_resources/new_from_version_control.png)
-    In the IDEs from Jetbrains git repositories can be cloned by selecting *File > New > Project from Version Control* (Shown on the left of the screenshot).
-    Also, there is a "Get from VCS" button on the welcome-screen, when no project is opened.
-    Either way a dialog is displayed (shown on the right), where you can paste the URL and clone it.
- <br><br>
-    Alternatively git bash can be used. Simply type/paste this at the desired location:
-
-    `git clone https://github.com/aldaGit/iar-framework`
-
-
- 2. **Installing dependencies**
-
-    The dependencies of this software can be installed with node package manager (npm). Both front- and backend need to be
-    handled separately.<br>
-    
-    ![npm install in InteliJ](readme_resources/npm_backend.png)
-    In IntelliJ and Webstorm you can just right-click the `package.json` file and select "Run 'npm install'" to install
-    the dependencies.<br> Alternatively you navigate to the location of the `package.json` inside your shell and then run `npm install`.
-    <br><br>
-    __Either way, this has to be done both in the directory `frontend/` and `backend/`.__
-
-## Launching the Applications
-
-For both front- and backend there ar run scripts included in their `package.json`.
-So you can just start them by running `npm run start` in their respective directories. On Windows systems you should  start
-the _backend_ with `npm run start_win`, because there environment variables are handled a little different than in Unix.
-
-After they are done starting, the frontend can be reached from your browser at: http://localhost:4200/
-[![Login page of template](readme_resources/login.png)](http://localhost:4200/)
-You can log in with username *admin* and the password, which is preconfigured at `backend/environment/environment.js` for local use or `backend/environment/environment.prod.js` remote deployment.
-In case you changed and forgot your password, you can still empty the collection 'user' in the database and restart the backend. Then a new admin user will be created upon restart/redeployment.
-
-It is possible in IntelliJ or WebStorm, to store these start commands in a convenient way and start your applications at a push of a button.
-To do so, select "Add Configuration..." at the upper right of your IntelliJ Window. A window will open, which looks like this:
-
-![startup configuration window](readme_resources/intellij_startup_configs.png)
-
-In that window, you click the plus in the upper left corner and then select "npm" from the dropdown menu. This creates a new run configuration.
-On the right of the window, you can give your run configuration a name, like "frontend". Also, you have to select the `package.json`. In this example, the one of the frontend.
-Make sure "run" is selected as the command and "start" is selected as the script.
-After that, you can save your run configuration and try it out.
-These steps have to be repeated for the backend. In this case, obviously selecting the `package.json` of the backend.
+We first developed the Backend using Node.js, which both consumes the available APIs (REST API for OrangeHRM & OpenCRX, XML-RPC for Odoo) and presents a REST API for the Frontend. The collected data from other systems and newly created data are all stored in MongoDB as Documents. Then the Frontend was designed using Figma and constructed using Angular. The design of the Frontend was heavily focused on Schemas such as Security by Design, Role-based Access Control, and Zero Trust Policy.
 
 ### Result
 
-If your Login was successful, you will see this page:
+The final product is a fully functional web application that streamlines the process of creating Performance Evaluations and Bonus Salary Records. The application integrates seamlessly with the existing systems, providing a user-friendly interface for the HR department and Salesmen.
 
-![Login page of template](readme_resources/landing-page.png)
+Key functionalities include:
+- Data are queried from OrangeHRM and OpenCRX using REST API, and Odoo using XML-RPC.
+- The application can support multiple users with different roles and also supports role creation in the frontend.
+- HR can add Social Performance.
+- Annual evaluations and the corresponding bonus salaries will be automatically generated.
+- The evaluations have to be accepted by HR, CEO, and the corresponding Salesmen before the bonus salary records are ready to be pushed to OrangeHRM via a POST request.
+- The CEO can add remarks/comments to each individual evaluation, and these remarks will be stored persistently and can be accessed read-only by HR and the corresponding Salesmen.
+
+Security functionalities include:
+- Role-based access control.
+- Each and every request from frontend to backend is automatically authenticated & authorized (zero trust policy).
+- MongoDB tables are password protected.
+- Cross-Origin Resource Sharing is strictly configured.
+
+To see the application in action, watch the demonstration video below:
+
+[Demo Video](https://drive.google.com/file/d/1iOWvpXtGGEwRmEMjrdLH2g-SItN5f_HN/view?usp=sharing "Demo Video")
+
+## Installation
+
+To run this project locally, follow these steps:
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/your-repo-name.git
+```
+   
+2. Navigate to the project directory:
+```bash
+cd your-repo-name
+```
+
+3. Install the dependencies for the backend:
+
+```bash
+cd backend
+npm install
+```
+
+4. Install the dependencies for the frontend:
+```bash
+cd ../frontend
+npm install
+```
+
+5. Start the backend server:
+```bash
+cd ../backend
+npm start
+```
+
+Start the frontend application:
+
+```bash
+cd ../frontend
+ng serve
+```
+
+Now you can access the application at http://localhost:4200.
+
+## Acknowledgments
+
+We would like to express our sincere gratitude to our professor, Prof. Dr. Alda Sascha, and the teaching assistant, Lucas Ringhausen, for their invaluable support and guidance throughout this project. Their insights and feedback greatly contributed to the success of our work.
