@@ -37,17 +37,18 @@ To see the application in action, watch the demonstration video below:
 [Demo Video](https://drive.google.com/file/d/1iOWvpXtGGEwRmEMjrdLH2g-SItN5f_HN/view?usp=sharing "Demo Video")
 
 ## Installation
+Assuming you have access to the Hochschule Bonn-Rhein-Sieg's intranet (either through one of the internal internet connections or through a VPN tunnel) since access to the private installation of OrangeHRM, OpenCRX and Odoo are prerequisite for running the program.
 
 To run this project locally, follow these steps:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/your-repo-name.git
+git clone https://github.com/justKMM/IRA-Bonus-Salary-Manager.git
 ```
    
 2. Navigate to the project directory:
 ```bash
-cd your-repo-name
+cd IRA-Bonus-Salary-Manager
 ```
 
 3. Install the dependencies for the backend:
